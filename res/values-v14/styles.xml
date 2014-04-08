@@ -1,0 +1,71 @@
+<resources>
+
+    <!--
+        Base application theme for API 14+. This theme completely replaces
+        AppBaseTheme from BOTH res/values/styles.xml and
+        res/values-v11/styles.xml on API 14+ devices.
+    -->
+    <style name="AppBaseTheme" parent="@style/Theme.CustomAppTheme">
+        <!-- API 14 theme customizations can go here. -->
+    </style>
+    
+    <style name="PlayerTheme" parent="@style/Theme.CustomAppTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+    
+    <style name="Theme.CustomAppTheme" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_actionbartheme</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Actionbartheme</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Actionbartheme</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Actionbartheme</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Actionbartheme</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Actionbartheme</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_actionbartheme</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_actionbartheme</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Actionbartheme</item>
+    </style>
+
+    <style name="ActionBar.Solid.Actionbartheme" parent="@android:style/Widget.Holo.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_background</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_actionbartheme</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_actionbartheme</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Actionbartheme</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Actionbartheme" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_actionbartheme</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Actionbartheme</item>
+    </style>
+
+    <style name="PopupMenu.Actionbartheme" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_actionbartheme</item>	
+    </style>
+
+    <style name="DropDownListView.Actionbartheme" parent="@android:style/Widget.Holo.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_actionbartheme</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Actionbartheme" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_actionbartheme</item>
+    </style>
+
+    <style name="DropDownNav.Actionbartheme" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_actionbartheme</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_actionbartheme</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_actionbartheme</item>
+    </style>
+    
+    <style name="ProgressBar.Actionbartheme" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_actionbartheme</item>
+    </style>
+    
+    <style name="ActionButton.CloseMode.Actionbartheme" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_actionbartheme</item>
+    </style>
+
+    <style name="Theme.Actionbartheme.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Actionbartheme</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Actionbartheme</item>
+    </style>
+
+</resources>
