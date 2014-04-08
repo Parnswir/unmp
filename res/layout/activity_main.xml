@@ -1,0 +1,177 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:gravity="top"
+    android:orientation="vertical" >
+
+    <view
+        android:id="@+id/square"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        class="com.parnswir.unmp.Resources$SquareLayout" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom" >
+            
+            <ImageView
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/cd_cover"
+                android:src="@drawable/cover"
+                android:onClick="onClickCover" />
+            
+            <RelativeLayout
+                android:id="@+id/coverOverlay"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/repeat"
+                android:orientation="vertical" >
+            
+	           	<RatingBar
+	                android:id="@+id/ratingBar"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+					android:layout_centerHorizontal="true"
+	                android:background="@drawable/transparent" />
+	           	
+	      	</RelativeLayout>
+
+        </RelativeLayout>
+    </view>
+
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@drawable/control_overlay_background"
+	    android:orientation="vertical" >
+        
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:orientation="horizontal" >
+
+	        <TextView
+	            android:id="@+id/tvTime"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:paddingLeft="@dimen/activity_horizontal_margin"
+	            android:text="@string/tv_time" />
+	        
+	        <TextView
+	            android:id="@+id/tvTimeLeft"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:paddingRight="@dimen/activity_horizontal_margin"
+	            android:text="@string/tv_time_left" />
+   
+	    </RelativeLayout>
+	    
+	    <SeekBar
+	        android:id="@+id/seekBar"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:indeterminate="false" />
+
+	    <TextView
+	        android:id="@+id/tvTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/activity_vertical_margin"
+	        android:text="@string/tv_title"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	    <TextView
+	        android:id="@+id/tvArtist"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/activity_vertical_margin"
+	        android:text="@string/tv_artist"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+	    <TextView
+	        android:id="@+id/tvAlbum"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/ab_solid_background"
+	        android:paddingLeft="@dimen/activity_vertical_margin"
+	        android:text="@string/tv_album"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+	        android:layout_marginTop="@dimen/activity_horizontal_margin"
+	        android:gravity="center" >
+	
+	        <ImageButton
+	            android:id="@+id/btnRepeat"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:layout_margin="@dimen/activity_horizontal_margin"
+	            android:onClick="onClickPlay"
+	            android:background="@drawable/button"
+	            android:contentDescription="@string/cd_repeat"
+	            android:src="@drawable/ic_action_repeat" />
+	        
+	        <ImageButton
+	            android:id="@+id/btnPrevious"
+	            android:layout_width="48dp"
+	            android:layout_height="48dp"
+	            android:layout_gravity="center_vertical"
+	            android:layout_margin="@dimen/activity_horizontal_margin"
+	            android:background="@drawable/button"
+	            android:contentDescription="@string/cd_previous"
+	            android:onClick="onClickPlay"
+	            android:scaleType="centerCrop"
+	            android:src="@drawable/ic_action_previous" />
+
+	        <ImageButton
+	            android:id="@+id/btnPlay"
+	            android:layout_width="48dp"
+	            android:layout_height="48dp"
+	            android:layout_margin="@dimen/play_button_margin"
+	            android:background="@drawable/button"
+	            android:contentDescription="@string/cd_play"
+	            android:onClick="onClickPlay"
+	            android:scaleType="fitCenter"
+	            android:src="@drawable/ic_action_play" />
+	
+	        <ImageButton
+	            android:id="@+id/btnNext"
+	            android:layout_width="48dp"
+	            android:layout_height="48dp"
+	            android:layout_gravity="center_vertical"
+	            android:layout_margin="@dimen/activity_horizontal_margin"
+	            android:background="@drawable/button"
+	            android:contentDescription="@string/cd_next"
+	            android:onClick="onClickPlay"
+	            android:scaleType="centerCrop"
+	            android:src="@drawable/ic_action_next" />
+	        
+	        <ImageButton
+	            android:id="@+id/btnShuffle"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_vertical"
+	            android:layout_margin="@dimen/activity_horizontal_margin"
+	            android:onClick="onClickPlay"
+	            android:background="@drawable/button"
+	            android:contentDescription="@string/cd_shuffle"
+	            android:src="@drawable/ic_action_shuffle" />
+	
+	    </LinearLayout>
+	
+	</LinearLayout>
+
+</LinearLayout>
