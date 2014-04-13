@@ -2,6 +2,10 @@ package com.parnswir.unmp;
 
 // The following code was created by Gregory Shpitalnik under The Code Project Open License
 // http://www.codeproject.com/Articles/547636/Android-Ready-to-use-simple-directory-chooser-dial
+//
+// Some adjustments were made:
+//   + add ".." to directories to navigate up
+//   + handle click on ".."
 
 import java.io.File;
 import java.io.IOException;
@@ -112,15 +116,22 @@ public class DirectoryChooserDialog
      }
 
      m_dir = dir;
-     m_subdirs = getDirectories(dir);
+     m_subdirs = new ArrayList<String>();
+     m_subdirs.add("..");
+     m_subdirs.addAll(getDirectories(dir));
 
      class DirectoryOnClickListener implements DialogInterface.OnClickListener
      {
          public void onClick(DialogInterface dialog, int item) 
          {
-             // Navigate into the sub-directory
-             m_dir += "/" + ((AlertDialog) dialog).getListView().getAdapter().getItem(item);
-             updateDirectory();
+        	 if (item == 0 && ! m_dir.equals("/storage")) {
+        		 m_dir = new File(m_dir).getParent();
+                 updateDirectory();
+        	 } else {
+        		 // Navigate into the sub-directory
+                 m_dir += "/" + ((AlertDialog) dialog).getListView().getAdapter().getItem(item);
+                 updateDirectory();
+        	 }
          }
      }
 
@@ -298,6 +309,9 @@ private AlertDialog.Builder createDirectoryChooserDialog(String title, List<Stri
 private void updateDirectory()
 {
  m_subdirs.clear();
+ if (! m_dir.equals("/storage")) {
+	 m_subdirs.add("..");
+ }
  m_subdirs.addAll( getDirectories(m_dir) );
  m_titleView.setText(m_dir);
 
