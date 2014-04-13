@@ -15,8 +15,6 @@ import android.widget.Toast;
 public class LibraryActivity extends Activity {
 	
 	private ListView mLibraryFolders;
-	private String m_chosenDir = "";
-    private boolean m_newFolderEnabled = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +51,12 @@ public class LibraryActivity extends Activity {
 	        new DirectoryChooserDialog.ChosenDirectoryListener() {
 	            @Override
 	            public void onChosenDir(String chosenDir) {
-	                m_chosenDir = chosenDir;
 	                Toast.makeText(
 	                LibraryActivity.this, "Chosen directory: " + 
 	                chosenDir, Toast.LENGTH_LONG).show();
 	            }
 		});
+		directoryChooserDialog.setNewFolderEnabled(false);
 		directoryChooserDialog.chooseDirectory();
 	}
 
