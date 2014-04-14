@@ -1,5 +1,7 @@
 package com.parnswir.unmp;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -8,13 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class LibraryActivity extends Activity {
 	
 	private ListView mLibraryFolders;
+	private ArrayList<String> folders = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,7 @@ public class LibraryActivity extends Activity {
 	}
 	
 	private void setupFolderList() {
-		String[] folders = {getString(R.string.addFolderToLibrary)};
+		folders.add(getString(R.string.addFolderToLibrary));
 		mLibraryFolders = (ListView) findViewById(R.id.libraryFolders);
 		mLibraryFolders.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, folders));
 		mLibraryFolders.setOnItemClickListener(new FolderClickListener());
@@ -51,9 +54,11 @@ public class LibraryActivity extends Activity {
 	        new DirectoryChooserDialog.ChosenDirectoryListener() {
 	            @Override
 	            public void onChosenDir(String chosenDir) {
-	                Toast.makeText(
-	                LibraryActivity.this, "Chosen directory: " + 
-	                chosenDir, Toast.LENGTH_LONG).show();
+	            	ArrayAdapter adapter = ((ArrayAdapter) mLibraryFolders.getAdapter());
+	                if (adapter.getPosition(chosenDir) == -1) {
+	                	folders.add(0, chosenDir);
+		                adapter.notifyDataSetChanged();
+	                }
 	            }
 		});
 		directoryChooserDialog.setNewFolderEnabled(false);
