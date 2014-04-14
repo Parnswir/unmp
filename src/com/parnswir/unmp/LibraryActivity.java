@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,7 +53,8 @@ public class LibraryActivity extends Activity {
 	        new DirectoryChooserDialog.ChosenDirectoryListener() {
 	            @Override
 	            public void onChosenDir(String chosenDir) {
-	            	ArrayAdapter adapter = ((ArrayAdapter) mLibraryFolders.getAdapter());
+	            	@SuppressWarnings("unchecked") // ArrayAdapter cast
+					ArrayAdapter<String> adapter = ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
 	                if (adapter.getPosition(chosenDir) == -1) {
 	                	folders.add(0, chosenDir);
 		                adapter.notifyDataSetChanged();
