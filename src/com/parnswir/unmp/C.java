@@ -48,6 +48,9 @@ public class C {
 	public static final String ALBUM_ART_BLOB = "BLOB";
 	public static final String ALBUM_ART_FOLDER = "FOLDER";
 	
+	public static final String NUMBEROFFOLDERS = "_nofil";
+	public static final String FOLDER = "_f";
+	
 	public static final String[] FRAGMENTS = {"Now Playing", "Playlist", "Artists", "Albums", "Genres", "Playlists", "Manage Library...", "Settings"};
 	public static final String[] LIST_FRAGMENT_TABLENAMES = {TAB_ARTISTS, TAB_ALBUMS, TAB_GENRES};
 	
