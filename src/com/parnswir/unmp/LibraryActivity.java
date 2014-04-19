@@ -1,6 +1,8 @@
 package com.parnswir.unmp;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,23 +18,35 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LibraryActivity extends Activity {
+public class LibraryActivity extends Activity implements Observer {
 	
 	private ListView mLibraryFolders;
 	private ArrayList<String> folders = new ArrayList<String>();
 	private SharedPreferences preferences;
 	private int numberOfFoldersInLibrary = -1;
+	private FileCrawlerThread fileCrawlerThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_library);
 		setupActionBar();
+	}
+	
+	protected void onStart() {
+		super.onStart();
 		setupPreferences();
 		setupFolderList();
 	}
 	
+	protected void onPause() {
+		savePreferences();
+		scanFolders();
+		super.onPause();
+	}
+	
 	private void setupFolderList() {
+		folders.clear();
 		folders.addAll(getLibraryFolders());
 		folders.add(getString(R.string.addFolderToLibrary));
 		mLibraryFolders = (ListView) findViewById(R.id.libraryFolders);
@@ -86,13 +100,11 @@ public class LibraryActivity extends Activity {
 	        new DirectoryChooserDialog.ChosenDirectoryListener() {
 	            @Override
 	            public void onChosenDir(String chosenDir) {
-	            	@SuppressWarnings("unchecked") // ArrayAdapter cast
-					ArrayAdapter<String> adapter = ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+					ArrayAdapter<String> adapter = getListAdapter();
 	                if (adapter.getPosition(chosenDir) == -1) {
 	                	folders.add(0, chosenDir);
 		                adapter.notifyDataSetChanged();
 		                numberOfFoldersInLibrary += 1;
-		                savePreferences();
 	                }
 	            }
 		});
@@ -106,12 +118,10 @@ public class LibraryActivity extends Activity {
         .setCancelable(false)
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-            	@SuppressWarnings("unchecked") // ArrayAdapter cast
-				ArrayAdapter<String> adapter = ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+				ArrayAdapter<String> adapter = getListAdapter();
             	folders.remove(position);
                 adapter.notifyDataSetChanged();
                 numberOfFoldersInLibrary -= 1;
-                savePreferences();
             }
         })
         .setNegativeButton("No", null)
@@ -128,8 +138,7 @@ public class LibraryActivity extends Activity {
 	}
 	
 	private void savePreferences() {
-		@SuppressWarnings("unchecked") // ArrayAdapter cast
-		ArrayAdapter<String> adapter = ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+		ArrayAdapter<String> adapter = getListAdapter();
 		SharedPreferences.Editor editor = preferences.edit();
 		
 		editor.putInt(C.NUMBEROFFOLDERS, numberOfFoldersInLibrary);
@@ -137,6 +146,21 @@ public class LibraryActivity extends Activity {
 			editor.putString(C.FOLDER + Integer.toString(i), adapter.getItem(i));
 		}
 		editor.apply();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayAdapter<String> getListAdapter() {
+		return ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+	}
+	
+	private void scanFolders() {
+		if (fileCrawlerThread == null) {
+			fileCrawlerThread = new FileCrawlerThread(MainActivity.DB, folders);
+			fileCrawlerThread.callback.addObserver(this);
+		}
+		if (! fileCrawlerThread.isAlive()) {
+			fileCrawlerThread.start();
+		}
 	}
 
 	@Override
@@ -153,6 +177,17 @@ public class LibraryActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void update(Observable observable, final Object data) {
+		runOnUiThread(new Runnable() {
+	        public void run()
+	        {
+	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
+	    		tv.setText((String) data);
+	        }
+	    });
 	}
 
 }
