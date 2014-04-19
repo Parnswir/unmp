@@ -3,13 +3,14 @@ package com.parnswir.unmp;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -37,6 +38,7 @@ public class LibraryActivity extends Activity {
 		mLibraryFolders = (ListView) findViewById(R.id.libraryFolders);
 		mLibraryFolders.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, folders));
 		mLibraryFolders.setOnItemClickListener(new FolderClickListener());
+		mLibraryFolders.setOnItemLongClickListener(new FolderClickListener());
 	}
 	
 	private ArrayList<String> getLibraryFolders() {
@@ -47,18 +49,35 @@ public class LibraryActivity extends Activity {
 		return list;
 	}
 	
-	private class FolderClickListener implements ListView.OnItemClickListener {
+	private class FolderClickListener implements ListView.OnItemClickListener, ListView.OnItemLongClickListener {
 	    @Override
 	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        TextView item = (TextView) view;
+	        handleAddFolderClick(view);
+	    	return;
+	    }
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			handleAddFolderClick(view);
+			if (! clickedAddFolder(view)) {
+				deleteFolderFromLibrary(position);
+			}
+			return true;
+		}
+		
+		private void handleAddFolderClick(View view) {
+			if (clickedAddFolder(view)) {
+				showDirectorySelector();
+			}
+		}
+		
+		private boolean clickedAddFolder(View view) {
+			TextView item = (TextView) view;
 	        String selectedText = item.getText().toString();
 	        String addFolder = getString(R.string.addFolderToLibrary);
 	        
-	        if (selectedText.equals(addFolder)) {
-	        	showDirectorySelector();
-	        }
-	    	return;
-	    }
+	        return selectedText.equals(addFolder);
+		}
 	}
 	
 	private void showDirectorySelector() {
@@ -79,6 +98,24 @@ public class LibraryActivity extends Activity {
 		});
 		directoryChooserDialog.setNewFolderEnabled(false);
 		directoryChooserDialog.chooseDirectory();
+	}
+	
+	private void deleteFolderFromLibrary(final int position) {
+		new AlertDialog.Builder(this)
+        .setMessage("Do you want to remove this folder from your library?")
+        .setCancelable(false)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	@SuppressWarnings("unchecked") // ArrayAdapter cast
+				ArrayAdapter<String> adapter = ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+            	folders.remove(position);
+                adapter.notifyDataSetChanged();
+                numberOfFoldersInLibrary -= 1;
+                savePreferences();
+            }
+        })
+        .setNegativeButton("No", null)
+        .show();
 	}
 
 	private void setupActionBar() {
