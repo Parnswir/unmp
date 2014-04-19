@@ -2,6 +2,8 @@ package com.parnswir.unmp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -16,19 +18,27 @@ import android.database.sqlite.SQLiteDatabase;
 public class FileCrawlerThread extends Thread {
 	
 	private SQLiteDatabase db;
-	private String folder;
+	private List<String> folders;
 	
 	public StringObservable callback = new StringObservable();
 	
 	
 	public FileCrawlerThread(SQLiteDatabase db, String folder) {
-		this.folder = folder;
+		this.folders = new ArrayList<String>();
+		this.folders.add(folder);
+		this.db = db;
+	}
+	
+	public FileCrawlerThread(SQLiteDatabase db, List<String> folders) {
+		this.folders = folders;
 		this.db = db;
 	}
 	
 	public void run() {
-		File root = new File(folder);
-		traverse(root);
+		for (String folder : folders) {
+			File root = new File(folder);
+			traverse(root);
+		}
 	}
 	
 	protected void traverse(File file) {
