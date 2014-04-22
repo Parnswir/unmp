@@ -425,8 +425,12 @@ public class MainActivity extends Activity implements Observer {
 		runOnUiThread(new Runnable() {
 	        public void run()
 	        {
+	        	Resources.ProgressItem cast = (Resources.ProgressItem) data;
 	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
-	    		tv.setText((String) data);
+	    		tv.setText(cast.text);
+	    		
+	    		tv = (TextView) findViewById(R.id.tvUpdatingLibrary);
+	    		tv.setText(getString(R.string.updatingLibrary) + " (" + Float.toString(Math.round(cast.value * 100)) + "%)");
 	        }
 	    });
 	}

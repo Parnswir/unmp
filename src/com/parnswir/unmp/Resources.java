@@ -23,5 +23,15 @@ public class Resources {
 		    super.onMeasure(widthMeasureSpec, widthMeasureSpec);
 		}
 	}
+	
+	public static class ProgressItem {
+		public String text;
+		public float value;
+		
+		public ProgressItem(String text, float value) {
+			this.text = text;
+			this.value = value;
+		}
+	}
 
 }

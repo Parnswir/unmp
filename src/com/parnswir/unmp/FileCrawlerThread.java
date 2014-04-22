@@ -21,7 +21,7 @@ public class FileCrawlerThread extends Thread {
 	private List<String> folders;
 	private boolean stop = false;
 	
-	public StringObservable callback = new StringObservable();
+	public ProgressObservable callback = new ProgressObservable();
 	
 	
 	public FileCrawlerThread(SQLiteDatabase db, String folder) {
@@ -36,22 +36,25 @@ public class FileCrawlerThread extends Thread {
 	}
 	
 	public void run() {
-		for (String folder : folders) {
-			File root = new File(folder);
-			traverse(root);
+		int index = 0;
+		while (index < folders.size()) {
+			File root = new File(folders.get(index));
+			traverse(root, index);
+			index++;
 		}
+		callback.change(new Resources.ProgressItem("", 1));
 	}
 	
-	protected void traverse(File file) {
+	protected void traverse(File file, int folderIndex) {
 		if (stop)
 			return;
 		if (file.canRead()) {
 			if (file.isDirectory()) {
-				callback.change(file.getAbsolutePath());
+				callback.change(new Resources.ProgressItem(file.getAbsolutePath(), folderIndex / (folders.size() - 1)));
 				File[] fileList = file.listFiles();
 				for (int i = 0; i < fileList.length; i++) {
 					File aFile = fileList[i];
-					traverse(aFile);
+					traverse(aFile, folderIndex);
 				}
 			} else {
 				if (file != null) {
