@@ -1,14 +1,20 @@
 package com.parnswir.unmp;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,7 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Observer {
 	
 	public static SQLiteDatabase DB;
 	
@@ -44,6 +50,12 @@ public class MainActivity extends Activity {
     private ListView contentList;
     private IconicAdapter adapter;
     private CoverList currentContent = new CoverList();
+    
+    private ListView mLibraryFolders;
+	private ArrayList<String> folders = new ArrayList<String>();
+	private SharedPreferences preferences;
+	private int numberOfFoldersInLibrary = -1;
+	private FileCrawlerThread fileCrawlerThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -275,6 +287,148 @@ public class MainActivity extends Activity {
 			cursor.moveToNext();
 		} 
 		cursor.close();
+	}
+	
+	
+	public void onShowLibrary(View layout) {
+		setupPreferences();
+		setupFolderList(layout);
+	}
+	
+	
+	private void setupFolderList(View layout) {
+		folders.clear();
+		folders.addAll(getLibraryFolders());
+		folders.add(getString(R.string.addFolderToLibrary));
+		mLibraryFolders = (ListView) layout.findViewById(R.id.libraryFolders);
+		mLibraryFolders.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, folders));
+		mLibraryFolders.setOnItemClickListener(new FolderClickListener());
+		mLibraryFolders.setOnItemLongClickListener(new FolderClickListener());
+	}
+	
+	
+	private ArrayList<String> getLibraryFolders() {
+		ArrayList<String> list = new ArrayList<String>();
+		for (int i = 0; i < numberOfFoldersInLibrary; i++) {
+			list.add(preferences.getString(C.FOLDER + Integer.toString(i), ""));
+		}
+		return list;
+	}
+	
+	
+	private class FolderClickListener implements ListView.OnItemClickListener, ListView.OnItemLongClickListener {
+	    @Override
+	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	        handleAddFolderClick(view);
+	    	return;
+	    }
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			handleAddFolderClick(view);
+			if (! clickedAddFolder(view)) {
+				deleteFolderFromLibrary(position);
+			}
+			return true;
+		}
+		
+		private void handleAddFolderClick(View view) {
+			if (clickedAddFolder(view)) {
+				showDirectorySelector();
+			}
+		}
+		
+		private boolean clickedAddFolder(View view) {
+			TextView item = (TextView) view;
+	        String selectedText = item.getText().toString();
+	        String addFolder = getString(R.string.addFolderToLibrary);
+	        
+	        return selectedText.equals(addFolder);
+		}
+	}
+	
+	
+	private void showDirectorySelector() {
+		DirectoryChooserDialog directoryChooserDialog = new DirectoryChooserDialog(
+			this, 
+	        new DirectoryChooserDialog.ChosenDirectoryListener() {
+	            @Override
+	            public void onChosenDir(String chosenDir) {
+					ArrayAdapter<String> adapter = getFolderListAdapter();
+	                if (adapter.getPosition(chosenDir) == -1) {
+	                	folders.add(0, chosenDir);
+		                adapter.notifyDataSetChanged();
+		                numberOfFoldersInLibrary += 1;
+		                savePreferences();
+	                }
+	            }
+		});
+		directoryChooserDialog.setNewFolderEnabled(false);
+		directoryChooserDialog.chooseDirectory();
+	}
+	
+	
+	private void deleteFolderFromLibrary(final int position) {
+		new AlertDialog.Builder(this)
+        .setMessage("Do you want to remove this folder from your library?")
+        .setCancelable(false)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+				ArrayAdapter<String> adapter = getFolderListAdapter();
+            	folders.remove(position);
+                adapter.notifyDataSetChanged();
+                numberOfFoldersInLibrary -= 1;
+                savePreferences();
+            }
+        })
+        .setNegativeButton("No", null)
+        .show();
+	}
+
+	
+	private void setupPreferences() {
+		preferences = getPreferences(MODE_PRIVATE);
+		numberOfFoldersInLibrary = preferences.getInt(C.NUMBEROFFOLDERS, 0);
+	}
+	
+	
+	private void savePreferences() {
+		ArrayAdapter<String> adapter = getFolderListAdapter();
+		SharedPreferences.Editor editor = preferences.edit();
+		
+		editor.putInt(C.NUMBEROFFOLDERS, numberOfFoldersInLibrary);
+		for (int i = 0; i < numberOfFoldersInLibrary; i++) {
+			editor.putString(C.FOLDER + Integer.toString(i), adapter.getItem(i));
+		}
+		editor.apply();
+		scanFolders();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private ArrayAdapter<String> getFolderListAdapter() {
+		return ((ArrayAdapter<String>) mLibraryFolders.getAdapter());
+	}
+	
+	
+	private void scanFolders() {
+		if (fileCrawlerThread != null)
+			fileCrawlerThread.kill();
+		fileCrawlerThread = new FileCrawlerThread(MainActivity.DB, folders);
+		fileCrawlerThread.callback.addObserver(this);
+		fileCrawlerThread.start();
+	}
+	
+	
+	@Override
+	public void update(Observable observable, final Object data) {
+		runOnUiThread(new Runnable() {
+	        public void run()
+	        {
+	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
+	    		tv.setText((String) data);
+	        }
+	    });
 	}
 	
 	

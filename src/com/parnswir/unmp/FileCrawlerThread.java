@@ -19,6 +19,7 @@ public class FileCrawlerThread extends Thread {
 	
 	private SQLiteDatabase db;
 	private List<String> folders;
+	private boolean stop = false;
 	
 	public StringObservable callback = new StringObservable();
 	
@@ -42,6 +43,8 @@ public class FileCrawlerThread extends Thread {
 	}
 	
 	protected void traverse(File file) {
+		if (stop)
+			return;
 		if (file.canRead()) {
 			if (file.isDirectory()) {
 				callback.change(file.getAbsolutePath());
@@ -151,6 +154,11 @@ public class FileCrawlerThread extends Thread {
 			
 		}
 		return f;
+	}
+
+	public void kill() {
+		stop = true;
+		
 	}
 
 }

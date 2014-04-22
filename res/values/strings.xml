@@ -21,6 +21,6 @@
     <string name="tv_artist">Greendjohn</string>
     <string name="tv_album">String Theory</string>
     <string name="title_activity_library">LibraryActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="AddFolderToLibrary">+ Add folder</string>
 
 </resources>
