@@ -42,18 +42,12 @@ public class FileCrawlerThread extends Thread {
 	}
 	
 	public void run() {
+		files.clear();
 		for (String folderRoot : folders) {
 			File root = new File(folderRoot);
 			searchForFilesIn(root);
 		}
-		for (String filePath : files) {
-			File current = new File(filePath);
-			if (current != null) {
-				setProgress(filePath, files.indexOf(filePath), files.size());
-				handleFile(current);
-			}
-		}
-		setProgress("Done.", files.size(), files.size());
+		processFiles();
 	}
 	
 	private void searchForFilesIn(File file) {
@@ -86,6 +80,17 @@ public class FileCrawlerThread extends Thread {
 	
 	private void setProgress(String text, float value, float count) {
 		callback.change(new Resources.ProgressItem(text, value, count));
+	}
+	
+	private void processFiles() {
+		for (String filePath : files) {
+			File current = new File(filePath);
+			if (current != null) {
+				setProgress(filePath, files.indexOf(filePath), files.size());
+				handleFile(current);
+			}
+		}
+		setProgress("Done.", files.size(), files.size());
 	}
 	
 	private void handleFile(File file) {
@@ -186,8 +191,7 @@ public class FileCrawlerThread extends Thread {
 	}
 
 	public void kill() {
-		stop = true;
-		
+		stop = true;		
 	}
 
 }
