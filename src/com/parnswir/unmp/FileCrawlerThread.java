@@ -17,10 +17,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class FileCrawlerThread extends Thread {
 	
-	private SQLiteDatabase db;
+	protected SQLiteDatabase db;
 	private List<String> folders;
 	private List<String> files;
-	private boolean stop = false;
+	protected boolean stop = false;
 	
 	public ProgressObservable callback = new ProgressObservable();
 	
@@ -93,7 +93,7 @@ public class FileCrawlerThread extends Thread {
 		setProgress("Done.", files.size(), files.size());
 	}
 	
-	private void handleFile(File file) {
+	protected void handleFile(File file) {
 		if (stop) return;
 		if (! DatabaseUtils.fileAlreadyInDatabase(file.getAbsolutePath(), db)) { 
 			saveToDatabase(file);
