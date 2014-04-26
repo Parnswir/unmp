@@ -19,55 +19,81 @@ public class FileCrawlerThread extends Thread {
 	
 	private SQLiteDatabase db;
 	private List<String> folders;
+	private List<String> files;
 	private boolean stop = false;
 	
 	public ProgressObservable callback = new ProgressObservable();
 	
 	
 	public FileCrawlerThread(SQLiteDatabase db, String folder) {
-		this.folders = new ArrayList<String>();
-		this.folders.add(folder);
-		this.db = db;
+		ArrayList<String> wrapper = new ArrayList<String>();
+		wrapper.add(folder);
+		init(db, wrapper);
 	}
 	
 	public FileCrawlerThread(SQLiteDatabase db, List<String> folders) {
+		init(db, folders);
+	}
+	
+	private void init(SQLiteDatabase db, List<String> folders) {
 		this.folders = folders;
 		this.db = db;
+		files = new ArrayList<String>();
 	}
 	
 	public void run() {
-		int index = 0;
-		while (index < folders.size()) {
-			File root = new File(folders.get(index));
-			traverse(root, index);
-			index++;
+		for (String folderRoot : folders) {
+			File root = new File(folderRoot);
+			searchForFilesIn(root);
 		}
-		callback.change(new Resources.ProgressItem("", 1));
+		for (String filePath : files) {
+			File current = new File(filePath);
+			if (current != null) {
+				setProgress(filePath, files.indexOf(filePath), files.size());
+				handleFile(current);
+			}
+		}
+		setProgress("Done.", files.size(), files.size());
 	}
 	
-	protected void traverse(File file, int folderIndex) {
-		if (stop)
-			return;
+	private void searchForFilesIn(File file) {
+		if (stop) return;
 		if (file.canRead()) {
 			if (file.isDirectory()) {
-				callback.change(new Resources.ProgressItem(file.getAbsolutePath(), folderIndex / (folders.size() - 1)));
-				File[] fileList = file.listFiles();
-				for (int i = 0; i < fileList.length; i++) {
-					File aFile = fileList[i];
-					traverse(aFile, folderIndex);
-				}
+				searchForFilesInDirectory(file);
 			} else {
-				if (file != null) {
-					String path = file.getAbsolutePath();
-					if (path != null)
-						if (path.endsWith(".mp3")) 
-							if (! DatabaseUtils.fileAlreadyInDatabase(path, db)) { 
-								saveToDatabase(file);
-							} else {
-								updateDatabaseEntryFor(file);
-							}
-				}
+				addToFileListIfSuitable(file);
 			}
+		}
+	}
+	
+	private void searchForFilesInDirectory(File file) {
+		setProgress("Looking for files in " + file.getAbsolutePath(), 0, 1);
+		for (File child : file.listFiles()) {
+			searchForFilesIn(child);
+		}
+	}
+	
+	private void addToFileListIfSuitable(File file) {
+		if (isSuitable(file)) {
+			files.add(file.getAbsolutePath());
+		}
+	}
+	
+	private boolean isSuitable(File file) {
+		return file.getAbsolutePath().endsWith(".mp3") && !stop;
+	}
+	
+	private void setProgress(String text, float value, float count) {
+		callback.change(new Resources.ProgressItem(text, value, count));
+	}
+	
+	private void handleFile(File file) {
+		if (stop) return;
+		if (! DatabaseUtils.fileAlreadyInDatabase(file.getAbsolutePath(), db)) { 
+			saveToDatabase(file);
+		} else {
+			updateDatabaseEntryFor(file);
 		}
 	}
 

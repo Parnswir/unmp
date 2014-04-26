@@ -26,11 +26,13 @@ public class Resources {
 	
 	public static class ProgressItem {
 		public String text;
+		public float count;
 		public float value;
 		
-		public ProgressItem(String text, float value) {
+		public ProgressItem(String text, float value, float count) {
 			this.text = text;
 			this.value = value;
+			this.count = count;
 		}
 	}
 

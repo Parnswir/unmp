@@ -427,10 +427,12 @@ public class MainActivity extends Activity implements Observer {
 	        {
 	        	Resources.ProgressItem cast = (Resources.ProgressItem) data;
 	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
-	    		tv.setText(cast.text);
+	    		if (tv != null) tv.setText(cast.text);
+	    		
+	    		String percentDone = Integer.toString(Math.round(100 / cast.count * cast.value));
 	    		
 	    		tv = (TextView) findViewById(R.id.tvUpdatingLibrary);
-	    		tv.setText(getString(R.string.updatingLibrary) + " (" + Float.toString(Math.round(cast.value * 100)) + "%)");
+	    		tv.setText(String.format(getString(R.string.updatingLibrary) + " (%s%%)", percentDone));
 	        }
 	    });
 	}
