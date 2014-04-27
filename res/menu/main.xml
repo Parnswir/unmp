@@ -3,4 +3,9 @@
           android:icon="@drawable/ic_action_search"
           android:title="@string/action_search"
           android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_scan" 
+          android:title="@string/action_scan"
+          android:visible="false"
+          android:icon="@drawable/ic_action_refresh" 
+          android:showAsAction="ifRoom" />
 </menu>

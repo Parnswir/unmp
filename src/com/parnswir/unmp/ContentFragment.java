@@ -26,6 +26,8 @@ public class ContentFragment extends Fragment {
     	this.inflater = inflater;
     	this.container = container;
     	
+    	mainActivity.libraryShown = false;
+    	
     	int index = getArguments().getInt(ARG_FRAGMENT_NUMBER);
     	
     	switch (index) {

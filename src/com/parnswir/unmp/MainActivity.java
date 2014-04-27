@@ -38,13 +38,14 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements Observer {
 	
 	public static SQLiteDatabase DB;
+	public boolean libraryShown = false;
 	
 	private String[] drawerItems = C.FRAGMENTS;
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawer;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private Boolean rootView = true;
+    private boolean rootView = true;
     
     private Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
     
@@ -108,6 +109,7 @@ public class MainActivity extends Activity implements Observer {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawer);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_scan).setVisible(libraryShown && !drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 	
@@ -226,7 +228,8 @@ public class MainActivity extends Activity implements Observer {
 	          return true;
 	        }		
 		switch (item.getItemId()) {
-		case R.id.action_search: startActivityNamed(DebugActivity.class); return true;
+			case R.id.action_search: startActivityNamed(DebugActivity.class); return true;
+			case R.id.action_scan: scanFolders(); return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -295,6 +298,7 @@ public class MainActivity extends Activity implements Observer {
 	public void onShowLibrary(View layout) {
 		setupPreferences();
 		setupFolderList(layout);
+		libraryShown = true;
 	}
 	
 	
@@ -449,11 +453,8 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	private void scanFolders() {
-//		if (fileCrawlerThread != null)
-//			fileCrawlerThread.kill();
-//		fileCrawlerThread = new FileCrawlerThread(MainActivity.DB, folders);
-//		fileCrawlerThread.callback.addObserver(this);
-//		fileCrawlerThread.start();
+		FileAdditionThread crawler = new FileAdditionThread(DB, folders);
+		addFileCrawler(crawler);
 	}
 	
 	
