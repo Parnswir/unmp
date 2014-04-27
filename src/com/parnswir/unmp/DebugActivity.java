@@ -55,7 +55,7 @@ public class DebugActivity extends Activity implements Observer {
     public void searchFolder(View view) {
 		EditText editText = (EditText) findViewById(R.id.edit_folder);
 		String folder = editText.getText().toString(); 
-		crawler = new FileCrawlerThread(MainActivity.DB, folder);
+		crawler = new FileAdditionThread(MainActivity.DB, folder);
 		crawler.callback.addObserver(this);
 		crawler.start();
 	}

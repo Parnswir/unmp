@@ -2,6 +2,7 @@ package com.parnswir.unmp;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -55,7 +56,7 @@ public class MainActivity extends Activity implements Observer {
 	private ArrayList<String> folders = new ArrayList<String>();
 	private SharedPreferences preferences;
 	private int numberOfFoldersInLibrary = -1;
-	private FileCrawlerThread fileCrawlerThread;
+	private List<FileCrawlerThread> fileCrawlers;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class MainActivity extends Activity implements Observer {
         
         MusicDatabaseHelper dbHelper = new MusicDatabaseHelper(this);
 		DB = dbHelper.getWritableDatabase();
+		fileCrawlers = new ArrayList<FileCrawlerThread>();
 		
 		adapter = new IconicAdapter(this, currentContent); 
 		
@@ -356,6 +358,7 @@ public class MainActivity extends Activity implements Observer {
 	            public void onChosenDir(String chosenDir) {
 					ArrayAdapter<String> adapter = getFolderListAdapter();
 	                if (adapter.getPosition(chosenDir) == -1) {
+	                	addFolderToLibrary(chosenDir);
 	                	folders.add(0, chosenDir);
 		                adapter.notifyDataSetChanged();
 		                numberOfFoldersInLibrary += 1;
@@ -375,7 +378,8 @@ public class MainActivity extends Activity implements Observer {
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 				ArrayAdapter<String> adapter = getFolderListAdapter();
-            	folders.remove(position);
+				removeFolderFromLibrary(folders.get(position));
+				folders.remove(position);
                 adapter.notifyDataSetChanged();
                 numberOfFoldersInLibrary -= 1;
                 savePreferences();
@@ -401,7 +405,6 @@ public class MainActivity extends Activity implements Observer {
 			editor.putString(C.FOLDER + Integer.toString(i), adapter.getItem(i));
 		}
 		editor.apply();
-		scanFolders();
 	}
 	
 	
@@ -411,12 +414,46 @@ public class MainActivity extends Activity implements Observer {
 	}
 	
 	
+	private void addFolderToLibrary(String folder) {
+		stopAll(FileAdditionThread.class);
+		FileCrawlerThread crawler = new FileAdditionThread(DB, folder);
+		addFileCrawler(crawler);
+	}
+	
+	
+	private void removeFolderFromLibrary(String folder) {
+		stopAll(FileRemovalThread.class);
+		FileRemovalThread crawler = new FileRemovalThread(DB, folder);
+		addFileCrawler(crawler);
+	}
+	
+	
+	private void stopAll(Class<?> threadType) {
+		int i = 0;
+		while (i < fileCrawlers.size()) {
+			if (fileCrawlers.get(i).getClass() == threadType) {
+				fileCrawlers.get(i).kill();
+				fileCrawlers.remove(i);
+			} else {
+				i += 1;
+			}
+		}
+	}
+	
+	
+	private void addFileCrawler(FileCrawlerThread thread) {
+		thread.callback.addObserver(this);
+		fileCrawlers.add(thread);
+		thread.start();
+	}
+	
+	
 	private void scanFolders() {
-		if (fileCrawlerThread != null)
-			fileCrawlerThread.kill();
-		fileCrawlerThread = new FileCrawlerThread(MainActivity.DB, folders);
-		fileCrawlerThread.callback.addObserver(this);
-		fileCrawlerThread.start();
+//		if (fileCrawlerThread != null)
+//			fileCrawlerThread.kill();
+//		fileCrawlerThread = new FileCrawlerThread(MainActivity.DB, folders);
+//		fileCrawlerThread.callback.addObserver(this);
+//		fileCrawlerThread.start();
 	}
 	
 	

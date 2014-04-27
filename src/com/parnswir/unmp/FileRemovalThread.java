@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class FileRemovalThread extends FileCrawlerThread {
 
@@ -17,12 +18,12 @@ public class FileRemovalThread extends FileCrawlerThread {
 
 	protected void handleFile(File file) {
 		if (stop) return;
-		if (! DatabaseUtils.fileAlreadyInDatabase(file.getAbsolutePath(), db)) { 
+		if (DatabaseUtils.fileAlreadyInDatabase(file.getAbsolutePath(), db)) { 
 			deleteFromDatabase(file);
 		}
 	}
 	
 	private void deleteFromDatabase(File file) {
-		
+		Log.d("HHHHHHHHHH", "delete " + file.getAbsolutePath());
 	}
 }
