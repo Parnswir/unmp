@@ -34,7 +34,7 @@ public class ContentFragment extends Fragment {
     		case 2: 
     		case 3: 
 	    	case 4: inflate(R.layout.list_fragment); showListFragmentFor(index, rootView); break;
-	    	case 6: inflate(R.layout.activity_library); mainActivity.onShowLibrary(rootView); break;
+	    	case 6: inflate(R.layout.library_fragment); mainActivity.onShowLibrary(rootView); break;
 	    	case 7: mainActivity.startActivityNamed(SettingsActivity.class); break;
 	    	default: inflate(R.layout.activity_main);
     	}
