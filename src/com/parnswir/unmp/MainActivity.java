@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -463,16 +464,40 @@ public class MainActivity extends Activity implements Observer {
 		runOnUiThread(new Runnable() {
 	        public void run()
 	        {
+	        	View libraryProgress = findViewById(R.id.library_progress);
+	        	View drawerProgress = findViewById(R.id.drawer_progress);
+	        	
 	        	Resources.ProgressItem cast = (Resources.ProgressItem) data;
 	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
-	    		if (tv != null) tv.setText(cast.text);
+	    		if (tv != null) {
+	    			tv.setText(cast.text);
+	    			libraryProgress.setVisibility(View.VISIBLE);
+	    		}
 	    		
 	    		String percentDone = Integer.toString(Math.round(100 / cast.count * cast.value));
 	    		
 	    		tv = (TextView) findViewById(R.id.tvUpdatingLibrary);
 	    		tv.setText(String.format(getString(R.string.updatingLibrary) + " (%s%%)", percentDone));
+	    		drawerProgress.setVisibility(View.VISIBLE);
+	    		
+	    		if (cast.value == cast.count) hideProgress();
 	        }
 	    });
+	}
+	
+	
+	private void hideProgress() {
+		final View drawerProgress = findViewById(R.id.drawer_progress);
+		final View libraryProgress = findViewById(R.id.library_progress);
+		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+		    @Override
+		    public void run() {
+		        drawerProgress.setVisibility(View.INVISIBLE);
+		        if (libraryProgress != null) libraryProgress.setVisibility(View.INVISIBLE);
+		    }
+		}, 5000);
 	}
 	
 	
