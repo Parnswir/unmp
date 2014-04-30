@@ -5,8 +5,10 @@ import java.io.IOException;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -19,7 +21,7 @@ import android.os.Process;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 
-public class PlayerService extends Service {
+public class PlayerService extends Service implements OnAudioFocusChangeListener {
 	
 	public static final String EXTRA_ID = "state";
 	public static final int STOP = 0;
@@ -55,6 +57,7 @@ public class PlayerService extends Service {
 
 		mServiceLooper = thread.getLooper();
 		mServiceHandler = new ServiceHandler(mServiceLooper);
+		getAudioFocus();
 		initializeMediaPlayer();
 	}
 
@@ -77,7 +80,7 @@ public class PlayerService extends Service {
 
 	@Override
 	public void onDestroy() {
-		
+		if (player != null) player.release();
 	}
 	
 	private void setForeground() {
@@ -95,6 +98,16 @@ public class PlayerService extends Service {
 		Notification notification = builder.build();
 
 		startForeground(1, notification);
+	}
+	
+	private void getAudioFocus() {
+		AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
+		    AudioManager.AUDIOFOCUS_GAIN);
+
+		if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+		    // could not get audio focus.
+		}
 	}
 	
 	private void initializeMediaPlayer() {
@@ -154,5 +167,24 @@ public class PlayerService extends Service {
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange) {
+		switch (focusChange) {
+        case AudioManager.AUDIOFOCUS_GAIN: 
+        	break;
+        case AudioManager.AUDIOFOCUS_LOSS: 
+        	break;
+        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: 
+        	// Lost focus for a short time, but we have to stop
+            // playback. We don't release the media player because playback
+            // is likely to resume
+        	break;
+        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+            // Lost focus for a short time, but it's ok to keep playing
+            // at an attenuated level
+            break;
+    }
 	}
 }
