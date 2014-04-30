@@ -59,6 +59,8 @@ public class MainActivity extends Activity implements Observer {
 	private int numberOfFoldersInLibrary = -1;
 	private List<FileCrawlerThread> fileCrawlers;
 	
+	private boolean playing = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,7 +96,9 @@ public class MainActivity extends Activity implements Observer {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		setPlayerServiceState(PlayerService.START);
+		if (playing) {
+			setPlayerServiceState(PlayerService.START);
+		}
 	}
 
 	
@@ -249,7 +253,11 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	public void onClickPlay(View view) {
-		
+		if (playing) {
+			pause();
+		} else {
+			play();
+		}
 	}
 	
 	
@@ -512,5 +520,16 @@ public class MainActivity extends Activity implements Observer {
 		Intent intent = new Intent(this, PlayerService.class);
 		intent.putExtra(PlayerService.EXTRA_ID, state);
 		startService(intent);
+	}
+	
+	
+	private void play() {
+		setPlayerServiceState(PlayerService.PLAY);
+		playing = true;
+	}
+	
+	
+	private void pause() {
+		setPlayerServiceState(PlayerService.PAUSE);
 	}
 }
