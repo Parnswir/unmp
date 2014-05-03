@@ -5,8 +5,10 @@ import java.io.IOException;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -116,7 +118,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		player.setOnPreparedListener(new OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer arg0) {
-				player.start();			
+				player.start();
+				onResume();
 			}
 		});
 		player.setOnErrorListener(new OnErrorListener() {	
@@ -140,11 +143,17 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		} else if (playerIsPaused) {
 			player.start();
 			playerIsPaused = false;
+			onResume();
 		}
 	}
 	
 	private void stop() {
 		if (player.isPlaying()) player.stop();
+	}
+	
+	private void onResume() {
+		IntentFilter noiseFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+	    registerReceiver(new NoisyAudioStreamReceiver(), noiseFilter);
 	}
 	
 	private void setPlayerDataSource(String filePath) {
@@ -185,6 +194,16 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
             // Lost focus for a short time, but it's ok to keep playing
             // at an attenuated level
             break;
-    }
+		}
 	}
+	
+	private class NoisyAudioStreamReceiver extends BroadcastReceiver {
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	    	if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
+	    		player.pause();
+	    		playerIsPaused = true;
+	      	}
+	    }
+	 }
 }
