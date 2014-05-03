@@ -13,8 +13,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -82,6 +85,8 @@ public class MainActivity extends Activity implements Observer {
 		TagOptionSingleton.getInstance().setAndroid(true);
         
         mDrawerToggle.syncState();
+        
+        setupIntentReceiver();
     }
 	
 	
@@ -526,10 +531,35 @@ public class MainActivity extends Activity implements Observer {
 	private void play() {
 		setPlayerServiceState(PlayerService.PLAY);
 		playing = true;
+		getServiceStatus();
 	}
 	
 	
 	private void pause() {
 		setPlayerServiceState(PlayerService.PAUSE);
+		getServiceStatus();
+	}
+	
+	
+	private void getServiceStatus() {
+		setPlayerServiceState(PlayerService.STATUS);
+	}
+	
+	
+	private void setupIntentReceiver() {
+		IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
+	    registerReceiver(new StatusIntentReceiver(), statusFilter);
+	}
+	
+	
+	private class StatusIntentReceiver extends BroadcastReceiver {
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
+	    		MediaPlayerStatus status = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
+	    		showToast(Boolean.toString(status.paused));
+	      	}
+	    }
+		
 	}
 }

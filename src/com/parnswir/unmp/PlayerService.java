@@ -25,11 +25,18 @@ import android.support.v4.app.NotificationCompat.Builder;
 
 public class PlayerService extends Service implements OnAudioFocusChangeListener {
 	
-	public static final String EXTRA_ID = "state";
-	public static final int STOP = 0;
-	public static final int START = 1;
-	public static final int PLAY = 2;
-	public static final int PAUSE = 3;
+	public static final String 
+		EXTRA_ID = "com.parnswir.unmp.state",
+		EXTRA_STATUS = "com.parnswir.unmp.status",
+		STATUS_INTENT = "com.parnswir.unmp.STATUS_INTENT";
+	
+	public static final int 
+		STOP = 0,
+		START = 1,
+		PLAY = 2,
+		PAUSE = 3,
+		
+		STATUS = 255;
 
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
@@ -48,6 +55,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case START: setForeground(); break;
 				case PLAY: play("file:///storage/sdcard0/Music/Awolnation/Megalithic Symphony/10 Sail.mp3"); break;
 				case PAUSE: pause(); break;
+				case STATUS: broadcastStatus(); break;
 			}
 		}
 	}
@@ -195,6 +203,19 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
             // at an attenuated level
             break;
 		}
+	}
+	
+	private void broadcastStatus() {
+		Intent intent = new Intent(PlayerService.STATUS_INTENT);
+		intent.putExtra(EXTRA_STATUS, getPlayerStatus());
+		sendBroadcast(intent);	
+	}
+	
+	private MediaPlayerStatus getPlayerStatus() {
+		MediaPlayerStatus status = new MediaPlayerStatus();
+		status.paused = playerIsPaused;
+		// TODO: fill in gaps
+		return status;
 	}
 	
 	private class NoisyAudioStreamReceiver extends BroadcastReceiver {
