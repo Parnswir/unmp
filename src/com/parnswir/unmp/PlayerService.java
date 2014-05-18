@@ -56,10 +56,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case STOP: stopSelf(msg.arg1); stopForeground(true); stop(); break;
 				case START: setForeground(); break;
 				case PLAY: play("file:///storage/sdcard0/Music/Awolnation/Megalithic Symphony/10 Sail.mp3"); break;
-				case PAUSE: pause(); break;
-				case STATUS: break;
-			}
-			broadcastStatus();
+				case PAUSE: requestPause(); break;
+				case STATUS: broadcastStatus(); break;
+			}	
 		}
 	}
 
@@ -131,7 +130,6 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			public void onPrepared(MediaPlayer arg0) {
 				player.start();
 				onResume();
-				broadcastStatus();
 			}
 		});
 		player.setOnErrorListener(new OnErrorListener() {	
@@ -148,26 +146,45 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		preparePlayer();
 	}
 	
-	private void pause() {
+	private void requestPause() {
 		if (player.isPlaying()) {
-			player.pause();
-			playerIsPaused = true;
+			pause();
 		} else if (playerIsPaused) {
-			player.start();
-			playerIsPaused = false;
-			onResume();
+			play();
 		}
+	}
+	
+	private void play() {
+		player.start();
+		playerIsPaused = false;
+		onResume();
+	}
+	
+	private void pause() {
+		player.pause();
+		onPause();
 	}
 	
 	private void stop() {
 		if (player.isPlaying()) player.stop();
-		playerIsStopped = true;
+		onStop();
 	}
 	
 	private void onResume() {
 		IntentFilter noiseFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 	    registerReceiver(new NoisyAudioStreamReceiver(), noiseFilter);
 	    playerIsStopped = false;
+	    broadcastStatus();
+	}
+	
+	private void onStop() {
+		playerIsStopped = true;
+		broadcastStatus();
+	}
+	
+	private void onPause() {
+		playerIsPaused = true;
+		broadcastStatus();
 	}
 	
 	private void setPlayerDataSource(String filePath) {
@@ -229,8 +246,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
 	    	if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
-	    		player.pause();
-	    		playerIsPaused = true;
+	    		pause();
 	      	}
 	    }
 	 }
