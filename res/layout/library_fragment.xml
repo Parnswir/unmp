@@ -20,11 +20,12 @@
     
     <LinearLayout
         android:id="@+id/library_progress"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:visibility="invisible" >
 
         <ProgressBar
             android:id="@+id/progressBar1"
@@ -37,7 +38,7 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="" />
         
     </LinearLayout> 
 
