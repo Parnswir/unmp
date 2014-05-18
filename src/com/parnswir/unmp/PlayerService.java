@@ -57,6 +57,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case PAUSE: pause(); break;
 				case STATUS: broadcastStatus(); break;
 			}
+			broadcastStatus();
 		}
 	}
 

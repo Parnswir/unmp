@@ -103,6 +103,8 @@ public class MainActivity extends Activity implements Observer {
 		super.onPause();
 		if (playing) {
 			setPlayerServiceState(PlayerService.START);
+		} else {
+			setPlayerServiceState(PlayerService.STOP);
 		}
 	}
 
@@ -531,18 +533,11 @@ public class MainActivity extends Activity implements Observer {
 	private void play() {
 		setPlayerServiceState(PlayerService.PLAY);
 		playing = true;
-		getServiceStatus();
 	}
 	
 	
 	private void pause() {
 		setPlayerServiceState(PlayerService.PAUSE);
-		getServiceStatus();
-	}
-	
-	
-	private void getServiceStatus() {
-		setPlayerServiceState(PlayerService.STATUS);
 	}
 	
 	
