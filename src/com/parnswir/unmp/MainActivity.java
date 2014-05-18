@@ -68,7 +68,7 @@ public class MainActivity extends Activity implements Observer {
 	private List<FileCrawlerThread> fileCrawlers;
 	
 	private boolean playing = false;
-	private MediaPlayerStatus playerStatus;
+	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	
 	public View currentLayout;
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
@@ -562,11 +562,13 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	public void setupPlayerControls() {
+		playerControls.clear();
 		int[] buttons = {R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle};
 		for (int button : buttons) {
 			playerControls.add((ImageButton) currentLayout.findViewById(button));
 		}
 		
+		playerLabels.clear();
 		int[] labels = {R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum};
 		for (int label : labels) {
 			playerLabels.add((TextView) currentLayout.findViewById(label));
@@ -581,13 +583,17 @@ public class MainActivity extends Activity implements Observer {
 	    public void onReceive(Context context, Intent intent) {
 	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
 	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
-	    		
-	    		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
-	    		showCurrentPosition();
-	    		showTitleDuration();
+	    		updatePlayerStatus();
 	      	}
 	    }
 		
+	}
+	
+	
+	public void updatePlayerStatus() {
+		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
+		showCurrentPosition();
+		showTitleDuration();
 	}
 	
 	
