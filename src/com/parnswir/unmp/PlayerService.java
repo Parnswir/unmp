@@ -1,6 +1,8 @@
 package com.parnswir.unmp;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -47,6 +49,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private boolean playerIsPaused = false;
 	private boolean playerIsStopped = true;
+	
+	private Timer secondsTimer = new Timer(true);
+	
 
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -188,20 +193,33 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		broadcastIsRegistered = true;
 	}
 	
+	private void startTimer() {
+		secondsTimer = new Timer(true);
+		secondsTimer.scheduleAtFixedRate(new BroadcastTask(), 0, 1000);
+	}
+	
+	private void stopTimer() {
+		secondsTimer.cancel();
+		secondsTimer.purge();
+	}
+	
 	private void onResume() {
 		registerBroadcastReceiver();
 		playerIsStopped = false;
 	    broadcastStatus();
+	    startTimer();
 	}
 	
 	private void onStop() {
 		playerIsStopped = true;
 		broadcastStatus();
+		stopTimer();
 	}
 	
 	private void onPause() {
 		playerIsPaused = true;
 		broadcastStatus();
+		stopTimer();
 	}
 	
 	private void setPlayerDataSource(String filePath) {
@@ -255,6 +273,11 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		MediaPlayerStatus status = new MediaPlayerStatus();
 		status.paused = playerIsPaused;
 		status.stopped = playerIsStopped;
+		
+		if (player.isPlaying() || playerIsPaused) {
+			status.length = player.getDuration();
+			status.position = player.getCurrentPosition();
+		}
 		// TODO: fill in gaps
 		return status;
 	}
@@ -267,4 +290,11 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	      	}
 	    }
 	 }
+	
+	private class BroadcastTask extends TimerTask {
+		@Override
+		public void run() {
+			broadcastStatus();			
+		}		
+	}
 }

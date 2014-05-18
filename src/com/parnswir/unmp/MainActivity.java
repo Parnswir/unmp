@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class MainActivity extends Activity implements Observer {
 	public View currentLayout;
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
+	private ProgressBar currentTitleProgress;
 	
 	
 	@Override
@@ -561,6 +563,8 @@ public class MainActivity extends Activity implements Observer {
 		for (int button : buttons) {
 			playerControls.add((ImageButton) currentLayout.findViewById(button));
 		}
+		
+		currentTitleProgress = (ProgressBar) currentLayout.findViewById(R.id.seekBar);
 	}
 	
 	
@@ -571,6 +575,9 @@ public class MainActivity extends Activity implements Observer {
 	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
 	    		
 	    		setPlayIconTo(playerStatus.paused || playerStatus.stopped);
+	    		
+	    		currentTitleProgress.setMax(playerStatus.length);
+	    		currentTitleProgress.setProgress(playerStatus.position);
 	      	}
 	    }
 		

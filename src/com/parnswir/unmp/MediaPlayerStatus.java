@@ -11,6 +11,10 @@ public class MediaPlayerStatus implements Serializable {
 		paused = false, 
 		shuffled = false, 
 		repeated = false;
+	
+	public int
+		length = 0,
+		position = 0;
 
 	public MediaPlayerStatus() {
 		super();
