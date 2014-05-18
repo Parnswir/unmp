@@ -592,8 +592,8 @@ public class MainActivity extends Activity implements Observer {
 	
 	public void updatePlayerStatus() {
 		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
-		showCurrentPosition();
 		showTitleDuration();
+		showCurrentPosition();
 	}
 	
 	
