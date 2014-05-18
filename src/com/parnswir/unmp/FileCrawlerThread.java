@@ -53,7 +53,7 @@ public abstract class FileCrawlerThread extends Thread {
 	}
 	
 	private void searchForFilesInDirectory(File file) {
-		setProgress("Looking for files in " + file.getAbsolutePath(), 0, 1);
+		setProgress("Looking for files in " + file.getAbsolutePath(), -1, -1);
 		for (File child : file.listFiles()) {
 			searchForFilesIn(child);
 		}

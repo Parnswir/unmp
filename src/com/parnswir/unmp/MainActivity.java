@@ -502,10 +502,18 @@ public class MainActivity extends Activity implements Observer {
 	    			libraryProgress.setVisibility(View.VISIBLE);
 	    		}
 	    		
-	    		String percentDone = Integer.toString(Math.round(100 / cast.count * cast.value));
+	    		int percentDone = 100;
+	    		if (cast.count > 0) {
+	    			percentDone = Math.round(100 / cast.count * cast.value);
+	    		}
+	    		
+	    		ProgressBar pb = (ProgressBar) findViewById(R.id.pbCurrentFolder);
+	    		pb.setIndeterminate(cast.count == -1);
+	    		pb.setMax(100);
+	    		pb.setProgress(percentDone);
 	    		
 	    		tv = (TextView) findViewById(R.id.tvUpdatingLibrary);
-	    		tv.setText(String.format(getString(R.string.updatingLibrary) + " (%s%%)", percentDone));
+	    		tv.setText(String.format(getString(R.string.updatingLibrary) + " (%d%%)", percentDone));
 	    		drawerProgress.setVisibility(View.VISIBLE);
 	    		
 	    		if (cast.value == cast.count) hideProgress();
