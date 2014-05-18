@@ -3,6 +3,7 @@ package com.parnswir.unmp;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -73,6 +74,8 @@ public class MainActivity extends Activity implements Observer {
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
 	private ProgressBar currentTitleProgress;
+	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
+	private static int LAB_POSITION = 0, LAB_LENGTH = 1, LAB_TITLE = 2, LAB_ARTIST = 3, LAB_ALBUM = 4;
 	
 	
 	@Override
@@ -564,6 +567,11 @@ public class MainActivity extends Activity implements Observer {
 			playerControls.add((ImageButton) currentLayout.findViewById(button));
 		}
 		
+		int[] labels = {R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum};
+		for (int label : labels) {
+			playerLabels.add((TextView) currentLayout.findViewById(label));
+		}
+		
 		currentTitleProgress = (ProgressBar) currentLayout.findViewById(R.id.seekBar);
 	}
 	
@@ -574,10 +582,9 @@ public class MainActivity extends Activity implements Observer {
 	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
 	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
 	    		
-	    		setPlayIconTo(playerStatus.paused || playerStatus.stopped);
-	    		
-	    		currentTitleProgress.setMax(playerStatus.length);
-	    		currentTitleProgress.setProgress(playerStatus.position);
+	    		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
+	    		showCurrentPosition();
+	    		showTitleDuration();
 	      	}
 	    }
 		
@@ -593,5 +600,23 @@ public class MainActivity extends Activity implements Observer {
 			icon = res.getDrawable(R.drawable.ic_action_pause);
 		}
 		playerControls.get(BTN_PLAY).setImageDrawable(icon);
+	}
+	
+	
+	private void showCurrentPosition() {
+		currentTitleProgress.setProgress(playerStatus.position);
+		playerLabels.get(LAB_POSITION).setText(formatPosition(playerStatus.position));
+	}
+	
+	
+	private void showTitleDuration() {
+		currentTitleProgress.setMax(playerStatus.length);
+		playerLabels.get(LAB_LENGTH).setText(formatPosition(playerStatus.length));
+	}
+	
+	
+	private String formatPosition(int position) {
+		int seconds = position / 1000;
+		return String.format(Locale.getDefault(), "%02d:%02d", seconds / 60, seconds % 60);
 	}
 }
