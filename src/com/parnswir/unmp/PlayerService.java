@@ -42,6 +42,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private ServiceHandler mServiceHandler;
 	private MediaPlayer player;
 	
+	private NoisyAudioStreamReceiver noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
+	private boolean broadcastIsRegistered = false;
+	
 	private boolean playerIsPaused = false;
 	private boolean playerIsStopped = true;
 
@@ -161,19 +164,33 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void pause() {
+		unregisterBroadcastReceiver();		
 		player.pause();
 		onPause();
 	}
 	
 	private void stop() {
+		unregisterBroadcastReceiver();
 		if (player.isPlaying()) player.stop();
 		onStop();
 	}
 	
-	private void onResume() {
+	private void unregisterBroadcastReceiver() {
+		if (broadcastIsRegistered) {
+			unregisterReceiver(noisyAudioStreamReceiver);
+			broadcastIsRegistered = false;
+		}
+	}
+	
+	private void registerBroadcastReceiver() {
 		IntentFilter noiseFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-	    registerReceiver(new NoisyAudioStreamReceiver(), noiseFilter);
-	    playerIsStopped = false;
+		registerReceiver(noisyAudioStreamReceiver, noiseFilter);
+		broadcastIsRegistered = true;
+	}
+	
+	private void onResume() {
+		registerBroadcastReceiver();
+		playerIsStopped = false;
 	    broadcastStatus();
 	}
 	
