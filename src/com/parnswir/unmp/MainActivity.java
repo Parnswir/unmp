@@ -20,8 +20,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -488,7 +490,7 @@ public class MainActivity extends Activity implements Observer {
 	        	View libraryProgress = findViewById(R.id.library_progress);
 	        	View drawerProgress = findViewById(R.id.drawer_progress);
 	        	
-	        	Resources.ProgressItem cast = (Resources.ProgressItem) data;
+	        	ProjectResources.ProgressItem cast = (ProjectResources.ProgressItem) data;
 	        	TextView tv = (TextView) findViewById(R.id.tvCurrentFolder);
 	    		if (tv != null) {
 	    			tv.setText(cast.text);
@@ -568,9 +570,21 @@ public class MainActivity extends Activity implements Observer {
 	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
 	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
 	    		
-	    		playerControls.get(BTN_NEXT).setVisibility(View.INVISIBLE);
+	    		setPlayIconTo(playerStatus.paused || playerStatus.stopped);
 	      	}
 	    }
 		
+	}
+	
+	
+	private void setPlayIconTo(boolean shown) {
+		Drawable icon;
+		Resources res = getResources();
+		if (shown) {
+			icon = res.getDrawable(R.drawable.ic_action_play);
+		} else {
+			icon = res.getDrawable(R.drawable.ic_action_pause);
+		}
+		playerControls.get(BTN_PLAY).setImageDrawable(icon);
 	}
 }

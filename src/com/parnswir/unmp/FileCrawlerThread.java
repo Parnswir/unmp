@@ -70,7 +70,7 @@ public abstract class FileCrawlerThread extends Thread {
 	}
 	
 	private void setProgress(String text, float value, float count) {
-		callback.change(new Resources.ProgressItem(text, value, count));
+		callback.change(new ProjectResources.ProgressItem(text, value, count));
 	}
 	
 	private void processFiles() {

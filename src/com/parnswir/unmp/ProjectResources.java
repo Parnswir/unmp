@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-public class Resources {
+public class ProjectResources {
 	
 	public static class SquareLayout extends RelativeLayout {
 		

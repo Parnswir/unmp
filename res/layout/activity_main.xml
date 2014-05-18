@@ -10,7 +10,7 @@
         android:id="@+id/square"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        class="com.parnswir.unmp.Resources$SquareLayout" >
+        class="com.parnswir.unmp.ProjectResources$SquareLayout" >
 
         <RelativeLayout
             android:layout_width="match_parent"
