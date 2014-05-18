@@ -41,7 +41,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private MediaPlayer player;
+	
 	private boolean playerIsPaused = false;
+	private boolean playerIsStopped = true;
 
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -55,7 +57,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case START: setForeground(); break;
 				case PLAY: play("file:///storage/sdcard0/Music/Awolnation/Megalithic Symphony/10 Sail.mp3"); break;
 				case PAUSE: pause(); break;
-				case STATUS: broadcastStatus(); break;
+				case STATUS: break;
 			}
 			broadcastStatus();
 		}
@@ -129,6 +131,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			public void onPrepared(MediaPlayer arg0) {
 				player.start();
 				onResume();
+				broadcastStatus();
 			}
 		});
 		player.setOnErrorListener(new OnErrorListener() {	
@@ -158,11 +161,13 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void stop() {
 		if (player.isPlaying()) player.stop();
+		playerIsStopped = true;
 	}
 	
 	private void onResume() {
 		IntentFilter noiseFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 	    registerReceiver(new NoisyAudioStreamReceiver(), noiseFilter);
+	    playerIsStopped = false;
 	}
 	
 	private void setPlayerDataSource(String filePath) {
@@ -215,6 +220,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private MediaPlayerStatus getPlayerStatus() {
 		MediaPlayerStatus status = new MediaPlayerStatus();
 		status.paused = playerIsPaused;
+		status.stopped = playerIsStopped;
 		// TODO: fill in gaps
 		return status;
 	}
