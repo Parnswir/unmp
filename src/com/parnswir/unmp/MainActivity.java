@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,6 +64,12 @@ public class MainActivity extends Activity implements Observer {
 	private List<FileCrawlerThread> fileCrawlers;
 	
 	private boolean playing = false;
+	private MediaPlayerStatus playerStatus;
+	
+	public View currentLayout;
+	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
+	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -547,12 +554,21 @@ public class MainActivity extends Activity implements Observer {
 	}
 	
 	
+	public void setupPlayerControls() {
+		int[] buttons = {R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle};
+		for (int button : buttons) {
+			playerControls.add((ImageButton) currentLayout.findViewById(button));
+		}
+	}
+	
+	
 	private class StatusIntentReceiver extends BroadcastReceiver {
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
 	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
-	    		MediaPlayerStatus status = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
-	    		showToast(Boolean.toString(status.paused));
+	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
+	    		
+	    		playerControls.get(BTN_NEXT).setVisibility(View.INVISIBLE);
 	      	}
 	    }
 		

@@ -36,7 +36,7 @@ public class ContentFragment extends Fragment {
 	    	case 4: inflate(R.layout.list_fragment); showListFragmentFor(index, rootView); break;
 	    	case 6: inflate(R.layout.library_fragment); mainActivity.onShowLibrary(rootView); break;
 	    	case 7: mainActivity.startActivityNamed(SettingsActivity.class); break;
-	    	default: inflate(R.layout.activity_main);
+	    	default: inflate(R.layout.activity_main); mainActivity.setupPlayerControls();
     	}
     	
     	showActionBar();
@@ -47,6 +47,7 @@ public class ContentFragment extends Fragment {
     
     private void inflate(int layoutID) {
     	rootView = inflater.inflate(layoutID, container, false);
+    	mainActivity.currentLayout = rootView;
     }
     
     private void showActionBar() {
