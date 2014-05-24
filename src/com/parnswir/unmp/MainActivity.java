@@ -68,6 +68,7 @@ public class MainActivity extends Activity implements Observer {
 	private List<FileCrawlerThread> fileCrawlers;
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
+	private String currentTitle = "";
 	
 	public View currentLayout;
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
@@ -278,17 +279,6 @@ public class MainActivity extends Activity implements Observer {
 		} else {
 			pause();
 		}
-	}
-	
-	
-	public void showToast(final String toast)
-	{
-	    runOnUiThread(new Runnable() {
-	        public void run()
-	        {
-	            Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
-	        }
-	    });
 	}
 	
 	
@@ -540,7 +530,7 @@ public class MainActivity extends Activity implements Observer {
 		TextView label = (TextView) item.findViewById(R.id.label);
 		String text = (String) label.getText();
 		selectItem(0);
-		showToast(text);
+		Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 	}
 	
 	
@@ -600,6 +590,7 @@ public class MainActivity extends Activity implements Observer {
 		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
 		showTitleDuration();
 		showCurrentPosition();
+		updateTitleInfo();
 	}
 	
 	
@@ -630,5 +621,23 @@ public class MainActivity extends Activity implements Observer {
 	private String formatPosition(int position) {
 		int seconds = position / 1000;
 		return String.format(Locale.getDefault(), "%02d:%02d", seconds / 60, seconds % 60);
+	}
+	
+	
+	private void updateTitleInfo() {
+		if (! playerStatus.currentTitle.equals(currentTitle))
+			setTitleInfo();	
+	}
+	
+	
+	private void setTitleInfo() {
+		Cursor cursor = DB.query(C.TAB_TITLES, new String[] {C.COL_ID, C.COL_TITLE, C.COL_YEAR}, C.COL_FILE + " = \"" + playerStatus.currentTitle + "\"", null, null, null, null);
+		cursor.moveToFirst();
+		while (! cursor.isAfterLast()) {
+			Toast.makeText(getApplicationContext(), cursor.getString(1), Toast.LENGTH_SHORT).show();
+			cursor.moveToNext();
+		}
+		cursor.close();
+		currentTitle = playerStatus.currentTitle;
 	}
 }

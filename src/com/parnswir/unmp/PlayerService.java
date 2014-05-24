@@ -221,6 +221,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void setPlayerDataSource(String filePath) {
+		status.currentTitle = filePath.replace("file://", "");
 		try {
 			player.setDataSource(filePath);
 		} catch (IllegalArgumentException e1) {

@@ -16,6 +16,8 @@ public class MediaPlayerStatus implements Serializable {
 	public int
 		length = 0,
 		position = 0;
+	
+	public String currentTitle = "";
 
 	public MediaPlayerStatus() {
 		super();
