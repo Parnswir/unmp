@@ -43,12 +43,10 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private MediaPlayer player;
+	private MediaPlayerStatus status = new MediaPlayerStatus();
 	
 	private NoisyAudioStreamReceiver noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
 	private boolean broadcastIsRegistered = false;
-	
-	private boolean playerIsPaused = false;
-	private boolean playerIsStopped = true;
 	
 	private Timer secondsTimer = new Timer(true);
 	
@@ -157,14 +155,14 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void requestPause() {
 		if (player.isPlaying()) {
 			pause();
-		} else if (playerIsPaused) {
+		} else if (status.paused) {
 			play();
 		}
 	}
 	
 	private void play() {
 		player.start();
-		playerIsPaused = false;
+		status.paused = false;
 		onResume();
 	}
 	
@@ -205,19 +203,19 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void onResume() {
 		registerBroadcastReceiver();
-		playerIsStopped = false;
+		status.stopped = false;
 	    broadcastStatus();
 	    startTimer();
 	}
 	
 	private void onStop() {
-		playerIsStopped = true;
+		status.stopped = true;
 		broadcastStatus();
 		stopTimer();
 	}
 	
 	private void onPause() {
-		playerIsPaused = true;
+		status.paused = true;
 		broadcastStatus();
 		stopTimer();
 	}
@@ -270,15 +268,10 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private MediaPlayerStatus getPlayerStatus() {
-		MediaPlayerStatus status = new MediaPlayerStatus();
-		status.paused = playerIsPaused;
-		status.stopped = playerIsStopped;
-		
-		if (player.isPlaying() || playerIsPaused) {
+		if (player.isPlaying() || status.paused) {
 			status.length = player.getDuration();
 			status.position = player.getCurrentPosition();
 		}
-		// TODO: fill in gaps
 		return status;
 	}
 	
