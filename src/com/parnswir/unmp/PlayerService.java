@@ -268,7 +268,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private MediaPlayerStatus getPlayerStatus() {
-		if (player.isPlaying() || status.paused) {
+		status.playing = player.isPlaying();
+		if (status.playing || status.paused) {
 			status.length = player.getDuration();
 			status.position = player.getCurrentPosition();
 		}

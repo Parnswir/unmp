@@ -8,6 +8,7 @@ public class MediaPlayerStatus implements Serializable {
 	
 	public boolean 
 		stopped = true,
+		playing = false,
 		paused = false, 
 		shuffled = false, 
 		repeated = false;

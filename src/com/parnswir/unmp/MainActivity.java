@@ -67,7 +67,6 @@ public class MainActivity extends Activity implements Observer {
 	private int numberOfFoldersInLibrary = -1;
 	private List<FileCrawlerThread> fileCrawlers;
 	
-	private boolean playing = false;
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	
 	public View currentLayout;
@@ -107,7 +106,7 @@ public class MainActivity extends Activity implements Observer {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		setPlayerServiceState(PlayerService.STOP);
+		setPlayerServiceState(PlayerService.STATUS);
 		showPlayerHome();
 	}
 	
@@ -115,10 +114,10 @@ public class MainActivity extends Activity implements Observer {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (playing) {
-			setPlayerServiceState(PlayerService.START);
-		} else {
+		if (playerStatus.playing) {
 			setPlayerServiceState(PlayerService.STOP);
+		} else {
+			setPlayerServiceState(PlayerService.START);
 		}
 	}
 
@@ -274,10 +273,10 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	public void onClickPlay(View view) {
-		if (playing) {
-			pause();
-		} else {
+		if (playerStatus.stopped) {
 			play();
+		} else {
+			pause();
 		}
 	}
 	
@@ -554,7 +553,6 @@ public class MainActivity extends Activity implements Observer {
 	
 	private void play() {
 		setPlayerServiceState(PlayerService.PLAY);
-		playing = true;
 	}
 	
 	
