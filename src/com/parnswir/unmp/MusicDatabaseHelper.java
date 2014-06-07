@@ -13,7 +13,7 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String CREATETABLESTATEMENT = "CREATE TABLE %s (%s);";
     private static final String CREATEBODYSTATEMENT = String.format(Locale.US, "%s INTEGER NOT NULL, %%s VARCHAR(255), PRIMARY KEY (%s)", C.COL_ID, C.COL_ID);
-    private static final String CREATERELATIONSHIPBODY = String.format(Locale.US, "%s INTEGER NOT NULL, %%s_id INTEGER REFERENCES %%s(%s), %s REFERENCES %s(%s), PRIMARY KEY (%s)", C.COL_ID, C.COL_ID, C.COL_TITLE_ID, C.TAB_TITLES, C.COL_ID, C.COL_ID);
+    private static final String CREATERELATIONSHIPBODY = String.format(Locale.US, "%s INTEGER NOT NULL, %%s%s INTEGER REFERENCES %%s(%s), %s REFERENCES %s(%s), PRIMARY KEY (%s)", C.COL_ID, C.COL__ID, C.COL_ID, C.COL_TITLE_ID, C.TAB_TITLES, C.COL_ID, C.COL_ID);
     
 
     public MusicDatabaseHelper(Context context) {
