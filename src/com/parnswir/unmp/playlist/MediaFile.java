@@ -1,4 +1,4 @@
-package com.parnswir.playlist;
+package com.parnswir.unmp.playlist;
 
 public class MediaFile extends PlaylistElement {
 

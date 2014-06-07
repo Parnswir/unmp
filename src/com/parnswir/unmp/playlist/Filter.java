@@ -1,4 +1,4 @@
-package com.parnswir.playlist;
+package com.parnswir.unmp.playlist;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

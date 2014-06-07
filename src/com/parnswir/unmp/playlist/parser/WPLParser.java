@@ -1,4 +1,4 @@
-package com.parnswir.playlist.parser;
+package com.parnswir.unmp.playlist.parser;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -13,8 +13,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Xml;
 
-import com.parnswir.playlist.MediaFile;
-import com.parnswir.playlist.Playlist;
+import com.parnswir.unmp.playlist.MediaFile;
+import com.parnswir.unmp.playlist.Playlist;
 
 public class WPLParser {
 	
