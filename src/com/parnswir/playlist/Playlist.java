@@ -5,10 +5,19 @@ import java.util.ArrayList;
 
 public class Playlist extends PlaylistElement {
 	
+	private String name;
 	private int current;
 	public ArrayList<PlaylistElement> children = new ArrayList<PlaylistElement>();
 	
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public int getPosition() {
 		return current;
 	}
