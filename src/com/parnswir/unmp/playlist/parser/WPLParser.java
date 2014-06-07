@@ -6,25 +6,59 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Xml;
 
+import com.parnswir.unmp.C;
+import com.parnswir.unmp.DatabaseUtils;
+import com.parnswir.unmp.playlist.Filter;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
 
 public class WPLParser {
 	
+	public static final String MUSIC_IN_MY_LIBRARY = "{4202947A-A563-4B05-A754-A1B4B5989849}";
+	
 	private static final String namespace = null;
+	
+	private static final Map<String, String> TYPE_MAPPING = new HashMap<String, String>();
+	static{
+		TYPE_MAPPING.put("User Rating", C.TAB_TITLES + "." + C.COL_RATING);
+		TYPE_MAPPING.put("Genre", C.TAB_GENRES + "." + C.COL_GENRE);
+		TYPE_MAPPING.put("Album Title", C.TAB_ALBUMS + "." + C.COL_ALBUM);
+	}
+	
+	private static final Map<String, String> CONDITION_MAPPING = new HashMap<String, String>();
+	static{
+		CONDITION_MAPPING.put("Is At Least", " >= %s");
+		CONDITION_MAPPING.put("Is", " = %s");
+		CONDITION_MAPPING.put("Is At Most", " <= %s");
+		CONDITION_MAPPING.put("Contains", " LIKE %%%s%%");
+	}
+	
+	private static final Map<String, String> UNIT_MAPPING = new HashMap<String, String>();
+	static{
+		UNIT_MAPPING.put("5 stars", "10");
+		UNIT_MAPPING.put("4 stars", "8");
+		UNIT_MAPPING.put("3 stars", "6");
+		UNIT_MAPPING.put("2 stars", "4");
+		UNIT_MAPPING.put("1 stars", "2");
+		UNIT_MAPPING.put("0 stars", "0");
+	}
 	
 	private String fileName;
 	private String directory;
 	private Playlist playlist;
+	private SQLiteDatabase database;
 	
-	public WPLParser(File file) {
+	public WPLParser(File file, SQLiteDatabase db) {
+		database = db;
 		fileName = file.getAbsolutePath();
 		directory = file.getParentFile().getAbsolutePath() + "/";
 		playlist = new Playlist();
@@ -47,20 +81,20 @@ public class WPLParser {
 		return playlist;
 	}
 	   
-    public ArrayList<Object> parse(InputStream in) throws XmlPullParserException, IOException {
+    public void parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return readXML(parser);
+            readXML(parser);
         } finally {
             in.close();
         }
     }
     
-    private ArrayList<Object> readXML(XmlPullParser parser) throws XmlPullParserException, IOException {
-        ArrayList<Object> entries = new ArrayList<Object>();
+    private void readXML(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String condition = "";
 
         parser.require(XmlPullParser.START_TAG, namespace, "smil");
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
@@ -81,8 +115,82 @@ public class WPLParser {
             	playlist.children.add(new MediaFile(directory + path));
             }
             
-        }  
-        return entries;
+            if (name.equals("sourceFilter")) {
+            	String guid = parser.getAttributeValue(namespace, "id");
+            	if (guid.equals(MUSIC_IN_MY_LIBRARY)) {
+            		
+            		condition += "(";
+            		
+            		while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            			
+            			if (parser.getEventType() == XmlPullParser.END_TAG) {
+            				String innerName = parser.getName();
+            				if (innerName.equals("sourceFilter")) {
+            					break;
+            				} else {
+            					continue;
+            				}
+                        }
+            			
+            			if (parser.getEventType() == XmlPullParser.START_TAG) {
+            				String innerName = parser.getName();
+            				
+            				if (innerName.equals("fragment")) {
+            					String fragmentName = parser.getAttributeValue(namespace, "name");
+            					condition += TYPE_MAPPING.get(fragmentName);
+            					
+            					int argumentCount = 0;
+            					String argument = "";
+            					String value = "";
+            					
+            					while (parser.next() != XmlPullParser.END_DOCUMENT) {
+                        			
+                        			if (parser.getEventType() == XmlPullParser.END_TAG) {
+                        				String nodeName = parser.getName();
+                        				if (nodeName.equals("fragment")) {
+                        					condition += String.format(argument, value);
+                        					break;
+                        				} else {
+                        					continue;
+                        				}
+                        			}
+                        			
+                        			if (parser.getEventType() == XmlPullParser.START_TAG) {
+                        				String nodeName = parser.getName();
+                        				
+                        				if (nodeName.equals("argument")) {
+                        					parser.next();
+                        					if (argumentCount == 0) {
+                        						argument = CONDITION_MAPPING.get(parser.getText());
+                        						argumentCount++;
+                        					} else {
+                        						value = parser.getText();
+                        						if (UNIT_MAPPING.containsKey(value)) {
+                        							value = UNIT_MAPPING.get(value);
+                        						}
+                        					}
+                        				}
+                        				
+                        			}
+            					}
+            					
+            				}
+            				
+                        }
+            			
+            		}
+            		
+            		condition += ")";
+            		
+            	}
+            }
+            
+        } 
+        
+        if (condition.length() > 0) {
+	        String query = String.format("SELECT %s.%s FROM %s WHERE %s", C.TAB_TITLES, C.COL_FILE, DatabaseUtils.getGiantJoin(), condition);
+	        playlist.children.add(new Filter(database, query));
+        }
     }
 
 }
