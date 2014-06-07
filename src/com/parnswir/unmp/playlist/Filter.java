@@ -29,6 +29,7 @@ public class Filter extends PlaylistElement {
 		if (successful)
 			while (! cursor.isAfterLast()) {
 				playlist.children.add(new MediaFile(cursor.getString(0)));
+				cursor.moveToNext();
 			}
 		freeCursor();
 		playlist.start();
