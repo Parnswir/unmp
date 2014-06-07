@@ -1,11 +1,11 @@
 package com.parnswir.playlist;
 
-public class File extends PlaylistElement {
+public class MediaFile extends PlaylistElement {
 
 	private String path;
 	
 	
-	public File(String path) {
+	public MediaFile(String path) {
 		super();
 		this.path = path;
 	}
