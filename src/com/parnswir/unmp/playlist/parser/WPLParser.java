@@ -36,10 +36,10 @@ public class WPLParser {
 	
 	private static final Map<String, String> CONDITION_MAPPING = new HashMap<String, String>();
 	static{
-		CONDITION_MAPPING.put("Is At Least", " >= %s");
-		CONDITION_MAPPING.put("Is", " = %s");
-		CONDITION_MAPPING.put("Is At Most", " <= %s");
-		CONDITION_MAPPING.put("Contains", " LIKE %%%s%%");
+		CONDITION_MAPPING.put("Is At Least", " >= \"%s\"");
+		CONDITION_MAPPING.put("Is", " = \"%s\"");
+		CONDITION_MAPPING.put("Is At Most", " <= \"%s\"");
+		CONDITION_MAPPING.put("Contains", " LIKE \"%%%s%%\"");
 	}
 	
 	private static final Map<String, String> UNIT_MAPPING = new HashMap<String, String>();
