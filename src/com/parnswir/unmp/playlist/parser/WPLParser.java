@@ -6,8 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -25,7 +28,12 @@ public class WPLParser {
 	
 	public static final String MUSIC_IN_MY_LIBRARY = "{4202947A-A563-4B05-A754-A1B4B5989849}";
 	
+	
 	private static final String namespace = null;
+	
+	private static final Set<String> NOT_SUPPORTED_KEYWORDS = new HashSet<String>(Arrays.asList(
+	     new String[] {"Ascending", "Descending", "Random"}
+	));
 	
 	private static final Map<String, String> TYPE_MAPPING = new HashMap<String, String>();
 	static{
@@ -36,10 +44,28 @@ public class WPLParser {
 	
 	private static final Map<String, String> CONDITION_MAPPING = new HashMap<String, String>();
 	static{
-		CONDITION_MAPPING.put("Is At Least", " >= \"%s\"");
-		CONDITION_MAPPING.put("Is", " = \"%s\"");
-		CONDITION_MAPPING.put("Is At Most", " <= \"%s\"");
+		CONDITION_MAPPING.put("Is", " IS \"%s\"");
+		CONDITION_MAPPING.put("Is Not", " IS NOT \"%s\"");
+		
 		CONDITION_MAPPING.put("Contains", " LIKE \"%%%s%%\"");
+		CONDITION_MAPPING.put("Does Not Contain", " NOT LIKE \"%%%s%%\"");
+
+		CONDITION_MAPPING.put("Equals", " = %s");
+		CONDITION_MAPPING.put("Does Not Equal", " != \"%s\"");
+		
+		CONDITION_MAPPING.put("Is At Least", " >= %s");
+		CONDITION_MAPPING.put("Is No More Than", " <= %s");
+		
+		CONDITION_MAPPING.put("Is Less Than", " < %s");
+		CONDITION_MAPPING.put("Is Greater Than", " > %s");
+		
+		CONDITION_MAPPING.put("Is Before", " < %s");
+		CONDITION_MAPPING.put("Is Later Than", " > %s");
+		
+		CONDITION_MAPPING.put("Is More Recent Than", " >= %s");
+		
+		CONDITION_MAPPING.put("Above", " > %s");
+		CONDITION_MAPPING.put("Below", " < %s");
 	}
 	
 	private static final Map<String, String> UNIT_MAPPING = new HashMap<String, String>();
@@ -65,7 +91,7 @@ public class WPLParser {
 		playlist.setName(file.getName().replace(".wpl", ""));
 	}
 	
-	public Playlist buildPlaylist() throws IOException {
+	public Playlist buildPlaylist() throws IOException, WPLParserException {
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(new FileInputStream(fileName));
@@ -81,7 +107,7 @@ public class WPLParser {
 		return playlist;
 	}
 	   
-    public void parse(InputStream in) throws XmlPullParserException, IOException {
+    public void parse(InputStream in) throws XmlPullParserException, IOException, WPLParserException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -93,7 +119,7 @@ public class WPLParser {
         }
     }
     
-    private void readXML(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private void readXML(XmlPullParser parser) throws XmlPullParserException, IOException, WPLParserException {
         String condition = "";
 
         parser.require(XmlPullParser.START_TAG, namespace, "smil");
@@ -168,6 +194,10 @@ public class WPLParser {
                         						if (UNIT_MAPPING.containsKey(value)) {
                         							value = UNIT_MAPPING.get(value);
                         						}
+                        						
+                        						if (NOT_SUPPORTED_KEYWORDS.contains(value)) {
+                        							throw new WPLParserException("Used not supported keyword " + value);
+                        						}
                         					}
                         				}
                         				
@@ -191,6 +221,16 @@ public class WPLParser {
 	        String query = String.format("SELECT %s.%s FROM %s WHERE %s", C.TAB_TITLES, C.COL_FILE, DatabaseUtils.getGiantJoin(), condition);
 	        playlist.children.add(new Filter(database, query));
         }
+    }
+    
+    public static final class WPLParserException extends Exception {
+    	
+		private static final long serialVersionUID = 1345253070867225300L;
+
+		public WPLParserException(String message) {
+			super(message);
+		}
+    	
     }
 
 }
