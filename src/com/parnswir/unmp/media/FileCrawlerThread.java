@@ -17,7 +17,7 @@ public abstract class FileCrawlerThread extends Thread {
 	public static final Map<String, Class<?>> FILE_HANDLERS = new HashMap<String, Class<?>>();
 	static{
 		FILE_HANDLERS.put("mp3", MP3Handler.class);
-		FILE_HANDLERS.put("wpl", WPLHandler.class);
+		FILE_HANDLERS.put("wpl", PlaylistHandler.class);
 	}
 	
 	protected SQLiteDatabase db;
