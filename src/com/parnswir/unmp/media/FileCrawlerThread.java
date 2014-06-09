@@ -3,9 +3,11 @@ package com.parnswir.unmp.media;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +20,11 @@ public abstract class FileCrawlerThread extends Thread {
 	public static final Set<String> SUPPORTED_FILETYPES = new HashSet<String>(Arrays.asList(
 		new String[] {"mp3", "wpl"}
 	));
+	
+	public static final Map<String, Class<?>> FILE_HANDLERS = new HashMap<String, Class<?>>();
+	static{
+		 FILE_HANDLERS.put("mp3", MP3Handler.class);
+	}
 	
 	protected SQLiteDatabase db;
 	private List<String> folders;
@@ -35,6 +42,22 @@ public abstract class FileCrawlerThread extends Thread {
 	
 	public FileCrawlerThread(SQLiteDatabase db, List<String> folders) {
 		init(db, folders);
+	}
+	
+	public FileHandler getFileHandlerFor(File file) {
+		FileHandler result = new DefaultFileHandler();
+		String extension = getFileExt(file.getName());
+		if (FILE_HANDLERS.containsKey(extension)) {
+			try {
+				result = (FileHandler) FILE_HANDLERS.get(extension).newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		result.setDb(db);
+		return result;
 	}
 	
 	private void init(SQLiteDatabase db, List<String> folders) {
@@ -81,7 +104,7 @@ public abstract class FileCrawlerThread extends Thread {
 		return (SUPPORTED_FILETYPES.contains(extension)) && !stop;
 	}
 	
-	public static String getFileExt(String fileName) {       
+	private static String getFileExt(String fileName) {       
 	     return fileName.toLowerCase(Locale.ENGLISH).substring((fileName.lastIndexOf(".") + 1), fileName.length());
 	}
 	
