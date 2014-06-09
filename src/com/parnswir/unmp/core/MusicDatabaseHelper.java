@@ -1,6 +1,7 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.core;
 
 import java.util.Locale;
+
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

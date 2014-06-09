@@ -1,4 +1,4 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.media;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
+
+import com.parnswir.unmp.core.C;
 
 import android.content.ContentValues;
 

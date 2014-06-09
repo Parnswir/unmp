@@ -1,5 +1,7 @@
 package com.parnswir.unmp;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,10 +13,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.parnswir.unmp.R;
+import android.widget.Toast;
+
+import com.parnswir.unmp.core.CoverList;
+import com.parnswir.unmp.core.IconicAdapter;
+import com.parnswir.unmp.media.FileCrawlerThread;
+import com.parnswir.unmp.playlist.Playlist;
+import com.parnswir.unmp.playlist.parser.WPLParser;
+import com.parnswir.unmp.playlist.parser.WPLParser.WPLParserException;
 
 public class DebugActivity extends Activity implements Observer {
 	
@@ -31,8 +39,6 @@ public class DebugActivity extends Activity implements Observer {
         
         adapter = new IconicAdapter(this, items);
 	    ((ListView) findViewById(R.id.lvMenu)).setAdapter(adapter);
-	    
-	    refresh(null);
     }
 
     @Override
@@ -53,11 +59,17 @@ public class DebugActivity extends Activity implements Observer {
     
     
     public void searchFolder(View view) {
-		EditText editText = (EditText) findViewById(R.id.edit_folder);
-		String folder = editText.getText().toString(); 
-		crawler = new FileAdditionThread(MainActivity.DB, folder);
-		crawler.callback.addObserver(this);
-		crawler.start();
+		WPLParser p = new WPLParser(new File("/sdcard/Music/../Music/Playlists/sample2.wpl"), MainActivity.DB);
+		Playlist l;
+		try {
+			l = p.buildPlaylist();
+			Toast.makeText(getApplicationContext(), l.children.get(0).getCurrentFile(), Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WPLParserException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 	}
 	
 	public void refresh(View view) {

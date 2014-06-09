@@ -1,8 +1,11 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.media;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.parnswir.unmp.core.ProgressObservable;
+import com.parnswir.unmp.core.ProjectResources;
 
 import android.database.sqlite.SQLiteDatabase;
 

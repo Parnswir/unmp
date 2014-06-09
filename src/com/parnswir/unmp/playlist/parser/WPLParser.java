@@ -18,8 +18,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Xml;
 
-import com.parnswir.unmp.C;
-import com.parnswir.unmp.DatabaseUtils;
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.playlist.Filter;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.parnswir.unmp.R;
+import com.parnswir.unmp.core.C;
 
 public class ContentFragment extends Fragment {
     public static final String ARG_FRAGMENT_NUMBER = "fragment_number";

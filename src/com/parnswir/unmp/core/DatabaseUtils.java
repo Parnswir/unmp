@@ -1,4 +1,5 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.core;
+
 
 import android.content.ContentValues;
 import android.database.Cursor;

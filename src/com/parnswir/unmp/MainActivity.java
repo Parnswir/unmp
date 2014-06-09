@@ -43,6 +43,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.CoverList;
+import com.parnswir.unmp.core.IconicAdapter;
+import com.parnswir.unmp.core.MusicDatabaseHelper;
+import com.parnswir.unmp.core.ProjectResources;
+import com.parnswir.unmp.media.FileAdditionThread;
+import com.parnswir.unmp.media.FileCrawlerThread;
+import com.parnswir.unmp.media.FileRemovalThread;
+import com.parnswir.unmp.media.MediaPlayerStatus;
+
 public class MainActivity extends Activity implements Observer {
 	
 	public static SQLiteDatabase DB;

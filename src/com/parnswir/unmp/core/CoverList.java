@@ -1,4 +1,4 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.core;
 
 import java.util.ArrayList;
 

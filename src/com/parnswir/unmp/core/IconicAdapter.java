@@ -1,4 +1,4 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.core;
 
 import android.app.Activity;
 import android.view.View;
@@ -6,13 +6,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.parnswir.unmp.MainActivity;
 import com.parnswir.unmp.R;
 
 public class IconicAdapter extends ArrayAdapter<String> {
 	
 	ImageLoader loader;
 	
-	IconicAdapter(Activity activity, CoverList items) {
+	public IconicAdapter(Activity activity, CoverList items) {
 		super(activity, R.layout.image_row_layout, R.id.label, items.names);
 		loader = new ImageLoader(activity, MainActivity.DB);
 	}

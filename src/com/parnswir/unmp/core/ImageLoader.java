@@ -1,4 +1,4 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.core;
 
 import java.util.Collections;
 import java.util.Map;
@@ -12,7 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.widget.ImageView;
+
 import com.parnswir.unmp.R;
+import com.parnswir.unmp.R.drawable;
 
 public class ImageLoader {
 	

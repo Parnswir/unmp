@@ -1,4 +1,4 @@
-package com.parnswir.unmp;
+package com.parnswir.unmp.media;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,9 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.TagException;
+
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;

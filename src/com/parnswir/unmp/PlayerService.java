@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.parnswir.unmp.media.MediaPlayerStatus;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
