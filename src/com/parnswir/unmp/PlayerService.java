@@ -61,7 +61,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.arg2) {
-				case STOP: stopSelf(msg.arg1); stopForeground(true); stop(); break;
+				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
 				case START: setForeground(); break;
 				case PLAY: play("file:///storage/sdcard0/Music/Awolnation/Megalithic Symphony/10 Sail.mp3"); break;
 				case PAUSE: requestPause(); break;

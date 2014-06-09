@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements Observer {
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private String currentTitle = "";
+	private BroadcastReceiver statusBroadcastReceiver;
 	
 	public View currentLayout;
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
@@ -109,8 +110,6 @@ public class MainActivity extends Activity implements Observer {
 		TagOptionSingleton.getInstance().setAndroid(true);
         
         mDrawerToggle.syncState();
-        
-        setupIntentReceiver();
     }
 	
 	
@@ -119,17 +118,26 @@ public class MainActivity extends Activity implements Observer {
 		super.onStart();
 		setPlayerServiceState(PlayerService.STATUS);
 		showPlayerHome();
+		setupIntentReceiver();
 	}
 	
 	
 	@Override
 	protected void onPause() {
-		super.onPause();
+		unregisterReceiver(statusBroadcastReceiver);
 		if (playerStatus.playing) {
-			setPlayerServiceState(PlayerService.STOP);
-		} else {
 			setPlayerServiceState(PlayerService.START);
+		} else {
+			setPlayerServiceState(PlayerService.STOP);
 		}
+		super.onPause();
+	}
+	
+	
+	@Override
+	protected void onDestroy() {
+		stopAll(FileCrawlerThread.class);
+		super.onDestroy();
 	}
 
 	
@@ -562,8 +570,9 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	private void setupIntentReceiver() {
+		statusBroadcastReceiver = new StatusIntentReceiver();
 		IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
-	    registerReceiver(new StatusIntentReceiver(), statusFilter);
+	    registerReceiver(statusBroadcastReceiver, statusFilter);
 	}
 	
 	
