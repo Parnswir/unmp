@@ -187,7 +187,13 @@ public class WPLParser {
                         				if (nodeName.equals("argument")) {
                         					parser.next();
                         					if (argumentCount == 0) {
-                        						argument = CONDITION_MAPPING.get(parser.getText());
+                        						argument = parser.getText();
+                        						if (CONDITION_MAPPING.containsKey(argument)) {
+                        							argument = CONDITION_MAPPING.get(argument);
+                        						} else {
+                        							throw new WPLParserException("Used not supported condition " + argument);
+                        						}
+                        						
                         						argumentCount++;
                         					} else {
                         						value = parser.getText();
