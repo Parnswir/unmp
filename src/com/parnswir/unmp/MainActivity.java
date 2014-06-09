@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.CoverList;
+import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.IconicAdapter;
 import com.parnswir.unmp.core.MusicDatabaseHelper;
 import com.parnswir.unmp.core.ProjectResources;
@@ -76,6 +77,9 @@ public class MainActivity extends Activity implements Observer {
 	private SharedPreferences preferences;
 	private int numberOfFoldersInLibrary = -1;
 	private List<FileCrawlerThread> fileCrawlers;
+	
+	private ListView mPlaylists;
+	private ArrayList<String> playlists = new ArrayList<String>();
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private String currentTitle = "";
@@ -662,5 +666,54 @@ public class MainActivity extends Activity implements Observer {
 
 
 	public void onShowPlaylistList(View layout) {
+		playlists = DatabaseUtils.getAllPlaylists(DB);
+		playlists.add(getString(R.string.addPlaylist));
+		mPlaylists = (ListView) layout.findViewById(R.id.playlists);
+		mPlaylists.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, playlists));
+		mPlaylists.setOnItemClickListener(new PlaylistClickListener());
+		mPlaylists.setOnItemLongClickListener(new PlaylistClickListener());
 	}
+	
+	
+	private class PlaylistClickListener implements ListView.OnItemClickListener, ListView.OnItemLongClickListener {
+	    @Override
+	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	        handleAddPlaylistClick(view);
+	    	return;
+	    }
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			handleAddPlaylistClick(view);
+			if (! clickedAddPlaylist(view)) {
+				deletePlaylist(position);
+			}
+			return true;
+		}
+		
+		private void handleAddPlaylistClick(View view) {
+			if (clickedAddPlaylist(view)) {
+				addPlaylist();
+			}
+		}
+		
+		private boolean clickedAddPlaylist(View view) {
+			TextView item = (TextView) view;
+	        String selectedText = item.getText().toString();
+	        String addPlaylist = getString(R.string.addPlaylist);
+	        
+	        return selectedText.equals(addPlaylist);
+		}
+	}
+	
+	
+	private void deletePlaylist(int position) {
+		
+	}
+	
+	
+	private void addPlaylist() {
+		
+	}
+	
 }

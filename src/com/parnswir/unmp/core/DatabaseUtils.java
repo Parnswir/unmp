@@ -1,6 +1,8 @@
 package com.parnswir.unmp.core;
 
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -103,6 +105,18 @@ public class DatabaseUtils {
 			join += String.format("JOIN %s ON %s.%s = %s.%s ", tableName, relation, idColumn, tableName, C.COL_ID);
 		}
 		return join;
+	}
+
+	public static ArrayList<String> getAllPlaylists(SQLiteDatabase db) {
+		Cursor c = db.query(C.TAB_PLAYLISTS, new String[] {C.COL_FILE}, null, null, null, null, null);
+		c.moveToFirst();
+		ArrayList<String> result = new ArrayList<String>();
+		while (! c.isAfterLast()) {
+			result.add(c.getString(0));
+			c.moveToNext();
+		}
+		c.close();
+		return result;
 	}
 	
 }
