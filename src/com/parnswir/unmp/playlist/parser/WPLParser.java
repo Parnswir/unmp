@@ -191,7 +191,7 @@ public class WPLParser {
                         						if (CONDITION_MAPPING.containsKey(argument)) {
                         							argument = CONDITION_MAPPING.get(argument);
                         						} else {
-                        							throw new WPLParserException("Used not supported condition " + argument);
+                        							throw new WPLParserException("Used unsupported condition " + argument);
                         						}
                         						
                         						argumentCount++;
@@ -202,7 +202,7 @@ public class WPLParser {
                         						}
                         						
                         						if (NOT_SUPPORTED_KEYWORDS.contains(value)) {
-                        							throw new WPLParserException("Used not supported keyword " + value);
+                        							throw new WPLParserException("Used unsupported keyword " + value);
                         						}
                         					}
                         				}
