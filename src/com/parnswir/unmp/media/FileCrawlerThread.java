@@ -17,13 +17,10 @@ import com.parnswir.unmp.core.ProjectResources;
 
 public abstract class FileCrawlerThread extends Thread {
 	
-	public static final Set<String> SUPPORTED_FILETYPES = new HashSet<String>(Arrays.asList(
-		new String[] {"mp3", "wpl"}
-	));
-	
 	public static final Map<String, Class<?>> FILE_HANDLERS = new HashMap<String, Class<?>>();
 	static{
-		 FILE_HANDLERS.put("mp3", MP3Handler.class);
+		FILE_HANDLERS.put("mp3", MP3Handler.class);
+		FILE_HANDLERS.put("wpl", WPLHandler.class);
 	}
 	
 	protected SQLiteDatabase db;
@@ -101,7 +98,7 @@ public abstract class FileCrawlerThread extends Thread {
 	
 	private boolean isSuitable(File file) {
 		String extension = getFileExt(file.getName());
-		return (SUPPORTED_FILETYPES.contains(extension)) && !stop;
+		return (FILE_HANDLERS.containsKey(extension)) && !stop;
 	}
 	
 	private static String getFileExt(String fileName) {       
