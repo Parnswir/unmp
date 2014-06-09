@@ -45,7 +45,10 @@ public class DatabaseUtils {
 	}
 	
 	public static boolean fileAlreadyInDatabase(String absolutePath, SQLiteDatabase db) {
-		return (! getIDForTableEntry(C.TAB_TITLES, C.COL_FILE + " = ?", new String[] {absolutePath}, db).equals(IDNOTINTABLE));
+		boolean result = 
+			(! getIDForTableEntry(C.TAB_TITLES, C.COL_FILE + " = ?", new String[] {absolutePath}, db).equals(IDNOTINTABLE)) ||
+			(! getIDForTableEntry(C.TAB_PLAYLISTS, C.COL_FILE + " = ?", new String[] {absolutePath}, db).equals(IDNOTINTABLE));
+		return result;
 	}
 	
 	public static boolean tupleAlreadyInTable(String tableName, ContentValues cv, SQLiteDatabase db) {

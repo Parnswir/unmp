@@ -31,6 +31,7 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         createTitlesTable(db);
         createImageTables(db);
+        createPlaylistsTable(db);
         createOtherTables(db);
     }
 
@@ -63,6 +64,13 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
 				C.COL_IMAGE_HASH + " INTEGER NOT NULL," + 
 				C.COL_IMAGE_BLOB + " BLOB," +				
 			"PRIMARY KEY (" + C.COL_IMAGE_HASH + "));");
+	}
+	
+	private void createPlaylistsTable(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + C.TAB_PLAYLISTS +
+				"(" + C.COL_ID + " INTEGER NOT NULL," +
+				C.COL_FILE + " VARCHAR(1024) NOT NULL," +
+			"PRIMARY KEY (" + C.COL_ID + "));");
 	}
     
     private void createOtherTables(SQLiteDatabase db) {     

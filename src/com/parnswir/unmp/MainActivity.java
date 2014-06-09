@@ -650,4 +650,8 @@ public class MainActivity extends Activity implements Observer {
 		cursor.close();
 		currentTitle = playerStatus.currentTitle;
 	}
+
+
+	public void onShowPlaylistList(View layout) {
+	}
 }

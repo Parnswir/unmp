@@ -16,6 +16,7 @@ public class C {
 	public static final String TAB_GENRES = "Genres";
 	public static final String TAB_COMPOSERS = "Composers";
 	public static final String TAB_PUBLISHERS = "Publishers";
+	public static final String TAB_PLAYLISTS = "Playlists";
 	
 	public static final String[] TABLENAMES = {TAB_GENRES, TAB_PUBLISHERS, TAB_ARTISTS, TAB_COMPOSERS, TAB_ALBUMS};
 	
@@ -50,6 +51,9 @@ public class C {
 	
 	public static final String NUMBEROFFOLDERS = "_nofil";
 	public static final String FOLDER = "_f";
+	
+	public static final String NUMBEROFPLAYLISTS = "_nop";
+	public static final String PLAYLIST = "_p";
 	
 	public static final String[] FRAGMENTS = {"Now Playing", "Playlist", "Artists", "Albums", "Genres", "Playlists", "Manage Library...", "Settings"};
 	public static final String[] LIST_FRAGMENT_TABLENAMES = {TAB_ARTISTS, TAB_ALBUMS, TAB_GENRES};
