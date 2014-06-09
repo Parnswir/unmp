@@ -2,14 +2,22 @@ package com.parnswir.unmp.media;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import android.database.sqlite.SQLiteDatabase;
 
 import com.parnswir.unmp.core.ProgressObservable;
 import com.parnswir.unmp.core.ProjectResources;
 
-import android.database.sqlite.SQLiteDatabase;
-
 public abstract class FileCrawlerThread extends Thread {
+	
+	public static final Set<String> SUPPORTED_FILETYPES = new HashSet<String>(Arrays.asList(
+		new String[] {"mp3", "wpl"}
+	));
 	
 	protected SQLiteDatabase db;
 	private List<String> folders;
@@ -69,7 +77,12 @@ public abstract class FileCrawlerThread extends Thread {
 	}
 	
 	private boolean isSuitable(File file) {
-		return file.getAbsolutePath().endsWith(".mp3") && !stop;
+		String extension = getFileExt(file.getName());
+		return (SUPPORTED_FILETYPES.contains(extension)) && !stop;
+	}
+	
+	public static String getFileExt(String fileName) {       
+	     return fileName.toLowerCase(Locale.ENGLISH).substring((fileName.lastIndexOf(".") + 1), fileName.length());
 	}
 	
 	private void setProgress(String text, float value, float count) {
