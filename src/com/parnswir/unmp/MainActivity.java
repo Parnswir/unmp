@@ -10,7 +10,6 @@ import java.util.Observer;
 import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -20,15 +19,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,16 +50,11 @@ import com.parnswir.unmp.media.FileCrawlerThread;
 import com.parnswir.unmp.media.FileRemovalThread;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 
-public class MainActivity extends Activity implements Observer {
+public class MainActivity extends DrawerActivity implements Observer {
 	
 	public static SQLiteDatabase DB;
 	public boolean libraryShown = false;
 	
-	private String[] drawerItems = C.FRAGMENTS;
-    private DrawerLayout mDrawerLayout;
-    private RelativeLayout mDrawer;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
     private boolean rootView = true;
     
     private Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
@@ -94,14 +85,6 @@ public class MainActivity extends Activity implements Observer {
 	
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        setContentView(R.layout.drawer_layout);
-        initializeDrawer();
-	}
-	
-	
-	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         
@@ -112,8 +95,6 @@ public class MainActivity extends Activity implements Observer {
 		adapter = new IconicAdapter(this, currentContent); 
 		
 		TagOptionSingleton.getInstance().setAndroid(true);
-        
-        mDrawerToggle.syncState();
     }
 	
 	
@@ -143,18 +124,11 @@ public class MainActivity extends Activity implements Observer {
 		stopAll(FileCrawlerThread.class);
 		super.onDestroy();
 	}
-
-	
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 	
 	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawer);
+        boolean drawerOpen = getState().mDrawerLayout.isDrawerOpen(getState().mDrawer);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
         menu.findItem(R.id.action_scan).setVisible(libraryShown && !drawerOpen);
         return super.onPrepareOptionsMenu(menu);
@@ -163,13 +137,6 @@ public class MainActivity extends Activity implements Observer {
 	
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 	    switch (keyCode) {
-		    case KeyEvent.KEYCODE_MENU:
-		        if (mDrawerLayout.isDrawerOpen(mDrawer)) {
-		        	mDrawerLayout.closeDrawer(mDrawer);
-		        } else {
-		        	mDrawerLayout.openDrawer(mDrawer);
-		        }
-		        return true;
 		    case KeyEvent.KEYCODE_BACK:
 		    	if (!rootView) {
 		    		showPlayerHome();
@@ -180,60 +147,15 @@ public class MainActivity extends Activity implements Observer {
 	}
 	
 	
-	private void initializeDrawer() {
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
-
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItems));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
-
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-	}
-	
-	
 	private void showPlayerHome() {
 		selectItem(0);
 	}
-	
-	
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	    @Override
-	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        selectItem(position);
-	    }
-	}
 
 
-	private void selectItem(int position) {
+	protected void selectItem(int position) {
 		rootView = (position == 0);
 	    showFragment(position);
-	    mDrawerList.setItemChecked(position, true);
-	    closeDrawerDelayedBy(100);
-	}
-	
-	
-	private void closeDrawerDelayedBy(int milliseconds) {
-		new Handler().postDelayed(new Runnable() {
-	        @Override
-	        public void run() {
-	        	mDrawerLayout.closeDrawer(mDrawer);
-	        }
-	    }, milliseconds);
+		super.selectItem(position);
 	}
 	
 	
@@ -271,7 +193,7 @@ public class MainActivity extends Activity implements Observer {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		if (getState().mDrawerToggle.onOptionsItemSelected(item)) {
 	          return true;
 	        }		
 		switch (item.getItemId()) {

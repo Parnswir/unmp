@@ -5,58 +5,33 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-import android.app.Activity;
 import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parnswir.unmp.core.CoverList;
-import com.parnswir.unmp.core.IconicAdapter;
 import com.parnswir.unmp.media.FileCrawlerThread;
 import com.parnswir.unmp.playlist.Playlist;
 import com.parnswir.unmp.playlist.parser.WPLParser;
 import com.parnswir.unmp.playlist.parser.WPLParser.WPLParserException;
 
-public class DebugActivity extends Activity implements Observer {
+public class DebugActivity extends DrawerActivity implements Observer {
 	
 	private ArrayAdapter<String> adapter;
 	private FileCrawlerThread crawler;
 	
 	CoverList items = new CoverList();
 	
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_debug);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        
-        adapter = new IconicAdapter(this, items);
-	    ((ListView) findViewById(R.id.lvMenu)).setAdapter(adapter);
-    }
-
-    @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-    	getMenuInflater().inflate(R.menu.debug, menu);
-    	return true;
+	@Override
+	protected void onStart() {
+		super.onStart();
+		DrawerState bums = getState();
+		if (bums == null) {
+			super.onDestroy();
+		}
 	}
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
     
     public void searchFolder(View view) {
 		WPLParser p = new WPLParser(new File("/sdcard/Music/../Music/Playlists/sample2.wpl"), MainActivity.DB);
