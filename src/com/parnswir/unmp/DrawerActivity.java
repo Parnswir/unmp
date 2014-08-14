@@ -56,13 +56,13 @@ public abstract class DrawerActivity extends Activity {
 	protected void initializeDrawer() {		
 		int position = 0;
 		
-		getState().mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		getState().mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
-		getState().mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
-	
 		if (getState().isInitialized) {
 			position = getState().mDrawerList.getCheckedItemPosition();
 		}
+		
+		getState().mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		getState().mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
+		getState().mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
 		
 		getState().mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, getState().drawerItems));
 		getState().mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
