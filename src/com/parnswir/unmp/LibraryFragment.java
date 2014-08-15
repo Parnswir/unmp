@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.media.FileAdditionThread;
 import com.parnswir.unmp.media.FileCrawlerThread;
 import com.parnswir.unmp.media.FileRemovalThread;
@@ -30,7 +28,6 @@ public class LibraryFragment extends AbstractFragment {
     private SharedPreferences preferences;
 	private int numberOfFoldersInLibrary = -1;
 	private List<FileCrawlerThread> fileCrawlers;
-	private SQLiteDatabase DB;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,7 +35,7 @@ public class LibraryFragment extends AbstractFragment {
     	
     	inflate(R.layout.library_fragment);
     	showActionBar();
-    	showTitle("Library, yo!");
+    	showTitle("Manage your library");
     	
     	ArrayList<String> items = new ArrayList<String>();
     	items.add("hello");
@@ -52,7 +49,6 @@ public class LibraryFragment extends AbstractFragment {
     
     public void onShowLibrary() {
     	fileCrawlers = new ArrayList<FileCrawlerThread>();
-    	DB = DatabaseUtils.getDB(activity);
     	
 		setupPreferences();
 		setupFolderList();
