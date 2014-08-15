@@ -28,7 +28,7 @@ public class ContentFragment extends Fragment {
     	this.container = container;
     	
     	int index = getArguments().getInt(ARG_FRAGMENT_NUMBER);
-    	inflate(C.FRAGMENTS[index].layout);
+    	//inflate(C.FRAGMENTS[index].layout);
     	
 //    	switch (index) {
 //    		case 2: 

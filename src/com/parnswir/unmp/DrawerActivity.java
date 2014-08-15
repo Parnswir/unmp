@@ -1,11 +1,11 @@
 package com.parnswir.unmp;
 
 import java.util.Hashtable;
+import java.util.Observer;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public abstract class DrawerActivity extends Activity {
+import com.parnswir.unmp.core.C;
+
+public abstract class DrawerActivity extends Activity implements Observer {
 
 	public static int selectedItem = 0;
 	public static Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
@@ -109,12 +111,8 @@ public abstract class DrawerActivity extends Activity {
 	protected void selectItem(int position) {
 		DrawerActivity.selectedItem = position;
 		state.mDrawerList.setItemChecked(position, true);
-		
-		if (position == 4) {
-	    	startActivity(new Intent(this, DebugActivity.class));
-		} else {
-			closeDrawerDelayedBy(100);
-		}
+		showFragment(position);
+		closeDrawerDelayedBy(100);
 	}
 	
 	
@@ -137,17 +135,27 @@ public abstract class DrawerActivity extends Activity {
 	
 	
 	private Fragment getFragment(int position) {
-		Fragment fragment;
+		Fragment fragment = null;
 		if (fragmentCache.contains(position)) {
 			fragment = fragmentCache.get(position);
 		} else {
-			fragment = new ContentFragment();
-			Bundle args = new Bundle();
-		    args.putInt(ContentFragment.ARG_FRAGMENT_NUMBER, position);
-		    fragment.setArguments(args);
+			Class<?> fragmentClass = C.FRAGMENTS[position].handler;
+			fragment = getFragmentInstance(fragmentClass);
 			fragmentCache.put(position, fragment);
 		}
 		return fragment;
+	}
+	
+	
+	private Fragment getFragmentInstance(Class<?> fragmentClass) {
+		try {
+			return (Fragment) fragmentClass.newInstance();
+		} catch (InstantiationException e) {
+			
+		} catch (IllegalAccessException e) {
+			
+		}
+		return null;
 	}
 
 }

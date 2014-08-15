@@ -1,10 +1,10 @@
 package com.parnswir.unmp.core;
 
-import com.parnswir.unmp.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
+import com.parnswir.unmp.AlbumFragment;
 
 public class ProjectResources {
 	
@@ -40,11 +40,11 @@ public class ProjectResources {
 	
 	public static class FragmentProperties {
 		public String title;
-		public int layout = R.layout.list_fragment;
+		public Class<?> handler = AlbumFragment.class;
 		
-		public FragmentProperties(String aTitle, int aLayout) {
+		public FragmentProperties(String aTitle, Class<?> aHandler) {
 			title = aTitle;
-			layout = aLayout;
+			handler = aHandler;
 		}
 		
 		public FragmentProperties(String aTitle) {

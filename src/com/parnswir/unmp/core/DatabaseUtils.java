@@ -4,6 +4,7 @@ package com.parnswir.unmp.core;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -11,6 +12,16 @@ import android.text.TextUtils;
 public class DatabaseUtils {
 	
 	public static final String IDNOTINTABLE = "";
+	
+	private static SQLiteDatabase DB = null;
+	
+	public static SQLiteDatabase getDB(Context context) {
+		if (DB == null) {
+			MusicDatabaseHelper dbHelper = new MusicDatabaseHelper(context);
+			DB = dbHelper.getWritableDatabase();
+		}
+		return DB;
+	}
 	
 	public static int getCurrentIDForTable(String tableName, SQLiteDatabase db) {
 		Cursor c = db.query(tableName, new String[] {C.COL_ID}, null, null, null, null, C.COL_ID + " DESC");

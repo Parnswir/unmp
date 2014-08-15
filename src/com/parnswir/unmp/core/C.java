@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.jaudiotagger.tag.FieldKey;
 
-import com.parnswir.unmp.R;
+import com.parnswir.unmp.AlbumFragment;
+import com.parnswir.unmp.LibraryFragment;
 import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
 
 public class C {
@@ -59,13 +60,13 @@ public class C {
 	public static final String PLAYLIST = "_p";
 	
 	public static final FragmentProperties[] FRAGMENTS = {
-		new FragmentProperties("Now Playing", R.layout.activity_main),
+		new FragmentProperties("Now Playing", LibraryFragment.class),
 		new FragmentProperties("Playlist"),
 		new FragmentProperties("Artists"),
-		new FragmentProperties("Albums"),
+		new FragmentProperties("Albums", AlbumFragment.class),
 		new FragmentProperties("Genres"),
-		new FragmentProperties("Playlists", R.layout.drawer_layout),
-		new FragmentProperties("Manage Library...", R.layout.library_fragment),
+		new FragmentProperties("Playlists"),
+		new FragmentProperties("Manage Library...", LibraryFragment.class),
 		new FragmentProperties("Settings")
 	};
 	
