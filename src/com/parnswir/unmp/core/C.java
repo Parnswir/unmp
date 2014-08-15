@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.jaudiotagger.tag.FieldKey;
 
+import com.parnswir.unmp.R;
+import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
+
 public class C {
 
 	public static final String TAB_TITLES = "Titles";
@@ -55,7 +58,17 @@ public class C {
 	public static final String NUMBEROFPLAYLISTS = "_nop";
 	public static final String PLAYLIST = "_p";
 	
-	public static final String[] FRAGMENTS = {"Now Playing", "Playlist", "Artists", "Albums", "Genres", "Playlists", "Manage Library...", "Settings"};
+	public static final FragmentProperties[] FRAGMENTS = {
+		new FragmentProperties("Now Playing", R.layout.activity_main),
+		new FragmentProperties("Playlist"),
+		new FragmentProperties("Artists"),
+		new FragmentProperties("Albums"),
+		new FragmentProperties("Genres"),
+		new FragmentProperties("Playlists", R.layout.drawer_layout),
+		new FragmentProperties("Manage Library...", R.layout.library_fragment),
+		new FragmentProperties("Settings")
+	};
+	
 	public static final String[] LIST_FRAGMENT_TABLENAMES = {TAB_ARTISTS, TAB_ALBUMS, TAB_GENRES};
 	
 	public static final Map<String, String[]> COLUMNS = new HashMap<String, String[]>();

@@ -1,6 +1,10 @@
 package com.parnswir.unmp;
 
+import java.util.Hashtable;
+
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,8 +20,12 @@ import android.widget.RelativeLayout;
 
 public abstract class DrawerActivity extends Activity {
 
-	protected DrawerState state;
 	public static int selectedItem = 0;
+	public static Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
+	
+	protected DrawerState state;
+	public View currentLayout;
+	
 	
 	public DrawerActivity() {
 		
@@ -33,6 +41,7 @@ public abstract class DrawerActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		state = new DrawerState();
+		showFragment(DrawerActivity.selectedItem);
 		initializeDrawer();
 		closeDrawerDelayedBy(500);
 	}
@@ -104,7 +113,7 @@ public abstract class DrawerActivity extends Activity {
 		if (position == 4) {
 	    	startActivity(new Intent(this, DebugActivity.class));
 		} else {
-			//closeDrawerDelayedBy(100);
+			closeDrawerDelayedBy(100);
 		}
 	}
 	
@@ -116,6 +125,29 @@ public abstract class DrawerActivity extends Activity {
 	        	state.mDrawerLayout.closeDrawer(state.mDrawer);
 	        }
 	    }, milliseconds);
+	}
+	
+	protected void showFragment(int position) {
+		Fragment fragment = getFragment(position);
+	    FragmentManager fragmentManager = getFragmentManager();
+	    fragmentManager.beginTransaction()
+	                   .replace(R.id.content_frame, fragment)
+	                   .commit();
+	}
+	
+	
+	private Fragment getFragment(int position) {
+		Fragment fragment;
+		if (fragmentCache.contains(position)) {
+			fragment = fragmentCache.get(position);
+		} else {
+			fragment = new ContentFragment();
+			Bundle args = new Bundle();
+		    args.putInt(ContentFragment.ARG_FRAGMENT_NUMBER, position);
+		    fragment.setArguments(args);
+			fragmentCache.put(position, fragment);
+		}
+		return fragment;
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.parnswir.unmp;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -11,8 +10,6 @@ import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,8 +54,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
     private boolean rootView = true;
     
-    private Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
-    
     private ListView contentList;
     private IconicAdapter adapter;
     private CoverList currentContent = new CoverList();
@@ -101,9 +96,9 @@ public class MainActivity extends DrawerActivity implements Observer {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		setPlayerServiceState(PlayerService.STATUS);
 		showPlayerHome();
 		setupIntentReceiver();
+		//setPlayerServiceState(PlayerService.STATUS);
 	}
 	
 	
@@ -154,32 +149,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 
 	protected void selectItem(int position) {
 		rootView = (position == 0);
-	    if (position != 4) showFragment(position);
 		super.selectItem(position);
-	}
-	
-	
-	private void showFragment(int position) {
-		Fragment fragment = getFragment(position);
-	    FragmentManager fragmentManager = getFragmentManager();
-	    fragmentManager.beginTransaction()
-	                   .replace(R.id.content_frame, fragment)
-	                   .commit();
-	}
-	
-	
-	private Fragment getFragment(int position) {
-		Fragment fragment;
-		if (fragmentCache.contains(position)) {
-			fragment = fragmentCache.get(position);
-		} else {
-			fragment = new ContentFragment();
-			Bundle args = new Bundle();
-		    args.putInt(ContentFragment.ARG_FRAGMENT_NUMBER, position);
-		    fragment.setArguments(args);
-			fragmentCache.put(position, fragment);
-		}
-		return fragment;
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.parnswir.unmp.core;
 
+import com.parnswir.unmp.R;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
@@ -33,6 +35,20 @@ public class ProjectResources {
 			this.text = text;
 			this.value = value;
 			this.count = count;
+		}
+	}
+	
+	public static class FragmentProperties {
+		public String title;
+		public int layout = R.layout.list_fragment;
+		
+		public FragmentProperties(String aTitle, int aLayout) {
+			title = aTitle;
+			layout = aLayout;
+		}
+		
+		public FragmentProperties(String aTitle) {
+			title = aTitle;
 		}
 	}
 
