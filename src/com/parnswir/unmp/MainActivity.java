@@ -49,13 +49,6 @@ public class MainActivity extends DrawerActivity implements Observer {
     private ListView contentList;
     private IconicAdapter adapter;
     private CoverList currentContent = new CoverList();
-    
-    private ListView mLibraryFolders;
-	private ArrayList<String> folders = new ArrayList<String>();
-	
-	
-	private ListView mPlaylists;
-	private ArrayList<String> playlists = new ArrayList<String>();
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private String currentTitle = "";
@@ -327,58 +320,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 		}
 		cursor.close();
 		currentTitle = playerStatus.currentTitle;
-	}
-
-
-	public void onShowPlaylistList(View layout) {
-		playlists = DatabaseUtils.getAllPlaylists(DB);
-		playlists.add(getString(R.string.addPlaylist));
-		mPlaylists = (ListView) layout.findViewById(R.id.playlists);
-		mPlaylists.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, playlists));
-		mPlaylists.setOnItemClickListener(new PlaylistClickListener());
-		mPlaylists.setOnItemLongClickListener(new PlaylistClickListener());
-	}
-	
-	
-	private class PlaylistClickListener implements ListView.OnItemClickListener, ListView.OnItemLongClickListener {
-	    @Override
-	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        handleAddPlaylistClick(view);
-	    	return;
-	    }
-
-		@Override
-		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-			handleAddPlaylistClick(view);
-			if (! clickedAddPlaylist(view)) {
-				deletePlaylist(position);
-			}
-			return true;
-		}
-		
-		private void handleAddPlaylistClick(View view) {
-			if (clickedAddPlaylist(view)) {
-				addPlaylist();
-			}
-		}
-		
-		private boolean clickedAddPlaylist(View view) {
-			TextView item = (TextView) view;
-	        String selectedText = item.getText().toString();
-	        String addPlaylist = getString(R.string.addPlaylist);
-	        
-	        return selectedText.equals(addPlaylist);
-		}
-	}
-	
-	
-	private void deletePlaylist(int position) {
-		
-	}
-	
-	
-	private void addPlaylist() {
-		
 	}
 
 
