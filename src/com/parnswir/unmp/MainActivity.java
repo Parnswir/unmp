@@ -128,7 +128,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean drawerOpen = getState().mDrawerLayout.isDrawerOpen(getState().mDrawer);
+        boolean drawerOpen = state.mDrawerLayout.isDrawerOpen(state.mDrawer);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
         menu.findItem(R.id.action_scan).setVisible(libraryShown && !drawerOpen);
         return super.onPrepareOptionsMenu(menu);
@@ -154,7 +154,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 
 	protected void selectItem(int position) {
 		rootView = (position == 0);
-	    showFragment(position);
+	    if (position != 4) showFragment(position);
 		super.selectItem(position);
 	}
 	
@@ -193,7 +193,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (getState().mDrawerToggle.onOptionsItemSelected(item)) {
+		if (state.mDrawerToggle.onOptionsItemSelected(item)) {
 	          return true;
 	        }		
 		switch (item.getItemId()) {

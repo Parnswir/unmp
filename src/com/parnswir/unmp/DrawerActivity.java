@@ -16,6 +16,9 @@ import android.widget.RelativeLayout;
 
 public abstract class DrawerActivity extends Activity {
 
+	protected DrawerState state;
+	public static int selectedItem = 0;
+	
 	public DrawerActivity() {
 		
 	}
@@ -29,23 +32,25 @@ public abstract class DrawerActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		state = new DrawerState();
 		initializeDrawer();
+		closeDrawerDelayedBy(500);
 	}
 	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        getState().mDrawerToggle.onConfigurationChanged(newConfig);
+        state.mDrawerToggle.onConfigurationChanged(newConfig);
     }
 	
 	
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 	    switch (keyCode) {
 		    case KeyEvent.KEYCODE_MENU:
-		        if (getState().mDrawerLayout.isDrawerOpen(getState().mDrawer)) {
-		        	getState().mDrawerLayout.closeDrawer(getState().mDrawer);
+		        if (state.mDrawerLayout.isDrawerOpen(state.mDrawer)) {
+		        	state.mDrawerLayout.closeDrawer(state.mDrawer);
 		        } else {
-		        	getState().mDrawerLayout.openDrawer(getState().mDrawer);
+		        	state.mDrawerLayout.openDrawer(state.mDrawer);
 		        }
 		        return true;
 	    }
@@ -54,24 +59,16 @@ public abstract class DrawerActivity extends Activity {
 	
 	
 	protected void initializeDrawer() {		
-		int position = 0;
+		state.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		state.mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
+		state.mDrawerLayout.openDrawer(state.mDrawer);
+		state.mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
 		
-		if (getState().isInitialized) {
-			position = getState().mDrawerList.getCheckedItemPosition();
-		}
+		state.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, state.drawerItems));
+		state.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());    
+		state.mDrawerList.setItemChecked(DrawerActivity.selectedItem, true);
 		
-		getState().mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		getState().mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
-		getState().mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
-		
-		getState().mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, getState().drawerItems));
-		getState().mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-	        
-		if (getState().isInitialized) {
-			getState().mDrawerList.setItemChecked(position, true);
-		}
-		
-		getState().mDrawerToggle = new ActionBarDrawerToggle(this, getState().mDrawerLayout, R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
+		state.mDrawerToggle = new ActionBarDrawerToggle(this, state.mDrawerLayout, R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
@@ -84,11 +81,11 @@ public abstract class DrawerActivity extends Activity {
             }
         };
 
-        getState().mDrawerLayout.setDrawerListener(getState().mDrawerToggle);
-        getState().isInitialized = true;
+        state.mDrawerLayout.setDrawerListener(state.mDrawerToggle);
+        state.isInitialized = true;
 	        
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getState().mDrawerToggle.syncState();
+        state.mDrawerToggle.syncState();
 	}
 	
 	
@@ -101,12 +98,14 @@ public abstract class DrawerActivity extends Activity {
 
 
 	protected void selectItem(int position) {
-		getState().mDrawerList.setItemChecked(position, true);
+		DrawerActivity.selectedItem = position;
+		state.mDrawerList.setItemChecked(position, true);
 		
-		if (position == 4)
+		if (position == 4) {
 	    	startActivity(new Intent(this, DebugActivity.class));
-
-	    //closeDrawerDelayedBy(100);
+		} else {
+			//closeDrawerDelayedBy(100);
+		}
 	}
 	
 	
@@ -114,14 +113,9 @@ public abstract class DrawerActivity extends Activity {
 		new Handler().postDelayed(new Runnable() {
 	        @Override
 	        public void run() {
-	        	getState().mDrawerLayout.closeDrawer(getState().mDrawer);
+	        	state.mDrawerLayout.closeDrawer(state.mDrawer);
 	        }
 	    }, milliseconds);
-	}
-	
-	
-	protected DrawerState getState() {
-		return DrawerStateHelper.getDrawerState();
 	}
 
 }

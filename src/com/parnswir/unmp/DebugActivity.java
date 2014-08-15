@@ -23,15 +23,6 @@ public class DebugActivity extends DrawerActivity implements Observer {
 	private FileCrawlerThread crawler;
 	
 	CoverList items = new CoverList();
-	
-	@Override
-	protected void onStart() {
-		super.onStart();
-		DrawerState bums = getState();
-		if (bums == null) {
-			super.onDestroy();
-		}
-	}
     
     public void searchFolder(View view) {
 		WPLParser p = new WPLParser(new File("/sdcard/Music/../Music/Playlists/sample2.wpl"), MainActivity.DB);
