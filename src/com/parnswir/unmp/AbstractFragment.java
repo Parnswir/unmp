@@ -1,18 +1,22 @@
 package com.parnswir.unmp;
 
+import com.parnswir.unmp.core.DatabaseUtils;
+
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 public abstract class AbstractFragment extends Fragment {
+	
     protected DrawerActivity activity;
     protected View rootView;
     protected LayoutInflater inflater;
     protected ViewGroup container;
-    
+    protected SQLiteDatabase DB;
     
     public AbstractFragment() {
     	
@@ -23,6 +27,8 @@ public abstract class AbstractFragment extends Fragment {
     	activity = (DrawerActivity) getActivity();
     	this.inflater = inflater;
     	this.container = container;
+    	
+    	DB = DatabaseUtils.getDB(activity);
     	
         return null; 
     }
