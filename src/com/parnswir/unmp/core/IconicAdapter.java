@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.parnswir.unmp.MainActivity;
 import com.parnswir.unmp.R;
 
 public class IconicAdapter extends ArrayAdapter<String> {
@@ -16,7 +15,7 @@ public class IconicAdapter extends ArrayAdapter<String> {
 	
 	public IconicAdapter(Activity activity, CoverList items) {
 		super(activity, R.layout.image_row_layout, R.id.label, items.names);
-		loader = new ImageLoader(activity, MainActivity.DB);
+		loader = new ImageLoader(activity, DatabaseUtils.getDB(activity));
 	}
 	
 	@Override

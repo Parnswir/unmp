@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.widget.ImageView;
 
 import com.parnswir.unmp.R;
-import com.parnswir.unmp.R.drawable;
 
 public class ImageLoader {
 	
