@@ -24,16 +24,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.CoverList;
 import com.parnswir.unmp.core.DatabaseUtils;
-import com.parnswir.unmp.core.IconicAdapter;
 import com.parnswir.unmp.core.ProjectResources;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 
@@ -43,10 +40,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	public boolean libraryShown = false;
 	
     private boolean rootView = true;
-    
-    private ListView contentList;
-    private IconicAdapter adapter;
-    private CoverList currentContent = new CoverList();
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private String currentTitle = "";
@@ -65,8 +58,6 @@ public class MainActivity extends DrawerActivity implements Observer {
         super.onPostCreate(savedInstanceState);
         
         DB = DatabaseUtils.getDB(this);
-		
-		adapter = new IconicAdapter(this, currentContent); 
 		
 		TagOptionSingleton.getInstance().setAndroid(true);
     }
@@ -177,24 +168,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 			actionBar.show();
 			overlay.setVisibility(View.VISIBLE);
 		}
-	}
-
-
-	public void onChangeToListFragment(int i, View layout) {
-		String tableName = C.LIST_FRAGMENT_TABLENAMES[i-2];
-		String nameColumn = C.getNameColumnFor(tableName);
-		
-        contentList = (ListView) layout.findViewById(R.id.contentList);
-        contentList.setAdapter(adapter);
-        currentContent.clear();
-		
-		Cursor cursor = DB.query(tableName, new String[] {nameColumn}, null, null, null, null, nameColumn);
-		cursor.moveToFirst();
-		while (! cursor.isAfterLast()) {
-			currentContent.names.add(cursor.getString(0));
-			cursor.moveToNext();
-		} 
-		cursor.close();
 	}
 	
 	

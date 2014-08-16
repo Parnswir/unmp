@@ -8,6 +8,7 @@ import org.jaudiotagger.tag.FieldKey;
 
 import com.parnswir.unmp.AlbumFragment;
 import com.parnswir.unmp.LibraryFragment;
+import com.parnswir.unmp.ListFragment;
 import com.parnswir.unmp.PlaylistsFragment;
 import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
 
@@ -63,9 +64,9 @@ public class C {
 	public static final FragmentProperties[] FRAGMENTS = {
 		new FragmentProperties("Now Playing", LibraryFragment.class),
 		new FragmentProperties("Playlist"),
-		new FragmentProperties("Artists"),
+		new FragmentProperties("Artists", ListFragment.class),
 		new FragmentProperties("Albums", AlbumFragment.class),
-		new FragmentProperties("Genres"),
+		new FragmentProperties("Genres", ListFragment.class),
 		new FragmentProperties("Playlists", PlaylistsFragment.class),
 		new FragmentProperties("Manage Library...", LibraryFragment.class),
 		new FragmentProperties("Settings")
