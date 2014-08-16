@@ -45,7 +45,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	private String currentTitle = "";
 	private BroadcastReceiver statusBroadcastReceiver;
 	
-	public View currentLayout;
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
 	private ProgressBar currentTitleProgress;
@@ -68,7 +67,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 		super.onStart();
 		showPlayerHome();
 		setupIntentReceiver();
-		//setPlayerServiceState(PlayerService.STATUS);
+		setPlayerServiceState(PlayerService.STATUS);
 	}
 	
 	
@@ -203,7 +202,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	}
 	
 	
-	public void setupPlayerControls() {
+	public void setupPlayerControls(View currentLayout) {
 		playerControls.clear();
 		int[] buttons = {R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle};
 		for (int button : buttons) {

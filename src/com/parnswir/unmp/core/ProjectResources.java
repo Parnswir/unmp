@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.parnswir.unmp.AlbumFragment;
+import com.parnswir.unmp.PlayerFragment;
 
 public class ProjectResources {
 	
@@ -40,7 +40,7 @@ public class ProjectResources {
 	
 	public static class FragmentProperties {
 		public String title;
-		public Class<?> handler = AlbumFragment.class;
+		public Class<?> handler = PlayerFragment.class;
 		
 		public FragmentProperties(String aTitle, Class<?> aHandler) {
 			title = aTitle;

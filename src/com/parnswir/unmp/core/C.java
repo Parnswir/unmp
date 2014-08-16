@@ -62,7 +62,7 @@ public class C {
 	public static final String PLAYLIST = "_p";
 	
 	public static final FragmentProperties[] FRAGMENTS = {
-		new FragmentProperties("Now Playing", LibraryFragment.class),
+		new FragmentProperties("Now Playing"),
 		new FragmentProperties("Playlist"),
 		new FragmentProperties("Artists", ListFragment.class),
 		new FragmentProperties("Albums", AlbumFragment.class),
