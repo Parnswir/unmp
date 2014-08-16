@@ -37,9 +37,6 @@ public class LibraryFragment extends AbstractFragment {
     	showActionBar();
     	showTitle("Manage your library");
     	
-    	ArrayList<String> items = new ArrayList<String>();
-    	items.add("hello");
-    	
     	libraryFolders = (ListView) rootView.findViewById(R.id.libraryFolders);
     	onShowLibrary();
     	

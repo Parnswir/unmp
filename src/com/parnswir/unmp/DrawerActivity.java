@@ -45,7 +45,6 @@ public abstract class DrawerActivity extends Activity implements Observer {
 		state = new DrawerState();
 		showFragment(DrawerActivity.selectedItem);
 		initializeDrawer();
-		closeDrawerDelayedBy(500);
 	}
 	
 	@Override
@@ -72,7 +71,6 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	protected void initializeDrawer() {		
 		state.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		state.mDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
-		state.mDrawerLayout.openDrawer(state.mDrawer);
 		state.mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
 		
 		state.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, state.drawerItems));
