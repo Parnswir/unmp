@@ -1,5 +1,6 @@
 package com.parnswir.unmp;
 
+import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
 
 import android.app.ActionBar;
@@ -27,6 +28,8 @@ public abstract class AbstractFragment extends Fragment {
     	activity = (DrawerActivity) getActivity();
     	this.inflater = inflater;
     	this.container = container;
+    	
+    	showTitle(C.FRAGMENTS[activity.selectedItem].title);
     	
     	DB = DatabaseUtils.getDB(activity);
     	
