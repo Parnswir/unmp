@@ -22,11 +22,12 @@ import com.parnswir.unmp.core.C;
 
 public abstract class DrawerActivity extends Activity implements Observer {
 
-	public static int selectedItem = 0;
 	public static Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
 	
 	protected DrawerState state;
+	
 	public View currentLayout;
+	public int selectedItem = 0;
 	
 	
 	public DrawerActivity() {
@@ -43,7 +44,7 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	protected void onStart() {
 		super.onStart();
 		state = new DrawerState();
-		showFragment(DrawerActivity.selectedItem);
+		showFragment(selectedItem);
 		initializeDrawer();
 	}
 	
@@ -75,7 +76,7 @@ public abstract class DrawerActivity extends Activity implements Observer {
 		
 		state.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, state.drawerItems));
 		state.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());    
-		state.mDrawerList.setItemChecked(DrawerActivity.selectedItem, true);
+		state.mDrawerList.setItemChecked(selectedItem, true);
 		
 		state.mDrawerToggle = new ActionBarDrawerToggle(this, state.mDrawerLayout, R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
 
@@ -107,7 +108,7 @@ public abstract class DrawerActivity extends Activity implements Observer {
 
 
 	protected void selectItem(int position) {
-		DrawerActivity.selectedItem = position;
+		selectedItem = position;
 		state.mDrawerList.setItemChecked(position, true);
 		showFragment(position);
 		closeDrawerDelayedBy(100);
