@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import com.parnswir.unmp.PlayerFragment;
+
 public class ProjectResources {
 	
 	public static class SquareLayout extends RelativeLayout {
@@ -33,6 +35,20 @@ public class ProjectResources {
 			this.text = text;
 			this.value = value;
 			this.count = count;
+		}
+	}
+	
+	public static class FragmentProperties {
+		public String title;
+		public Class<?> handler = PlayerFragment.class;
+		
+		public FragmentProperties(String aTitle, Class<?> aHandler) {
+			title = aTitle;
+			handler = aHandler;
+		}
+		
+		public FragmentProperties(String aTitle) {
+			title = aTitle;
 		}
 	}
 
