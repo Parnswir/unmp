@@ -17,8 +17,11 @@ import com.parnswir.unmp.R;
 
 public class ImageLoader {
 	
-	static final int STUB_ID = R.drawable.default_image;
-	static final int REQUIRED_SIZE = 128;
+	public static final boolean DO_COMPRESS = true;
+	public static final boolean DO_NOT_COMPRESS = false;
+	
+	private static final int STUB_ID = R.drawable.default_image;
+	private static final int REQUIRED_SIZE = 128;
     
     private MemoryCache memoryCache = new MemoryCache();
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
@@ -31,7 +34,7 @@ public class ImageLoader {
         DB = db;
     }
     
-    public void displayAlbumImage(String albumName, ImageView imageView)
+    public void displayAlbumImage(String albumName, ImageView imageView, boolean compress)
     {
         imageViews.put(imageView, albumName);
         Bitmap bitmap = memoryCache.get(albumName);
@@ -39,33 +42,37 @@ public class ImageLoader {
             imageView.setImageBitmap(bitmap);
         else
         {
-            queuePhoto(albumName, imageView);
+            queuePhoto(albumName, imageView, compress);
             imageView.setImageResource(STUB_ID);
         }
     }
         
-    private void queuePhoto(String albumName, ImageView imageView)
+    private void queuePhoto(String albumName, ImageView imageView, boolean compress)
     {
-        PhotoToLoad p = new PhotoToLoad(albumName, imageView);
+        PhotoToLoad p = new PhotoToLoad(albumName, imageView, compress);
         executorService.submit(new PhotosLoader(p));
     }
     
-    private Bitmap decode(byte[] b){
+    private Bitmap decode(byte[] b, boolean compress){
     	if (b == null)
     		return null;
-		BitmapFactory.Options o = new BitmapFactory.Options();
-		o.inJustDecodeBounds = true;
-		BitmapFactory.decodeByteArray(b, 0, b.length, o);
-		
-		int width_tmp = o.outWidth, height_tmp=o.outHeight;
-		int scale = 1;
-		while(true){
-		    if(width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
-		        break;
-		    width_tmp /= 2;
-		    height_tmp /= 2;
-		    scale *= 2;
-		}
+    	
+    	int scale = 1;
+    	
+    	if (compress) {
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			o.inJustDecodeBounds = true;
+			BitmapFactory.decodeByteArray(b, 0, b.length, o);
+			
+			int width_tmp = o.outWidth, height_tmp=o.outHeight;
+			while(true){
+			    if(width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+			        break;
+			    width_tmp /= 2;
+			    height_tmp /= 2;
+			    scale *= 2;
+			}
+    	}
 		
 		BitmapFactory.Options o2 = new BitmapFactory.Options();
 		o2.inSampleSize = scale;
@@ -76,10 +83,12 @@ public class ImageLoader {
     {
         public String albumName;
         public ImageView imageView;
+        public boolean doCompress;
         
-        public PhotoToLoad(String albumName, ImageView imageView){
+        public PhotoToLoad(String albumName, ImageView imageView, boolean compress){
             this.albumName = albumName; 
             this.imageView = imageView;
+            doCompress = compress;
         }
     }
     
@@ -94,7 +103,7 @@ public class ImageLoader {
             try{
                 if(imageViewReused(photoToLoad))
                     return;
-                Bitmap bmp = decode(DatabaseUtils.getAlbumArtFor(photoToLoad.albumName, DB));
+                Bitmap bmp = decode(DatabaseUtils.getAlbumArtFor(photoToLoad.albumName, DB), photoToLoad.doCompress);
                 memoryCache.put(photoToLoad.albumName, bmp);
                 if(imageViewReused(photoToLoad))
                     return;

@@ -5,8 +5,6 @@ import java.util.Locale;
 
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +17,7 @@ import android.widget.TextView;
 
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
+import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 
 public class PlayerFragment extends AbstractFragment {
@@ -31,6 +30,7 @@ public class PlayerFragment extends AbstractFragment {
 	private ProgressBar currentTitleProgress;
 		
 	private String currentTitle = "";
+	private ImageLoader imageLoader;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +38,8 @@ public class PlayerFragment extends AbstractFragment {
     	
     	inflate(R.layout.activity_main);
     	showActionBar();
+    	
+    	imageLoader = new ImageLoader(activity, DB);
     	
     	setupPlayerControls();
     	updatePlayerStatus();
@@ -128,10 +130,8 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void setAlbumArt(String albumName) {
-		ImageView albumArt = (ImageView) activity.findViewById(R.id.ivCover);
-		byte[] cover = DatabaseUtils.getAlbumArtFor(albumName, DB);
-		Bitmap bitmap = BitmapFactory.decodeByteArray(cover, 0, cover.length, null);
-		albumArt.setImageBitmap(bitmap);
+		ImageView view = (ImageView) rootView.findViewById(R.id.ivCover);
+		imageLoader.displayAlbumImage(albumName, view, ImageLoader.DO_NOT_COMPRESS);
 	}
 
 

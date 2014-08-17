@@ -6,7 +6,6 @@ import java.util.Observer;
 import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
