@@ -1,21 +1,17 @@
 package com.parnswir.unmp;
 
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -23,13 +19,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ProjectResources;
 import com.parnswir.unmp.media.MediaPlayerStatus;
@@ -38,18 +32,11 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	public static SQLiteDatabase DB;
 	public boolean libraryShown = false;
+	public MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	
     private boolean rootView = true;
-	
-	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
-	private String currentTitle = "";
 	private BroadcastReceiver statusBroadcastReceiver;
 	
-	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
-	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
-	private ProgressBar currentTitleProgress;
-	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
-	private static int LAB_POSITION = 0, LAB_LENGTH = 1, LAB_TITLE = 2, LAB_ARTIST = 3, LAB_ALBUM = 4;
 	
 	
 	@Override
@@ -202,88 +189,15 @@ public class MainActivity extends DrawerActivity implements Observer {
 	}
 	
 	
-	public void setupPlayerControls(View currentLayout) {
-		playerControls.clear();
-		int[] buttons = {R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle};
-		for (int button : buttons) {
-			playerControls.add((ImageButton) currentLayout.findViewById(button));
-		}
-		
-		playerLabels.clear();
-		int[] labels = {R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum};
-		for (int label : labels) {
-			playerLabels.add((TextView) currentLayout.findViewById(label));
-		}
-		
-		currentTitleProgress = (ProgressBar) currentLayout.findViewById(R.id.seekBar);
-	}
-	
-	
 	private class StatusIntentReceiver extends BroadcastReceiver {
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
-	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
+	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction()) && currentFragment.getFragmentClass().equals("PlayerFragment")) {
 	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
-	    		updatePlayerStatus();
+	    	    ((PlayerFragment) currentFragment).updatePlayerStatus();
 	      	}
 	    }
 		
-	}
-	
-	
-	public void updatePlayerStatus() {
-		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
-		showTitleDuration();
-		showCurrentPosition();
-		updateTitleInfo();
-	}
-	
-	
-	private void setPlayIconTo(boolean shown) {
-		Drawable icon;
-		Resources res = getResources();
-		if (shown) {
-			icon = res.getDrawable(R.drawable.ic_action_play);
-		} else {
-			icon = res.getDrawable(R.drawable.ic_action_pause);
-		}
-		playerControls.get(BTN_PLAY).setImageDrawable(icon);
-	}
-	
-	
-	private void showCurrentPosition() {
-		currentTitleProgress.setProgress(playerStatus.position);
-		playerLabels.get(LAB_POSITION).setText(formatPosition(playerStatus.position));
-	}
-	
-	
-	private void showTitleDuration() {
-		currentTitleProgress.setMax(playerStatus.length);
-		playerLabels.get(LAB_LENGTH).setText(formatPosition(playerStatus.length));
-	}
-	
-	
-	private String formatPosition(int position) {
-		int seconds = position / 1000;
-		return String.format(Locale.getDefault(), "%02d:%02d", seconds / 60, seconds % 60);
-	}
-	
-	
-	private void updateTitleInfo() {
-		if (! playerStatus.currentTitle.equals(currentTitle))
-			setTitleInfo();	
-	}
-	
-	
-	private void setTitleInfo() {
-		Cursor cursor = DB.query(C.TAB_TITLES, new String[] {C.COL_ID, C.COL_TITLE, C.COL_YEAR}, C.COL_FILE + " = \"" + playerStatus.currentTitle + "\"", null, null, null, null);
-		cursor.moveToFirst();
-		while (! cursor.isAfterLast()) {
-			Toast.makeText(getApplicationContext(), cursor.getString(1), Toast.LENGTH_SHORT).show();
-			cursor.moveToNext();
-		}
-		cursor.close();
-		currentTitle = playerStatus.currentTitle;
 	}
 
 
