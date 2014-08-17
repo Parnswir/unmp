@@ -5,12 +5,15 @@ import java.util.Locale;
 
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,11 +23,13 @@ import com.parnswir.unmp.media.MediaPlayerStatus;
 
 public class PlayerFragment extends AbstractFragment {
 
-	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
+	private static int LAB_POSITION = 0, LAB_LENGTH = 1, LAB_TITLE = 2, LAB_ARTIST = 3, LAB_ALBUM = 4;
 	private static int BTN_REPEAT = 0, BTN_PREV = 1, BTN_PLAY = 2, BTN_NEXT = 3, BTN_SHUFFLE = 4;
-	private ProgressBar currentTitleProgress;
+	
+	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
-	private static int LAB_POSITION = 0, LAB_LENGTH = 1, LAB_TITLE = 2, LAB_ARTIST = 3, LAB_ALBUM = 4;	
+	private ProgressBar currentTitleProgress;
+		
 	private String currentTitle = "";
 	
 	@Override
@@ -114,10 +119,19 @@ public class PlayerFragment extends AbstractFragment {
 			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
 			playerLabels.get(LAB_ARTIST).setText(cursor.getString(2));
 			playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), "%s [%s]", cursor.getString(3), cursor.getString(4)));
+			setAlbumArt(cursor.getString(3));
 			cursor.moveToNext();
 		}
 		cursor.close();
 		currentTitle = getStatus().currentTitle;
+	}
+	
+	
+	private void setAlbumArt(String albumName) {
+		ImageView albumArt = (ImageView) activity.findViewById(R.id.ivCover);
+		byte[] cover = DatabaseUtils.getAlbumArtFor(albumName, DB);
+		Bitmap bitmap = BitmapFactory.decodeByteArray(cover, 0, cover.length, null);
+		albumArt.setImageBitmap(bitmap);
 	}
 
 
