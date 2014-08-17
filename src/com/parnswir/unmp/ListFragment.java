@@ -49,4 +49,11 @@ public class ListFragment extends AbstractFragment {
 		cursor.close();
 	}
 	
+
+	@Override
+	public String getFragmentClass() {
+		return "ListFragment";
+	}
+    
+	
 }

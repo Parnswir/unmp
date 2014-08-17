@@ -19,9 +19,8 @@ public abstract class AbstractFragment extends Fragment {
     protected ViewGroup container;
     protected SQLiteDatabase DB;
     
-    public AbstractFragment() {
-    	
-    }
+    
+    public abstract String getFragmentClass();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

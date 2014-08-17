@@ -206,5 +206,11 @@ public class LibraryFragment extends AbstractFragment {
 		FileAdditionThread crawler = new FileAdditionThread(DB, folders);
 		addFileCrawler(crawler);
 	}
+
+
+	@Override
+	public String getFragmentClass() {
+		return "LibraryFragment";
+	}
     
 }
