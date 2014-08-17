@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 
 public class PlayerFragment extends AbstractFragment {
@@ -107,10 +108,12 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void setTitleInfo() {
-		Cursor cursor = DB.query(C.TAB_TITLES, new String[] {C.COL_ID, C.COL_TITLE, C.COL_YEAR}, C.COL_FILE + " = \"" + getStatus().currentTitle + "\"", null, null, null, null);
+		Cursor cursor = DB.query(DatabaseUtils.getGiantJoin(), new String[] {C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST, C.COL_ALBUM, C.COL_YEAR}, C.COL_FILE + " = \"" + getStatus().currentTitle + "\"", null, null, null, null);
 		cursor.moveToFirst();
 		while (! cursor.isAfterLast()) {
-			
+			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
+			playerLabels.get(LAB_ARTIST).setText(cursor.getString(2));
+			playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), "%s [%s]", cursor.getString(3), cursor.getString(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();
