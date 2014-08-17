@@ -25,6 +25,7 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	public static Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
 	
 	protected DrawerState state;
+	protected AbstractFragment currentFragment;
 	
 	public View currentLayout;
 	public int selectedItem = 0;
@@ -125,10 +126,10 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	}
 	
 	protected void showFragment(int position) {
-		Fragment fragment = getFragment(position);
+		currentFragment = (AbstractFragment) getFragment(position);
 	    FragmentManager fragmentManager = getFragmentManager();
 	    fragmentManager.beginTransaction()
-	                   .replace(R.id.content_frame, fragment)
+	                   .replace(R.id.content_frame, currentFragment)
 	                   .commit();
 	}
 	
