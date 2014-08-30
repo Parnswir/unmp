@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.parnswir.unmp.core.C;
@@ -28,6 +29,7 @@ public class PlayerFragment extends AbstractFragment {
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
 	private ProgressBar currentTitleProgress;
+	private RatingBar ratingBar;
 		
 	private String currentTitle = "";
 	private ImageLoader imageLoader;
@@ -62,6 +64,8 @@ public class PlayerFragment extends AbstractFragment {
 		}
 		
 		currentTitleProgress = (ProgressBar) rootView.findViewById(R.id.seekBar);
+		ratingBar = (RatingBar) rootView.findViewById(R.id.ratingBar);
+		ratingBar.setMax(10);
 	}
 	
 	
@@ -115,17 +119,23 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void setTitleInfo() {
-		Cursor cursor = DB.query(DatabaseUtils.getGiantJoin(), new String[] {C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST, C.COL_ALBUM, C.COL_YEAR}, C.COL_FILE + " = \"" + getStatus().currentTitle + "\"", null, null, null, null);
+		Cursor cursor = DB.query(DatabaseUtils.getGiantJoin(), new String[] {C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST, C.COL_ALBUM, C.COL_YEAR, C.COL_RATING}, C.COL_FILE + " = \"" + getStatus().currentTitle + "\"", null, null, null, null);
 		cursor.moveToFirst();
 		while (! cursor.isAfterLast()) {
 			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
 			playerLabels.get(LAB_ARTIST).setText(cursor.getString(2));
 			playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), "%s [%s]", cursor.getString(3), cursor.getString(4)));
+			setRating(cursor.getInt(5));
 			setAlbumArt(cursor.getString(3));
 			cursor.moveToNext();
 		}
 		cursor.close();
 		currentTitle = getStatus().currentTitle;
+	}
+	
+	
+	private void setRating(int rating) {
+		ratingBar.setProgress(rating);
 	}
 	
 	
