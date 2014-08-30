@@ -38,6 +38,8 @@ public class MediaInformation {
 		}
 		if (extractedTags.containsKey(C.COL_GENRE))
 			correctGenre();
+		if (extractedTags.containsKey(C.COL_RATING))
+			correctRating();
 	}
 
 	private void extractArtwork(Tag tag) {
@@ -61,6 +63,19 @@ public class MediaInformation {
 		Matcher m = genrePattern.matcher((String) extractedTags.get(C.COL_GENRE));
 		if (m.find()) {
 			extractedTags.put(C.COL_GENRE, C.GENRE_IDS.get(m.group(1)));
+		}
+	}
+	
+	private void correctRating() {
+		int rating = 0;
+		try {
+			rating = Integer.decode((String) extractedTags.get(C.COL_RATING));
+			if (rating > 0)
+				rating = (rating + 1) / 32 + 2; // 255 = 5 stars, 192 = 4 stars, ...
+			
+		} catch (NumberFormatException e) {
+		} finally {
+			extractedTags.put(C.COL_RATING, Integer.toString(rating));
 		}
 	}
 
