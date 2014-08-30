@@ -35,6 +35,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
     private boolean rootView = true;
 	private BroadcastReceiver statusBroadcastReceiver;
+	private boolean receiving = false;
 	
 	
 	
@@ -59,7 +60,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	@Override
 	protected void onPause() {
-		unregisterReceiver(statusBroadcastReceiver);
+		stopReceiving();
 		if (playerStatus.playing) {
 			setPlayerServiceState(PlayerService.START);
 		} else {
@@ -113,7 +114,8 @@ public class MainActivity extends DrawerActivity implements Observer {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (state.mDrawerToggle.onOptionsItemSelected(item)) {
 	          return true;
-	        }		
+	    }
+		stopReceiving();
 		switch (item.getItemId()) {
 			case R.id.action_search: startActivityNamed(DebugActivity.class); return true;
 	        default:
@@ -182,9 +184,12 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	
 	private void setupIntentReceiver() {
-		statusBroadcastReceiver = new StatusIntentReceiver();
-		IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
-	    registerReceiver(statusBroadcastReceiver, statusFilter);
+		if (!receiving) {
+			statusBroadcastReceiver = new StatusIntentReceiver();
+			IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
+		    registerReceiver(statusBroadcastReceiver, statusFilter);
+		    receiving = true;
+		}
 	}
 	
 	
@@ -197,6 +202,14 @@ public class MainActivity extends DrawerActivity implements Observer {
 	      	}
 	    }
 		
+	}
+	
+	
+	private void stopReceiving() {
+		if (statusBroadcastReceiver != null && receiving) {
+			unregisterReceiver(statusBroadcastReceiver);
+			receiving = false;
+		}
 	}
 
 
