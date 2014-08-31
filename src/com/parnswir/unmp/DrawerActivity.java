@@ -39,15 +39,11 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
-	}
-	
-	@Override
-	protected void onStart() {
-		super.onStart();
-		state = new DrawerState();
+        state = new DrawerState();
 		showFragment(selectedItem);
 		initializeDrawer();
 	}
+	
 	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {

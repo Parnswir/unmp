@@ -41,6 +41,7 @@ public class PlayerFragment extends AbstractFragment {
 	
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private BroadcastReceiver statusBroadcastReceiver;
+	private boolean receiving = false;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +84,7 @@ public class PlayerFragment extends AbstractFragment {
 		for (int button : buttons) {
 			playerControls.add((ImageButton) rootView.findViewById(button));
 		}
-		rootView.findViewById(buttons[BTN_PLAY]).setOnClickListener(new OnClickListener() {
+		playerControls.get(BTN_PLAY).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (playerStatus.stopped) {
@@ -209,17 +210,21 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void setupIntentReceiver() {
-		statusBroadcastReceiver = new StatusIntentReceiver();
-		IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
-	    activity.registerReceiver(statusBroadcastReceiver, statusFilter);
+		if (!receiving) {
+			receiving = true;
+			statusBroadcastReceiver = new StatusIntentReceiver();
+			IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
+		    activity.registerReceiver(statusBroadcastReceiver, statusFilter);
+		}		
 
 	    PlayerService.setPlayerServiceState(activity, PlayerService.STATUS, null);
 	}
 	
 
 	private void stopReceiving() {
-		if (statusBroadcastReceiver != null) {
+		if (statusBroadcastReceiver != null && receiving) {
 			activity.unregisterReceiver(statusBroadcastReceiver);
+			receiving = false;
 		}
 	}
 	
