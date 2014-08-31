@@ -1,15 +1,17 @@
 package com.parnswir.unmp;
 
-import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.DatabaseUtils;
-
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 
 public abstract class AbstractFragment extends Fragment {
 	
@@ -18,6 +20,7 @@ public abstract class AbstractFragment extends Fragment {
     protected LayoutInflater inflater;
     protected ViewGroup container;
     protected SQLiteDatabase DB;
+    protected SharedPreferences preferences;
     
     
     public abstract String getFragmentClass();
@@ -31,6 +34,7 @@ public abstract class AbstractFragment extends Fragment {
     	showTitle(C.FRAGMENTS[activity.selectedItem].title);
     	
     	DB = DatabaseUtils.getDB(activity);
+    	preferences = activity.getPreferences(Context.MODE_PRIVATE);
     	
         return null; 
     }

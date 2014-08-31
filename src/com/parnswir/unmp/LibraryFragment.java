@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ public class LibraryFragment extends AbstractFragment {
    
     private ListView libraryFolders;
     private ArrayList<String> folders = new ArrayList<String>();
-    private SharedPreferences preferences;
 	private int numberOfFoldersInLibrary = -1;
 	private List<FileCrawlerThread> fileCrawlers;
 
@@ -145,7 +143,6 @@ public class LibraryFragment extends AbstractFragment {
 
 	
 	private void setupPreferences() {
-		preferences = activity.getPreferences(Context.MODE_PRIVATE);
 		numberOfFoldersInLibrary = preferences.getInt(C.NUMBEROFFOLDERS, 0);
 	}
 	
@@ -199,12 +196,6 @@ public class LibraryFragment extends AbstractFragment {
 		thread.callback.addObserver(activity);
 		fileCrawlers.add(thread);
 		thread.start();
-	}
-	
-	
-	private void scanFolders() {
-		FileAdditionThread crawler = new FileAdditionThread(DB, folders);
-		addFileCrawler(crawler);
 	}
 
 
