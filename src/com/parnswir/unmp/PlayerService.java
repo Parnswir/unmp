@@ -1,6 +1,7 @@
 package com.parnswir.unmp;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,22 +27,33 @@ import android.os.Process;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 
+import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.media.MediaPlayerStatus;
+import com.parnswir.unmp.playlist.MediaFile;
+import com.parnswir.unmp.playlist.Playlist;
 
 public class PlayerService extends Service implements OnAudioFocusChangeListener {
 	
 	public static final String 
-		EXTRA_ID = "com.parnswir.unmp.state",
-		EXTRA_STATUS = "com.parnswir.unmp.status",
-		STATUS_INTENT = "com.parnswir.unmp.STATUS_INTENT",
-		SERVICE_INTENT_BUNDLE = "com.parnswir.unmp.intent_bundle",
-		FILE_NAME = "com.parnswir.unmp.file_name";
+		EXTRA_ID = C.PREFIX + "state",
+		EXTRA_STATUS = C.PREFIX + "status",
+		STATUS_INTENT = C.PREFIX + "STATUS_INTENT",
+		SERVICE_INTENT_BUNDLE = C.PREFIX + "intent_bundle",
+		PLAYLIST_ADDITION = C.PREFIX + "addition",
+		PLAYLIST_DELETION = C.PREFIX + "deletion",
+		FILE_NAME = C.PREFIX + "file_name";
 	
 	public static final int 
 		STOP = 0,
 		START = 1,
 		PLAY = 2,
-		PAUSE = 3,
+		PLAY_FILE = 3,
+		PAUSE = 4,
+		NEXT = 5,
+		
+		NEW_PLAYLIST = 10,
+		MODIFY_PLAYLIST = 11,
+		CLEAR_PLAYLIST = 12,
 		
 		STATUS = 255;
 
@@ -49,6 +61,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private ServiceHandler mServiceHandler;
 	private MediaPlayer player;
 	private MediaPlayerStatus status = new MediaPlayerStatus();
+	private Playlist playlist;
 	
 	private NoisyAudioStreamReceiver noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
 	private boolean broadcastIsRegistered = false;
@@ -75,9 +88,14 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
 				case START: setForeground(); break;
-				case PLAY: play(msg.getData().getString(FILE_NAME)); break;
+				case PLAY_FILE: playFile(msg.getData().getString(FILE_NAME)); break;
+				case PLAY: startPlaylist(); break;
 				case PAUSE: requestPause(); break;
+				case NEXT: next(); break;
 				case STATUS: broadcastStatus(); break;
+				case NEW_PLAYLIST: ;
+				case CLEAR_PLAYLIST: clearPlaylist(); break;
+				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
 			}	
 		}
 	}
@@ -161,10 +179,15 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		});
 	}
 	
-	private void play(String filePath) {
+	private void playFile(String filePath) {
 		stop();
 		setPlayerDataSource(filePath);
 		preparePlayer();
+	}
+	
+	private void startPlaylist() {
+		playlist.start();
+		playCurrentFile();
 	}
 	
 	private void requestPause() {
@@ -189,8 +212,21 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void stop() {
 		unregisterBroadcastReceiver();
-		if (player.isPlaying()) player.stop();
+		//if (player.isPlaying()) player.stop();
+		player.reset();
 		onStop();
+	}
+	
+	private void next() {
+		if (status.playing || status.paused) {
+			playlist.nextSource();
+			playCurrentFile();
+		}
+	}
+	
+	private void playCurrentFile() {
+		if (!playlist.isFinished())
+			playFile(playlist.getCurrentFile());
 	}
 	
 	private void unregisterBroadcastReceiver() {
@@ -255,6 +291,21 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			player.prepareAsync();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void clearPlaylist() {
+		playlist = new Playlist();
+	}
+	
+	private void modifyPlaylist(Bundle bundle) {
+		String addition = bundle.getString(PLAYLIST_ADDITION);
+		String deletion = bundle.getString(PLAYLIST_DELETION);
+		
+		if (addition != null) {
+			playlist.children.add(new MediaFile(addition));
+		} else {
+			playlist.children.remove(new MediaFile(deletion));
 		}
 	}
 

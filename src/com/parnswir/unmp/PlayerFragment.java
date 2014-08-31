@@ -84,6 +84,7 @@ public class PlayerFragment extends AbstractFragment {
 		for (int button : buttons) {
 			playerControls.add((ImageButton) rootView.findViewById(button));
 		}
+		
 		playerControls.get(BTN_PLAY).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -92,6 +93,13 @@ public class PlayerFragment extends AbstractFragment {
 				} else {
 					pause();
 				}
+			}
+		});
+		
+		playerControls.get(BTN_NEXT).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				next();
 			}
 		});
 		
@@ -194,18 +202,30 @@ public class PlayerFragment extends AbstractFragment {
 	private void playFile(String fileName) {
 		Bundle bundle = new Bundle();
 		bundle.putString(PlayerService.FILE_NAME, fileName);
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, bundle);
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY_FILE, bundle);
 	}
 	
 	
 	private void play() {
-		playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
-		//setPlayerServiceState(activity, PlayerService.PLAY, null);
+		//playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
+		
+		PlayerService.setPlayerServiceState(activity, PlayerService.CLEAR_PLAYLIST, null);
+		Bundle bundle = new Bundle();
+		bundle.putString(PlayerService.PLAYLIST_ADDITION, "file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
+		PlayerService.setPlayerServiceState(activity, PlayerService.MODIFY_PLAYLIST, bundle);
+		bundle.putString(PlayerService.PLAYLIST_ADDITION, "file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3");
+		PlayerService.setPlayerServiceState(activity, PlayerService.MODIFY_PLAYLIST, bundle);
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, null);
 	}
 	
 	
 	private void pause() {
 		PlayerService.setPlayerServiceState(activity, PlayerService.PAUSE, null);
+	}
+	
+	
+	private void next() {
+		PlayerService.setPlayerServiceState(activity, PlayerService.NEXT, null);
 	}
 	
 	

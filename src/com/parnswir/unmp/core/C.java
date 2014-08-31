@@ -13,6 +13,8 @@ import com.parnswir.unmp.PlaylistsFragment;
 import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
 
 public class C {
+	
+	public static final String PREFIX = "com.parnswir.unmp.";
 
 	public static final String TAB_TITLES = "Titles";
 	public static final String TAB_IMAGES = "Images";

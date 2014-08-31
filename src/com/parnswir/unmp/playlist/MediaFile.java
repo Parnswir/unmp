@@ -19,5 +19,9 @@ public class MediaFile extends PlaylistElement {
 	public String getCurrentFile() {
 		return path;
 	}
+	
+	public boolean equals(MediaFile e) {
+		return e.getCurrentFile() == path;
+	}
 
 }
