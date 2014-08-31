@@ -74,7 +74,6 @@ public class MainActivity extends DrawerActivity implements Observer {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = state.mDrawerLayout.isDrawerOpen(state.mDrawer);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_scan).setVisible(libraryShown && !drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 	
