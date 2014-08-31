@@ -53,7 +53,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 		super.onStart();
 		showPlayerHome();
 		setupIntentReceiver();
-		setPlayerServiceState(PlayerService.STATUS, null);
+		PlayerService.setPlayerServiceState(this, PlayerService.STATUS, null);
 	}
 	
 	
@@ -61,9 +61,9 @@ public class MainActivity extends DrawerActivity implements Observer {
 	protected void onPause() {
 		stopReceiving();
 		if (playerStatus.playing) {
-			setPlayerServiceState(PlayerService.START, null);
+			PlayerService.setPlayerServiceState(this, PlayerService.START, null);
 		} else {
-			setPlayerServiceState(PlayerService.STOP, null);
+			PlayerService.setPlayerServiceState(this, PlayerService.STOP, null);
 		}
 		super.onPause();
 	}
@@ -164,19 +164,10 @@ public class MainActivity extends DrawerActivity implements Observer {
 	}
 	
 	
-	private void setPlayerServiceState(int state, Bundle bundle) {
-		Intent intent = new Intent(this, PlayerService.class);
-		intent.putExtra(PlayerService.EXTRA_ID, state);
-		if (bundle == null) bundle = new Bundle();
-		intent.putExtra(PlayerService.SERVICE_INTENT_BUNDLE, bundle);
-		startService(intent);
-	}
-	
-	
 	private void playFile(String fileName) {
 		Bundle bundle = new Bundle();
 		bundle.putString(PlayerService.FILE_NAME, fileName);
-		setPlayerServiceState(PlayerService.PLAY, bundle);
+		PlayerService.setPlayerServiceState(this, PlayerService.PLAY, bundle);
 	}
 	
 	
@@ -187,7 +178,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	
 	private void pause() {
-		setPlayerServiceState(PlayerService.PAUSE, null);
+		PlayerService.setPlayerServiceState(this, PlayerService.PAUSE, null);
 	}
 	
 	

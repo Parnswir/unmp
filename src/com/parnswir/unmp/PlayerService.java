@@ -16,6 +16,7 @@ import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -53,6 +54,15 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private boolean broadcastIsRegistered = false;
 	
 	private Timer secondsTimer = new Timer(true);
+	
+	
+	public static void setPlayerServiceState(Context context, int state, Bundle bundle) {
+		Intent intent = new Intent(context, PlayerService.class);
+		intent.putExtra(EXTRA_ID, state);
+		if (bundle == null) bundle = new Bundle();
+		intent.putExtra(SERVICE_INTENT_BUNDLE, bundle);
+		context.startService(intent);
+	}
 	
 
 	private final class ServiceHandler extends Handler {
