@@ -1,5 +1,6 @@
 package com.parnswir.unmp;
 
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,10 +13,14 @@ import com.parnswir.unmp.core.CoverList;
 import com.parnswir.unmp.core.IconicAdapter;
 
 public class ListFragment extends AbstractFragment {
+	
+	public static final String SCROLL_POSITION = "scroll_position";
 
 	protected ListView contentList;
 	protected IconicAdapter adapter;
 	protected CoverList currentContent = new CoverList();
+	
+	private String suffix = "";
 
 
 	@Override
@@ -31,9 +36,27 @@ public class ListFragment extends AbstractFragment {
     }
 	
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		contentList.setSelection(preferences.getInt(SCROLL_POSITION + suffix, 0));
+	}
+	
+	
+	@Override
+	public void onStop() {
+		int position = contentList.getFirstVisiblePosition();
+		Editor editor = preferences.edit();
+		editor.putInt(SCROLL_POSITION + suffix, position);
+		editor.apply();
+		super.onStop();
+	}
+	
+	
 	public void onChangeToListFragment() {
 		String tableName = C.LIST_FRAGMENT_TABLENAMES[activity.selectedItem - 2];
 		String nameColumn = C.getNameColumnFor(tableName);
+		suffix = tableName;
 		
 		adapter = new IconicAdapter(activity, currentContent); 
         contentList = (ListView) rootView.findViewById(R.id.contentList);
