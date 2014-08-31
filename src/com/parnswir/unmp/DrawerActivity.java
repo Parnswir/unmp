@@ -109,9 +109,11 @@ public abstract class DrawerActivity extends Activity implements Observer {
 
 
 	protected void selectItem(int position) {
-		selectedItem = position;
-		state.mDrawerList.setItemChecked(position, true);
-		showFragment(position);
+		if (selectedItem != position) {
+			selectedItem = position;
+			state.mDrawerList.setItemChecked(position, true);
+			showFragment(position);
+		}
 		closeDrawerDelayedBy(100);
 	}
 	
