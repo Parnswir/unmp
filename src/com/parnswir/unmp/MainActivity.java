@@ -6,10 +6,7 @@ import java.util.Observer;
 import org.jaudiotagger.tag.TagOptionSingleton;
 
 import android.app.ActionBar;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,17 +22,10 @@ import android.widget.Toast;
 
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ProjectResources;
-import com.parnswir.unmp.media.MediaPlayerStatus;
 
 public class MainActivity extends DrawerActivity implements Observer {
 	
 	public static SQLiteDatabase DB;
-	public MediaPlayerStatus playerStatus = new MediaPlayerStatus();
-	
-    private boolean rootView = true;
-	private BroadcastReceiver statusBroadcastReceiver;
-	private boolean receiving = false;
-	
 	
 	
 	@Override
@@ -52,20 +42,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	protected void onStart() {
 		super.onStart();
 		showPlayerHome();
-		setupIntentReceiver();
-		PlayerService.setPlayerServiceState(this, PlayerService.STATUS, null);
-	}
-	
-	
-	@Override
-	protected void onPause() {
-		stopReceiving();
-		if (playerStatus.playing) {
-			PlayerService.setPlayerServiceState(this, PlayerService.START, null);
-		} else {
-			PlayerService.setPlayerServiceState(this, PlayerService.STOP, null);
-		}
-		super.onPause();
 	}
 	
 	
@@ -80,7 +56,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 	    switch (keyCode) {
 		    case KeyEvent.KEYCODE_BACK:
-		    	if (!rootView) {
+		    	if (selectedItem != 0) {
 		    		showPlayerHome();
 		    		return true;
 		    	} 
@@ -91,12 +67,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	
 	private void showPlayerHome() {
 		selectItem(0);
-	}
-
-
-	protected void selectItem(int position) {
-		rootView = (position == 0);
-		super.selectItem(position);
 	}
 	
 	
@@ -113,7 +83,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 		if (state.mDrawerToggle.onOptionsItemSelected(item)) {
 	          return true;
 	    }
-		stopReceiving();
 		switch (item.getItemId()) {
 			case R.id.action_search: startActivityNamed(DebugActivity.class); return true;
 	        default:
@@ -131,15 +100,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 	public void onClickCover(View view) {
 		ActionBar actionBar = getActionBar();
 		setOverlayVisibilityTo(!actionBar.isShowing());	
-	}
-	
-	
-	public void onClickPlay(View view) {
-		if (playerStatus.stopped) {
-			play();
-		} else {
-			pause();
-		}
 	}
 	
 	
@@ -161,54 +121,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 		String text = (String) label.getText();
 		selectItem(0);
 		Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-	}
-	
-	
-	private void playFile(String fileName) {
-		Bundle bundle = new Bundle();
-		bundle.putString(PlayerService.FILE_NAME, fileName);
-		PlayerService.setPlayerServiceState(this, PlayerService.PLAY, bundle);
-	}
-	
-	
-	private void play() {
-		playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
-		//setPlayerServiceState(PlayerService.PLAY, null);
-	}
-	
-	
-	private void pause() {
-		PlayerService.setPlayerServiceState(this, PlayerService.PAUSE, null);
-	}
-	
-	
-	private void setupIntentReceiver() {
-		if (!receiving) {
-			statusBroadcastReceiver = new StatusIntentReceiver();
-			IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
-		    registerReceiver(statusBroadcastReceiver, statusFilter);
-		    receiving = true;
-		}
-	}
-	
-	
-	private class StatusIntentReceiver extends BroadcastReceiver {
-	    @Override
-	    public void onReceive(Context context, Intent intent) {
-	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction()) && currentFragment.getFragmentClass().equals("PlayerFragment")) {
-	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
-	    	    ((PlayerFragment) currentFragment).updatePlayerStatus();
-	      	}
-	    }
-		
-	}
-	
-	
-	private void stopReceiving() {
-		if (statusBroadcastReceiver != null && receiving) {
-			unregisterReceiver(statusBroadcastReceiver);
-			receiving = false;
-		}
 	}
 
 

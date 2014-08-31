@@ -3,12 +3,17 @@ package com.parnswir.unmp;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,6 +39,9 @@ public class PlayerFragment extends AbstractFragment {
 	private String currentTitle = "";
 	private ImageLoader imageLoader;
 	
+	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
+	private BroadcastReceiver statusBroadcastReceiver;
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	rootView = super.onCreateView(inflater, container, savedInstanceState);
@@ -50,12 +58,41 @@ public class PlayerFragment extends AbstractFragment {
     }
 	
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		setupIntentReceiver();
+	}
+	
+	
+	@Override
+	public void onPause() {
+		stopReceiving();
+		if (playerStatus.playing) {
+			PlayerService.setPlayerServiceState(activity, PlayerService.START, null);
+		} else {
+			PlayerService.setPlayerServiceState(activity, PlayerService.STOP, null);
+		}
+		super.onPause();
+	}
+	
+	
 	public void setupPlayerControls() {
 		playerControls.clear();
 		int[] buttons = {R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle};
 		for (int button : buttons) {
 			playerControls.add((ImageButton) rootView.findViewById(button));
 		}
+		rootView.findViewById(buttons[BTN_PLAY]).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (playerStatus.stopped) {
+					play();
+				} else {
+					pause();
+				}
+			}
+		});
 		
 		playerLabels.clear();
 		int[] labels = {R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum};
@@ -69,13 +106,8 @@ public class PlayerFragment extends AbstractFragment {
 	}
 	
 	
-	private MediaPlayerStatus getStatus() {
-		return ((MainActivity) activity).playerStatus;
-	}
-	
-	
 	public void updatePlayerStatus() {
-		setPlayIconTo(getStatus().paused || getStatus().stopped);	    		
+		setPlayIconTo(playerStatus.paused || playerStatus.stopped);	    		
 		showTitleDuration();
 		showCurrentPosition();
 		updateTitleInfo();
@@ -95,14 +127,14 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void showCurrentPosition() {
-		currentTitleProgress.setProgress(getStatus().position);
-		playerLabels.get(LAB_POSITION).setText(formatPosition(getStatus().position));
+		currentTitleProgress.setProgress(playerStatus.position);
+		playerLabels.get(LAB_POSITION).setText(formatPosition(playerStatus.position));
 	}
 	
 	
 	private void showTitleDuration() {
-		currentTitleProgress.setMax(getStatus().length);
-		playerLabels.get(LAB_LENGTH).setText(formatPosition(getStatus().length));
+		currentTitleProgress.setMax(playerStatus.length);
+		playerLabels.get(LAB_LENGTH).setText(formatPosition(playerStatus.length));
 	}
 	
 	
@@ -113,13 +145,20 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void updateTitleInfo() {
-		if (! getStatus().currentTitle.equals(currentTitle))
+		if (! playerStatus.currentTitle.equals(currentTitle))
 			setTitleInfo();	
 	}
 	
 	
 	private void setTitleInfo() {
-		Cursor cursor = DB.query(DatabaseUtils.getGiantJoin(), new String[] {C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST, C.COL_ALBUM, C.COL_YEAR, C.COL_RATING}, C.COL_FILE + " = \"" + getStatus().currentTitle + "\"", null, null, null, null);
+		Cursor cursor = DB.query(
+				DatabaseUtils.getGiantJoin(), 
+				new String[] {C.TAB_TITLES + "." + C.COL_ID, 
+					C.COL_TITLE, C.COL_ARTIST, C.COL_ALBUM, 
+					C.COL_YEAR, C.COL_RATING}, 
+				C.COL_FILE + " = \"" + playerStatus.currentTitle + "\"", 
+				null, null, null, null
+		);
 		cursor.moveToFirst();
 		while (! cursor.isAfterLast()) {
 			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
@@ -130,7 +169,7 @@ public class PlayerFragment extends AbstractFragment {
 			cursor.moveToNext();
 		}
 		cursor.close();
-		currentTitle = getStatus().currentTitle;
+		currentTitle = playerStatus.currentTitle;
 	}
 	
 	
@@ -148,6 +187,52 @@ public class PlayerFragment extends AbstractFragment {
 	@Override
 	public String getFragmentClass() {
 		return "PlayerFragment";
+	}
+	
+	
+	private void playFile(String fileName) {
+		Bundle bundle = new Bundle();
+		bundle.putString(PlayerService.FILE_NAME, fileName);
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, bundle);
+	}
+	
+	
+	private void play() {
+		playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
+		//setPlayerServiceState(activity, PlayerService.PLAY, null);
+	}
+	
+	
+	private void pause() {
+		PlayerService.setPlayerServiceState(activity, PlayerService.PAUSE, null);
+	}
+	
+	
+	private void setupIntentReceiver() {
+		statusBroadcastReceiver = new StatusIntentReceiver();
+		IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
+	    activity.registerReceiver(statusBroadcastReceiver, statusFilter);
+
+	    PlayerService.setPlayerServiceState(activity, PlayerService.STATUS, null);
+	}
+	
+
+	private void stopReceiving() {
+		if (statusBroadcastReceiver != null) {
+			activity.unregisterReceiver(statusBroadcastReceiver);
+		}
+	}
+	
+	
+	private class StatusIntentReceiver extends BroadcastReceiver {
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	    	if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
+	    		playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
+	    	    updatePlayerStatus();
+	      	}
+	    }
+		
 	}
 	
 }

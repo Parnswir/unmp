@@ -119,7 +119,6 @@
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center_vertical"
 	            android:layout_margin="@dimen/activity_horizontal_margin"
-	            android:onClick="onClickPlay"
 	            android:background="@drawable/button"
 	            android:contentDescription="@string/cd_repeat"
 	            android:src="@drawable/ic_action_repeat" />
@@ -132,7 +131,6 @@
 	            android:layout_margin="@dimen/activity_horizontal_margin"
 	            android:background="@drawable/button"
 	            android:contentDescription="@string/cd_previous"
-	            android:onClick="onClickPlay"
 	            android:scaleType="centerCrop"
 	            android:src="@drawable/ic_action_previous" />
 
@@ -143,7 +141,6 @@
 	            android:layout_margin="@dimen/play_button_margin"
 	            android:background="@drawable/button"
 	            android:contentDescription="@string/cd_play"
-	            android:onClick="onClickPlay"
 	            android:scaleType="fitCenter"
 	            android:src="@drawable/ic_action_play" />
 	
@@ -155,7 +152,6 @@
 	            android:layout_margin="@dimen/activity_horizontal_margin"
 	            android:background="@drawable/button"
 	            android:contentDescription="@string/cd_next"
-	            android:onClick="onClickPlay"
 	            android:scaleType="centerCrop"
 	            android:src="@drawable/ic_action_next" />
 	        
@@ -165,7 +161,6 @@
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center_vertical"
 	            android:layout_margin="@dimen/activity_horizontal_margin"
-	            android:onClick="onClickPlay"
 	            android:background="@drawable/button"
 	            android:contentDescription="@string/cd_shuffle"
 	            android:src="@drawable/ic_action_shuffle" />
