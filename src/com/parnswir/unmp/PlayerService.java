@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.parnswir.unmp.media.MediaPlayerStatus;
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -27,12 +25,16 @@ import android.os.Process;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 
+import com.parnswir.unmp.media.MediaPlayerStatus;
+
 public class PlayerService extends Service implements OnAudioFocusChangeListener {
 	
 	public static final String 
 		EXTRA_ID = "com.parnswir.unmp.state",
 		EXTRA_STATUS = "com.parnswir.unmp.status",
-		STATUS_INTENT = "com.parnswir.unmp.STATUS_INTENT";
+		STATUS_INTENT = "com.parnswir.unmp.STATUS_INTENT",
+		SERVICE_INTENT_BUNDLE = "com.parnswir.unmp.intent_bundle",
+		FILE_NAME = "com.parnswir.unmp.file_name";
 	
 	public static final int 
 		STOP = 0,
@@ -63,7 +65,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
 				case START: setForeground(); break;
-				case PLAY: play("file:///storage/sdcard0/Music/Awolnation/Megalithic Symphony/10 Sail.mp3"); break;
+				case PLAY: play(msg.getData().getString(FILE_NAME)); break;
 				case PAUSE: requestPause(); break;
 				case STATUS: broadcastStatus(); break;
 			}	
@@ -88,6 +90,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		Message msg = mServiceHandler.obtainMessage();
 		msg.arg1 = startId;
 		msg.arg2 = action;
+		msg.setData(intent.getBundleExtra(SERVICE_INTENT_BUNDLE));
 		mServiceHandler.sendMessage(msg);
 
 		return START_STICKY;
