@@ -30,7 +30,6 @@ import com.parnswir.unmp.media.MediaPlayerStatus;
 public class MainActivity extends DrawerActivity implements Observer {
 	
 	public static SQLiteDatabase DB;
-	public boolean libraryShown = false;
 	public MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	
     private boolean rootView = true;
