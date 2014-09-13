@@ -25,6 +25,8 @@ import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
+import com.parnswir.unmp.playlist.MediaFile;
+import com.parnswir.unmp.playlist.Playlist;
 
 public class PlayerFragment extends AbstractFragment {
 
@@ -200,22 +202,19 @@ public class PlayerFragment extends AbstractFragment {
 	
 	
 	private void playFile(String fileName) {
-		Bundle bundle = new Bundle();
-		bundle.putString(PlayerService.FILE_NAME, fileName);
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY_FILE, bundle);
+		Playlist playlist = new Playlist();
+		playlist.children.add(new MediaFile(fileName));
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
 	}
 	
 	
 	private void play() {
 		//playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
 		
-		PlayerService.setPlayerServiceState(activity, PlayerService.CLEAR_PLAYLIST, null);
-		Bundle bundle = new Bundle();
-		bundle.putString(PlayerService.PLAYLIST_ADDITION, "file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
-		PlayerService.setPlayerServiceState(activity, PlayerService.MODIFY_PLAYLIST, bundle);
-		bundle.putString(PlayerService.PLAYLIST_ADDITION, "file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3");
-		PlayerService.setPlayerServiceState(activity, PlayerService.MODIFY_PLAYLIST, bundle);
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, null);
+		Playlist playlist = new Playlist();
+		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3"));
+		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3"));
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
 	}
 	
 	

@@ -2,6 +2,8 @@ package com.parnswir.unmp.playlist;
 
 public class MediaFile extends PlaylistElement {
 
+	private static final long serialVersionUID = 1142236402765430040L;
+	
 	private String path;
 	
 	

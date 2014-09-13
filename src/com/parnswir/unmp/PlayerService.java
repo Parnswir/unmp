@@ -1,7 +1,6 @@
 package com.parnswir.unmp;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,7 +40,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		SERVICE_INTENT_BUNDLE = C.PREFIX + "intent_bundle",
 		PLAYLIST_ADDITION = C.PREFIX + "addition",
 		PLAYLIST_DELETION = C.PREFIX + "deletion",
-		FILE_NAME = C.PREFIX + "file_name";
+		FILE_NAME = C.PREFIX + "file_name",
+		FROM_PLAYLIST = C.PREFIX + "from_playlist";
 	
 	public static final int 
 		STOP = 0,
@@ -53,7 +53,6 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		
 		NEW_PLAYLIST = 10,
 		MODIFY_PLAYLIST = 11,
-		CLEAR_PLAYLIST = 12,
 		
 		STATUS = 255;
 
@@ -88,13 +87,11 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
 				case START: setForeground(); break;
-				case PLAY_FILE: playFile(msg.getData().getString(FILE_NAME)); break;
-				case PLAY: startPlaylist(); break;
+				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); break;
 				case PAUSE: requestPause(); break;
 				case NEXT: next(); break;
 				case STATUS: broadcastStatus(); break;
 				case NEW_PLAYLIST: ;
-				case CLEAR_PLAYLIST: clearPlaylist(); break;
 				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
 			}	
 		}
@@ -188,6 +185,15 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void startPlaylist() {
 		playlist.start();
 		playCurrentFile();
+	}
+	
+	private void handlePlayBundle(Bundle bundle) {
+		if (bundle == null) return;
+		Playlist source = (Playlist) bundle.getSerializable(FROM_PLAYLIST);
+		if (source != null) {
+			if (status.playing) stop();
+			this.playlist = source;
+		}
 	}
 	
 	private void requestPause() {

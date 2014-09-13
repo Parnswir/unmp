@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class Filter extends PlaylistElement {
 
+	private static final long serialVersionUID = -4786047903938579938L;
+	
 	private SQLiteDatabase db = null;
 	private Cursor cursor = null;
 	private String sql;

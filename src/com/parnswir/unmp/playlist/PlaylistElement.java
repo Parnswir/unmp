@@ -1,7 +1,13 @@
 package com.parnswir.unmp.playlist;
 
-public abstract class PlaylistElement {
+import java.io.Serializable;
 
+import android.os.Bundle;
+
+public abstract class PlaylistElement implements Serializable {
+
+	private static final long serialVersionUID = -864462965839794668L;
+	
 	private boolean repeating;
 	private boolean shuffled;
 	
@@ -27,6 +33,12 @@ public abstract class PlaylistElement {
 
 	public void setShuffled(boolean shuffled) {
 		this.shuffled = shuffled;
+	}
+	
+	public Bundle getBundled(String key) {
+		Bundle bundle = new Bundle();
+		bundle.putSerializable(key, this);
+		return bundle;
 	}
 	
 }

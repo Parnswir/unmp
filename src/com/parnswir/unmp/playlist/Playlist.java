@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class Playlist extends PlaylistElement {
 	
+	private static final long serialVersionUID = 3196172024840309061L;
+	
 	private String name;
 	private int current;
 	public ArrayList<PlaylistElement> children = new ArrayList<PlaylistElement>();
