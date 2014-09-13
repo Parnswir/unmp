@@ -54,10 +54,14 @@ public abstract class AbstractFragment extends Fragment {
     	actionBar.setTitle(title);
     }
     
+    protected void playPlaylist(Playlist playlist) {
+    	PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+    }
+    
     protected void playFile(String fileName) {
 		Playlist playlist = new Playlist();
 		playlist.children.add(new MediaFile(fileName));
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+		playPlaylist(playlist);
 	}
     
 }
