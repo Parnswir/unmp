@@ -25,5 +25,6 @@
     <string name="updatingLibrary">Updating library&#8230;</string>
     <string name="action_scan">Scan folders</string>
     <string name="addPlaylist">+ Add Playlist</string>
+    <string name="play_all">Play all</string>
 
 </resources>
