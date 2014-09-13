@@ -81,13 +81,6 @@ public class PlaylistsFragment extends AbstractFragment {
 	
 	private void addPlaylist() {
 		
-	}
-
-
-	@Override
-	public String getFragmentClass() {
-		return "PlaylistFragment";
-	}
-    
+	}    
 	
 }

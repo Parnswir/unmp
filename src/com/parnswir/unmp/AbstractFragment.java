@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
+import com.parnswir.unmp.playlist.MediaFile;
+import com.parnswir.unmp.playlist.Playlist;
 
 public abstract class AbstractFragment extends Fragment {
 	
@@ -22,8 +24,6 @@ public abstract class AbstractFragment extends Fragment {
     protected SQLiteDatabase DB;
     protected SharedPreferences preferences;
     
-    
-    public abstract String getFragmentClass();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,5 +53,11 @@ public abstract class AbstractFragment extends Fragment {
     	ActionBar actionBar = activity.getActionBar();
     	actionBar.setTitle(title);
     }
+    
+    protected void playFile(String fileName) {
+		Playlist playlist = new Playlist();
+		playlist.children.add(new MediaFile(fileName));
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+	}
     
 }

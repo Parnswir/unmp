@@ -197,11 +197,5 @@ public class LibraryFragment extends AbstractFragment {
 		fileCrawlers.add(thread);
 		thread.start();
 	}
-
-
-	@Override
-	public String getFragmentClass() {
-		return "LibraryFragment";
-	}
     
 }

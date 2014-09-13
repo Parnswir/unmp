@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.parnswir.unmp.core.C;
@@ -19,6 +20,7 @@ public class ListFragment extends AbstractFragment {
 	protected ListView contentList;
 	protected IconicAdapter adapter;
 	protected CoverList currentContent = new CoverList();
+	protected Button playAllButton;
 	
 	private String suffix = "";
 
@@ -70,12 +72,8 @@ public class ListFragment extends AbstractFragment {
 			cursor.moveToNext();
 		} 
 		cursor.close();
-	}
-	
-
-	@Override
-	public String getFragmentClass() {
-		return "ListFragment";
+		
+		playAllButton = (Button) rootView.findViewById(R.id.playAllButton);
 	}
     
 	

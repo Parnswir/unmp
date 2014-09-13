@@ -114,14 +114,6 @@ public class MainActivity extends DrawerActivity implements Observer {
 			overlay.setVisibility(View.VISIBLE);
 		}
 	}
-	
-	
-	public void onClickOnListItem(View item) {
-		TextView label = (TextView) item.findViewById(R.id.label);
-		String text = (String) label.getText();
-		selectItem(0);
-		Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-	}
 
 
 	@Override

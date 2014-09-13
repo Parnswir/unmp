@@ -193,24 +193,9 @@ public class PlayerFragment extends AbstractFragment {
 		ImageView view = (ImageView) rootView.findViewById(R.id.ivCover);
 		imageLoader.displayAlbumImage(albumName, view, ImageLoader.DO_NOT_COMPRESS);
 	}
-
-
-	@Override
-	public String getFragmentClass() {
-		return "PlayerFragment";
-	}
-	
-	
-	private void playFile(String fileName) {
-		Playlist playlist = new Playlist();
-		playlist.children.add(new MediaFile(fileName));
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
-	}
 	
 	
 	private void play() {
-		//playFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3");
-		
 		Playlist playlist = new Playlist();
 		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3"));
 		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3"));
