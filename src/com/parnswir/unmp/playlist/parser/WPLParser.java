@@ -120,7 +120,7 @@ public class WPLParser {
     }
     
     private void readXML(XmlPullParser parser) throws XmlPullParserException, IOException, WPLParserException {
-        String condition = "";
+        String condition = "(1=0)";
 
         parser.require(XmlPullParser.START_TAG, namespace, "smil");
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
@@ -145,7 +145,7 @@ public class WPLParser {
             	String guid = parser.getAttributeValue(namespace, "id");
             	if (guid.equals(MUSIC_IN_MY_LIBRARY)) {
             		
-            		condition += "(";
+            		condition += " OR ((1=1)";
             		
             		while (parser.next() != XmlPullParser.END_DOCUMENT) {
             			
@@ -163,7 +163,7 @@ public class WPLParser {
             				
             				if (innerName.equals("fragment")) {
             					String fragmentName = parser.getAttributeValue(namespace, "name");
-            					condition += TYPE_MAPPING.get(fragmentName);
+            					condition += " AND " + TYPE_MAPPING.get(fragmentName);
             					
             					int argumentCount = 0;
             					String argument = "";
