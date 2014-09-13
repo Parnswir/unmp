@@ -107,14 +107,21 @@ public abstract class FileCrawlerThread extends Thread {
 	}
 	
 	private void processFiles() {
-		for (String filePath : files) {
-			File current = new File(filePath);
-			if (current != null) {
-				setProgress(filePath, files.indexOf(filePath), files.size());
-				handleFile(current);
+		db.beginTransaction();
+		try {
+			for (String filePath : files) {
+				File current = new File(filePath);
+				if (current != null) {
+					setProgress(filePath, files.indexOf(filePath), files.size());
+					handleFile(current);
+				}
 			}
+			db.setTransactionSuccessful();
 		}
-		setProgress("Done.", files.size(), files.size());
+		finally {
+			db.endTransaction();
+			setProgress("Done.", files.size(), files.size());
+		}		
 	}
 	
 	abstract void handleFile(File file);
