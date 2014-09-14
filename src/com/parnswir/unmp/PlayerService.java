@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
@@ -172,6 +173,12 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			@Override
 			public boolean onError(MediaPlayer mp, int error, int extra) {
 				return false;
+			}
+		});
+		player.setOnCompletionListener(new OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer arg0) {
+				next();
 			}
 		});
 	}
