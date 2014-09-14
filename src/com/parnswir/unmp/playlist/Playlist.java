@@ -31,8 +31,7 @@ public class Playlist extends PlaylistElement {
 
 	public PlaylistElement getCurrentChild() {
 		if (isFinished())
-			throw new IndexOutOfBoundsException("Playlist is finished.");
-		
+			return null;
 		return children.get(current);
 	}
 	
@@ -50,18 +49,23 @@ public class Playlist extends PlaylistElement {
 
 	@Override
 	public String getCurrentFile() {
+		if (getCurrentChild() == null)
+			return null;
 		return getCurrentChild().getCurrentFile();
 	}
 	
 	@Override
 	public void next() {
 		String nextFile = null;
+		PlaylistElement currentChild = getCurrentChild();
 		while (! isFinished() && nextFile == null) {
-			getCurrentChild().next();
-			nextFile = getCurrentChild().getCurrentFile();
+			if (currentChild != null) {
+				currentChild.next();
+				nextFile = currentChild.getCurrentFile();
+			}
 			if (nextFile == null) {
 				nextSource();
-				if (! isFinished())
+				if (! isFinished() && getCurrentChild() != null)
 					nextFile = getCurrentChild().getCurrentFile();
 			}
 		}
