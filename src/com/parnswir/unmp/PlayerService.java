@@ -51,6 +51,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		PLAY_FILE = 3,
 		PAUSE = 4,
 		NEXT = 5,
+		PREVIOUS = 6,
 		
 		NEW_PLAYLIST = 10,
 		MODIFY_PLAYLIST = 11,
@@ -91,8 +92,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); break;
 				case PAUSE: requestPause(); break;
 				case NEXT: next(); break;
+				case PREVIOUS: previous(); break;
 				case STATUS: broadcastStatus(); break;
-				case NEW_PLAYLIST: ;
 				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
 			}	
 		}
@@ -190,7 +191,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void startPlaylist() {
-		playlist.start();
+		playlist.reset();
 		playCurrentFile();
 	}
 	
@@ -233,6 +234,13 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void next() {
 		if (status.playing || status.paused) {
 			playlist.next();
+			playCurrentFile();
+		}
+	}
+	
+	private void previous() {
+		if (status.playing || status.paused) {
+			playlist.previous();
 			playCurrentFile();
 		}
 	}

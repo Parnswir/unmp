@@ -12,7 +12,10 @@ public abstract class PlaylistElement implements Serializable {
 	protected boolean shuffled;
 	
 	public abstract String getCurrentFile();
+	public abstract void reset();
 	public abstract void next();
+	public abstract void previous();
+	public abstract boolean hasContent();
 
 	public boolean isRepeating() {
 		return repeating;

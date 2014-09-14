@@ -39,35 +39,44 @@ public class Playlist extends PlaylistElement {
 		current = current + 1;
 	}
 	
-	public boolean isFinished() {
-		return current >= children.size();
+	public void previousSource() {
+		current = current - 1;
 	}
 	
-	public void start() {
-		current = 0;
+	public boolean isFinished() {
+		return current >= children.size() || current < 0;
 	}
 
 	@Override
 	public String getCurrentFile() {
-		if (getCurrentChild() == null)
+		if (getCurrentChild() == null || isFinished())
 			return null;
 		return getCurrentChild().getCurrentFile();
 	}
 	
 	@Override
 	public void next() {
-		String nextFile = null;
-		PlaylistElement currentChild = getCurrentChild();
-		while (! isFinished() && nextFile == null) {
-			if (currentChild != null) {
-				currentChild.next();
-				nextFile = currentChild.getCurrentFile();
-			}
-			if (nextFile == null) {
+		if (getCurrentChild() != null && getCurrentChild().hasContent()) {
+			getCurrentChild().next();
+			if (getCurrentChild().getCurrentFile() == null)
 				nextSource();
-				if (! isFinished() && getCurrentChild() != null)
-					nextFile = getCurrentChild().getCurrentFile();
-			}
+		} else {
+			nextSource();
+			if (getCurrentChild().getCurrentFile() == null)
+				getCurrentChild().next();
+		}
+	}
+	
+	@Override
+	public void previous() {
+		if (getCurrentChild() != null && getCurrentChild().hasContent()) {
+			getCurrentChild().previous();
+			if (getCurrentChild().getCurrentFile() == null)
+				previousSource();
+		} else {
+			previousSource();
+			if (getCurrentChild().getCurrentFile() == null)
+				getCurrentChild().previous();
 		}
 	}
 
@@ -84,6 +93,19 @@ public class Playlist extends PlaylistElement {
 		super.setShuffled(shuffled);
 		for (PlaylistElement child : children) {
 			child.setShuffled(shuffled);
+		}
+	}
+
+	@Override
+	public boolean hasContent() {
+		return true;
+	}
+
+	@Override
+	public void reset() {
+		current = 0;
+		for (PlaylistElement child : children) {
+			child.reset();
 		}
 	}
 	

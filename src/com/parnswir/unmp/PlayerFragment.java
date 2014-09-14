@@ -73,19 +73,16 @@ public class PlayerFragment extends AbstractFragment {
 	public void onPause() {
 		stopReceiving();
 		if (playerStatus.playing) {
-			PlayerService.setPlayerServiceState(activity, PlayerService.START,
-					null);
+			PlayerService.setPlayerServiceState(activity, PlayerService.START, null);
 		} else {
-			PlayerService.setPlayerServiceState(activity, PlayerService.STOP,
-					null);
+			PlayerService.setPlayerServiceState(activity, PlayerService.STOP, null);
 		}
 		super.onPause();
 	}
 
 	public void setupPlayerControls() {
 		playerControls.clear();
-		int[] buttons = { R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay,
-				R.id.btnNext, R.id.btnShuffle };
+		int[] buttons = { R.id.btnRepeat, R.id.btnPrevious, R.id.btnPlay, R.id.btnNext, R.id.btnShuffle };
 		for (int button : buttons) {
 			playerControls.add((ImageButton) rootView.findViewById(button));
 		}
@@ -104,19 +101,24 @@ public class PlayerFragment extends AbstractFragment {
 		playerControls.get(BTN_NEXT).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				next();
+				PlayerService.setPlayerServiceState(activity, PlayerService.NEXT, null);
+			}
+		});
+		
+		playerControls.get(BTN_PREV).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PlayerService.setPlayerServiceState(activity, PlayerService.PREVIOUS, null);
 			}
 		});
 
 		playerLabels.clear();
-		int[] labels = { R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle,
-				R.id.tvArtist, R.id.tvAlbum };
+		int[] labels = { R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum };
 		for (int label : labels) {
 			playerLabels.add((TextView) rootView.findViewById(label));
 		}
 
-		currentTitleProgress = (ProgressBar) rootView
-				.findViewById(R.id.seekBar);
+		currentTitleProgress = (ProgressBar) rootView.findViewById(R.id.seekBar);
 		ratingBar = (RatingBar) rootView.findViewById(R.id.ratingBar);
 		ratingBar.setMax(10);
 	}
@@ -141,20 +143,17 @@ public class PlayerFragment extends AbstractFragment {
 
 	private void showCurrentPosition() {
 		currentTitleProgress.setProgress(playerStatus.position);
-		playerLabels.get(LAB_POSITION).setText(
-				formatPosition(playerStatus.position));
+		playerLabels.get(LAB_POSITION).setText(formatPosition(playerStatus.position));
 	}
 
 	private void showTitleDuration() {
 		currentTitleProgress.setMax(playerStatus.length);
-		playerLabels.get(LAB_LENGTH).setText(
-				formatPosition(playerStatus.length));
+		playerLabels.get(LAB_LENGTH).setText(formatPosition(playerStatus.length));
 	}
 
 	private String formatPosition(int position) {
 		int seconds = position / 1000;
-		return String.format(Locale.getDefault(), "%02d:%02d", seconds / 60,
-				seconds % 60);
+		return String.format(Locale.getDefault(), "%02d:%02d", seconds / 60, seconds % 60);
 	}
 
 	private void updateTitleInfo() {
@@ -172,9 +171,7 @@ public class PlayerFragment extends AbstractFragment {
 		while (!cursor.isAfterLast()) {
 			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
 			playerLabels.get(LAB_ARTIST).setText(cursor.getString(2));
-			playerLabels.get(LAB_ALBUM).setText(
-					String.format(Locale.getDefault(), "%s [%s]",
-							cursor.getString(3), cursor.getString(4)));
+			playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), "%s [%s]", cursor.getString(3), cursor.getString(4)));
 			setRating(cursor.getInt(5));
 			setAlbumArt(cursor.getString(3));
 			cursor.moveToNext();
@@ -195,36 +192,24 @@ public class PlayerFragment extends AbstractFragment {
 
 	private void play() {
 		Playlist playlist = new Playlist();
-		playlist.children
-				.add(new MediaFile(
-						"file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3"));
-		playlist.children
-				.add(new MediaFile(
-						"file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3"));
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY,
-				playlist.getBundled(PlayerService.FROM_PLAYLIST));
+		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3"));
+		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3"));
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
 	}
 
 	private void pause() {
-		PlayerService
-				.setPlayerServiceState(activity, PlayerService.PAUSE, null);
-	}
-
-	private void next() {
-		PlayerService.setPlayerServiceState(activity, PlayerService.NEXT, null);
+		PlayerService.setPlayerServiceState(activity, PlayerService.PAUSE, null);
 	}
 
 	private void setupIntentReceiver() {
 		if (!receiving) {
 			receiving = true;
 			statusBroadcastReceiver = new StatusIntentReceiver();
-			IntentFilter statusFilter = new IntentFilter(
-					PlayerService.STATUS_INTENT);
+			IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
 			activity.registerReceiver(statusBroadcastReceiver, statusFilter);
 		}
 
-		PlayerService.setPlayerServiceState(activity, PlayerService.STATUS,
-				null);
+		PlayerService.setPlayerServiceState(activity, PlayerService.STATUS,	null);
 	}
 
 	private void stopReceiving() {
@@ -238,8 +223,7 @@ public class PlayerFragment extends AbstractFragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
-				playerStatus = (MediaPlayerStatus) intent
-						.getSerializableExtra(PlayerService.EXTRA_STATUS);
+				playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
 				updatePlayerStatus();
 			}
 		}
