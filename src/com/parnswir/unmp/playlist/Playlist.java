@@ -54,14 +54,17 @@ public class Playlist extends PlaylistElement {
 	}
 	
 	@Override
-	public String getNextFile() {
-		String nextFile = super.getNextFile();
+	public void next() {
+		String nextFile = null;
 		while (! isFinished() && nextFile == null) {
-			nextFile = getCurrentChild().getNextFile();
-			if (nextFile == null)
+			getCurrentChild().next();
+			nextFile = getCurrentChild().getCurrentFile();
+			if (nextFile == null) {
 				nextSource();
+				if (! isFinished())
+					nextFile = getCurrentChild().getCurrentFile();
+			}
 		}
-		return nextFile;
 	}
 
 	@Override

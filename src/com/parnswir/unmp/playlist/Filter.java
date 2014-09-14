@@ -38,10 +38,10 @@ public class Filter extends PlaylistElement {
 	public String getCurrentFile() {
 		return playlist.getCurrentFile();
 	}
-	
+
 	@Override
-	public String getNextFile() {
-		return playlist.getNextFile();
+	public void next() {
+		playlist.next();		
 	}
 
 }

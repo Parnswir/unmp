@@ -13,8 +13,9 @@ public class MediaFile extends PlaylistElement {
 	}
 	
 	@Override
-	public String getNextFile() {
-		return super.getNextFile();
+	public void next() {
+		if (! repeating)
+			path = null;
 	}
 
 	@Override

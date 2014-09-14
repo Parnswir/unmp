@@ -225,7 +225,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void next() {
 		if (status.playing || status.paused) {
-			playlist.nextSource();
+			playlist.next();
 			playCurrentFile();
 		}
 	}

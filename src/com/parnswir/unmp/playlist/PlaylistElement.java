@@ -8,16 +8,11 @@ public abstract class PlaylistElement implements Serializable {
 
 	private static final long serialVersionUID = -864462965839794668L;
 	
-	private boolean repeating;
-	private boolean shuffled;
+	protected boolean repeating;
+	protected boolean shuffled;
 	
 	public abstract String getCurrentFile();
-	
-	public String getNextFile() {
-		if (repeating)
-			return getCurrentFile();
-		return null;
-	}
+	public abstract void next();
 
 	public boolean isRepeating() {
 		return repeating;
