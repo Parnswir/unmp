@@ -11,6 +11,7 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
 
 import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 
 import android.content.ContentValues;
 
@@ -56,7 +57,7 @@ public class MediaInformation {
 	private void extractFileInfo(MP3File f) {
 		extractedTags.put(C.COL_LENGTH, Integer.toString(f.getAudioHeader().getTrackLength()));
 		extractedTags.put(C.COL_BIT_RATE, f.getAudioHeader().getBitRate());
-		extractedTags.put(C.COL_FILE, f.getFile().getAbsolutePath());
+		extractedTags.put(C.COL_FILE, DatabaseUtils.normalize(f.getFile().getAbsolutePath()));
 	}
 	
 	private void correctGenre() {

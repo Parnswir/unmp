@@ -1,6 +1,8 @@
 package com.parnswir.unmp.core;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
@@ -59,8 +61,8 @@ public class DatabaseUtils {
 	
 	public static boolean fileAlreadyInDatabase(String absolutePath, SQLiteDatabase db) {
 		boolean result = 
-			(! getIDForTableEntry(C.TAB_TITLES, C.COL_FILE + " = ?", new String[] {absolutePath}, db).equals(IDNOTINTABLE)) ||
-			(! getIDForTableEntry(C.TAB_PLAYLISTS, C.COL_FILE + " = ?", new String[] {absolutePath}, db).equals(IDNOTINTABLE));
+			(! getIDForTableEntry(C.TAB_TITLES, C.COL_FILE + " = ?", new String[] {normalize(absolutePath)}, db).equals(IDNOTINTABLE)) ||
+			(! getIDForTableEntry(C.TAB_PLAYLISTS, C.COL_FILE + " = ?", new String[] {normalize(absolutePath)}, db).equals(IDNOTINTABLE));
 		return result;
 	}
 	
@@ -127,6 +129,15 @@ public class DatabaseUtils {
 			c.moveToNext();
 		}
 		c.close();
+		return result;
+	}
+	
+	public static String normalize(String path) {
+		String result = path;
+		try {
+			result = new File(result).getCanonicalPath();
+		} catch (IOException e) {
+		}
 		return result;
 	}
 	
