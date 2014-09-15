@@ -15,9 +15,7 @@ public class Filter extends Playlist {
 				children.add(new MediaFile(cursor.getString(0)));
 				cursor.moveToNext();
 			}
-		if (cursor != null) {
-			cursor.close();
-		}
+		cursor.close();
 		reset();
 	}
 
