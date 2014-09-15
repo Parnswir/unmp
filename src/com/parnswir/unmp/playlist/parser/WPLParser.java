@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -224,10 +225,22 @@ public class WPLParser {
         } 
         
         if (condition.length() > 0) {
-	        String query = String.format("SELECT %s.%s FROM %s WHERE %s", C.TAB_TITLES, C.COL_FILE, DatabaseUtils.getGiantJoin(), condition);
+	        String query = String.format("SELECT %s.%s FROM %s WHERE %s", C.TAB_TITLES, C.COL_FILE, getJoinNecessaryFor(condition), condition);
 	        playlist.children.add(new Filter(database, query));
         }
     }
+    
+    
+    private String getJoinNecessaryFor(String condition) {
+    	ArrayList<String> tables = new ArrayList<String>();
+    	for (String table : C.TABLENAMES)
+    		if (condition.indexOf(table) > -1)
+    			tables.add(table);
+    	String[] array = new String[tables.size()];
+    	array = tables.toArray(array);
+    	return DatabaseUtils.getJoinForTables(array);
+    }
+    
     
     public static final class WPLParserException extends Exception {
     	

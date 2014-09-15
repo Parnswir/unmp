@@ -110,8 +110,12 @@ public class DatabaseUtils {
 	}
 	
 	public static String getGiantJoin() {
+		return getJoinForTables(C.TABLENAMES);
+	}
+	
+	public static String getJoinForTables(String[] tableNames) {
 		String join = C.TAB_TITLES + " ";
-		for (String tableName : C.TABLENAMES) {
+		for (String tableName : tableNames) {
 			String relation = C.getRelationNameFor(tableName);
 			String idColumn = C.idNameFrom(tableName) + C.COL__ID;
 			join += String.format("JOIN %s ON %s.%s = %s.%s ", relation, C.TAB_TITLES, C.COL_ID, relation, C.COL_TITLE_ID);
