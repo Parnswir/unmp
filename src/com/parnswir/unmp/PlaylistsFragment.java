@@ -22,6 +22,7 @@ public class PlaylistsFragment extends AbstractFragment {
 
 	private ListView mPlaylists;
 	private ArrayList<String> playlists = new ArrayList<String>();
+	private ArrayList<String> playlistNames = new ArrayList<String>();
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,13 +40,20 @@ public class PlaylistsFragment extends AbstractFragment {
 	
 	public void initPlaylistList() {
 		playlists = DatabaseUtils.getAllPlaylists(DB);
-		ArrayList<String> playlistNames = new ArrayList<String>();
-		playlistNames.addAll(playlists);
-		playlistNames.add(getString(R.string.addPlaylist));
+		initLists();
 		mPlaylists = (ListView) rootView.findViewById(R.id.playlists);
 		mPlaylists.setAdapter(new ArrayAdapter<String>(activity, R.layout.drawer_list_item, playlistNames));
 		mPlaylists.setOnItemClickListener(new PlaylistClickListener());
 		mPlaylists.setOnItemLongClickListener(new PlaylistClickListener());
+	}
+	
+	
+	private void initLists() {
+		for (String playlistPath : playlists) { 
+			WPLParser parser = new WPLParser(new File(playlistPath), DB);
+			playlistNames.add(parser.getName());
+		}
+		playlistNames.add(getString(R.string.addPlaylist));
 	}
 	
 	

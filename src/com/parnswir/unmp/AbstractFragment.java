@@ -56,6 +56,7 @@ public abstract class AbstractFragment extends Fragment {
     
     protected void playPlaylist(Playlist playlist) {
     	PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+    	activity.selectItem(0);
     }
     
     protected void playFile(String fileName) {

@@ -242,6 +242,11 @@ public class WPLParser {
     }
     
     
+    public String getName() {
+    	return playlist.getName();
+    }
+    
+    
     public static final class WPLParserException extends Exception {
     	
 		private static final long serialVersionUID = 1345253070867225300L;
