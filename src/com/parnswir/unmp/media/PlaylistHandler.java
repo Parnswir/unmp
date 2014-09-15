@@ -24,7 +24,7 @@ public class PlaylistHandler extends FileHandler {
 
 	@Override
 	public void deleteFromDatabase(File file) {
-		getDb().delete(C.TAB_PLAYLISTS, C.COL_FILE + " = " + file.getAbsolutePath(), null);
+		getDb().delete(C.TAB_PLAYLISTS, C.COL_FILE + " = ?", new String[] {DatabaseUtils.normalize(file.getAbsolutePath())});
 	}
 
 }
