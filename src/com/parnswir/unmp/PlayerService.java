@@ -315,10 +315,6 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		}
 	}
 	
-	private void clearPlaylist() {
-		playlist = new Playlist();
-	}
-	
 	private void modifyPlaylist(Bundle bundle) {
 		String addition = bundle.getString(PLAYLIST_ADDITION);
 		String deletion = bundle.getString(PLAYLIST_DELETION);
