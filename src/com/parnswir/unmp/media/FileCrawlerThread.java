@@ -67,6 +67,7 @@ public abstract class FileCrawlerThread extends Thread {
 			searchForFilesIn(root);
 		}
 		processFiles();
+		db.execSQL("REINDEX;");
 	}
 	
 	private void searchForFilesIn(File file) {
