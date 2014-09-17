@@ -17,6 +17,9 @@ import com.parnswir.unmp.core.DatabaseUtils;
 
 public class MP3Handler extends FileHandler {
 	
+	private long titleID;
+	private long[] tableIDs = new long[C.TABLENAMES.length];
+	
 	@Override
 	public void saveToDatabase(File file) {
 		MP3File f = readAudioFile(file);
@@ -39,10 +42,9 @@ public class MP3Handler extends FileHandler {
 
 	private void insertTitle(MediaInformation info) {
 		ContentValues cv = info.toContentValuesForTable(C.TAB_TITLES);
-		cv.put(C.COL_ID, DatabaseUtils.getNextIDForTable(C.TAB_TITLES, getDb()));
 		cv.put(C.COL_LAST_PLAYED, "0");
 		cv.put(C.COL_PLAY_COUNT, "0");
-		getDb().insert(C.TAB_TITLES, null, cv);		
+		titleID = getDb().insert(C.TAB_TITLES, null, cv);		
 	}
 	
 	private void upsertAttributes(MediaInformation info) {
@@ -51,27 +53,26 @@ public class MP3Handler extends FileHandler {
 			ContentValues cv = info.toContentValuesForTable(tableName);
 			if (DatabaseUtils.tupleAlreadyInTable(tableName, cv, getDb())) {
 				getDb().update(tableName, cv, C.COL_ID + " = ?", new String[] {DatabaseUtils.getIDForTuple(tableName, cv, getDb())});
+				tableIDs[i] = Integer.valueOf(DatabaseUtils.getIDForTuple(tableName, cv, getDb()));
 			} else {
-				DatabaseUtils.insertWithNewID(tableName, cv, getDb());
+				tableIDs[i] = getDb().insert(tableName, null, cv);
 			}
 		}
 	}
 	
 	private void insertRelations(MediaInformation info) {
-		ContentValues titleCV = info.toContentValuesForTable(C.TAB_TITLES);
 		for (int i = 0; i < C.TABLENAMES.length; i++) {
 			String tableName = C.TABLENAMES[i];
 			String relationName = C.getRelationNameFor(tableName);
-			ContentValues relationCV = generateRelationTuple(info, titleCV, tableName);
-			DatabaseUtils.insertRelationWithNewID(relationName, relationCV, getDb());
+			ContentValues relationCV = generateRelationTuple(i);
+			getDb().insert(relationName, null, relationCV);
 		}		
 	}
 
-	private ContentValues generateRelationTuple(MediaInformation info, ContentValues titleCV, String tableName) {
-		ContentValues cv = info.toContentValuesForTable(tableName);
+	private ContentValues generateRelationTuple(int table) {
 		ContentValues relationCV = new ContentValues();
-		relationCV.put(C.idNameFrom(tableName) + C.COL__ID, DatabaseUtils.getIDForTableEntryByName(tableName, cv.getAsString(C.idNameFrom(tableName)), getDb()));
-		relationCV.put(C.COL_TITLE_ID, DatabaseUtils.getIDForTuple(C.TAB_TITLES, titleCV, getDb()));
+		relationCV.put(C.idNameFrom(C.TABLENAMES[table]) + C.COL__ID, tableIDs[table]);
+		relationCV.put(C.COL_TITLE_ID, titleID);
 		return relationCV;
 	}
 	
