@@ -11,6 +11,7 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "Music";
+	private static final String INDEX_PREFIX = "INDEX_";
 	
 	private static final String CREATETABLESTATEMENT = "CREATE TABLE %s (%s);";
     private static final String CREATEBODYSTATEMENT = String.format(Locale.US, "%s INTEGER NOT NULL, %%s VARCHAR(255), PRIMARY KEY (%s)", C.COL_ID, C.COL_ID);
@@ -48,7 +49,9 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
 				C.COL_BIT_RATE + " INTEGER," + 
 				C.COL_PLAY_COUNT + " INTEGER DEFAULT 0 NOT NULL," + 
 				C.COL_LAST_PLAYED + " DOUBLE," + 
-			"PRIMARY KEY (" + C.COL_ID + "));");		
+			"PRIMARY KEY (" + C.COL_ID + "));");
+    	
+    	db.execSQL(String.format("CREATE INDEX %s ON '%s' ('%s' ASC);", INDEX_PREFIX + C.TAB_TITLES, C.TAB_TITLES, C.COL_TITLE));
 	}
 	
 	private void createImageTables(SQLiteDatabase db) {
@@ -85,6 +88,8 @@ public class MusicDatabaseHelper extends SQLiteOpenHelper {
 		Object[] tableArguments = {tableName, String.format(CREATEBODYSTATEMENT, C.getNameColumnFor(tableName))};
     	String createStatement = String.format(CREATETABLESTATEMENT, tableArguments);
     	db.execSQL(createStatement);
+    	
+    	db.execSQL(String.format("CREATE INDEX %s ON '%s' ('%s' ASC);", INDEX_PREFIX + tableName, tableName, C.getNameColumnFor(tableName)));
 	}
 
 	private void createRelationFromTitleTo(SQLiteDatabase db, String tableName) {
