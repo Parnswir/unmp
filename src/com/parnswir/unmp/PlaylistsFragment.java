@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,20 +100,44 @@ public class PlaylistsFragment extends AbstractFragment {
 	
 	
 	private void playPlaylist(int position) {
-		String path = playlists.get(position);
-		WPLParser parser = new WPLParser(new File(path), DB);
-		Playlist playlist = new Playlist();
-		try {
-			playlist = parser.buildPlaylist();
-			playPlaylist(playlist);
-		} catch (IOException e) {
-		} catch (WPLParserException e) {
-		}
+		PlaylistLoader loader = new PlaylistLoader();
+		loader.execute(playlists.get(position));
 	}
 	
 	
 	private void addPlaylist() {
 		
 	}    
+	
+	
+	private class PlaylistLoader extends AsyncTask<String, Void, Playlist> {
+
+		ProgressDialog dialog = new ProgressDialog(activity);
+
+		@Override
+		protected void onPreExecute() {
+			dialog.setMessage("Loading Playlist...");
+	        dialog.show();
+	        super.onPreExecute();
+	    }
+	
+		protected Playlist doInBackground(String... args) {
+			WPLParser parser = new WPLParser(new File(args[0]), DB);
+			Playlist playlist = new Playlist();
+			try {
+				playlist = parser.buildPlaylist();
+			} catch (IOException e) {
+			} catch (WPLParserException e) {
+			}
+			return playlist;
+		}
+	
+		protected void onPostExecute(Playlist result) {
+			playPlaylist(result);
+			if(dialog != null && dialog.isShowing()){
+				dialog.dismiss();
+			}
+		}
+	}
 	
 }
