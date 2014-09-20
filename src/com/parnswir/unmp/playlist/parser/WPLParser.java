@@ -21,7 +21,6 @@ import android.util.Xml;
 
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
-import com.parnswir.unmp.playlist.Filter;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
 
@@ -226,7 +225,7 @@ public class WPLParser {
         
         if (condition.length() > 0) {
 	        String query = String.format("SELECT %s.%s FROM %s WHERE %s", C.TAB_TITLES, C.COL_FILE, getJoinNecessaryFor(condition), condition);
-	        playlist.children.add(new Filter(database, query));
+	        playlist.addItemsFromFilter(database, query);
         }
     }
     

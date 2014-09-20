@@ -191,7 +191,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void startPlaylist() {
-		playlist.reset();
+		playlist.setPosition(0);
 		playCurrentFile();
 	}
 	
@@ -234,20 +234,27 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void next() {
 		if (status.playing || status.paused) {
 			playlist.next();
-			playCurrentFile();
+			if (playlist.isAtEnd()) {
+				playlist.previous();
+			} else {
+				playCurrentFile();
+			}
 		}
 	}
 	
 	private void previous() {
 		if (status.playing || status.paused) {
 			playlist.previous();
-			playCurrentFile();
+			if (playlist.isAtStart()) {
+				playlist.next();
+			} else {
+				playCurrentFile();
+			}
 		}
 	}
 	
 	private void playCurrentFile() {
-		if (!playlist.isFinished())
-			playFile(playlist.getCurrentFile());
+		playFile(playlist.getCurrentFile());
 	}
 	
 	private void unregisterBroadcastReceiver() {

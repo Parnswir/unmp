@@ -2,6 +2,9 @@ package com.parnswir.unmp.playlist;
 
 import java.util.ArrayList;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 
 public class Playlist extends PlaylistElement {
 	
@@ -9,8 +12,20 @@ public class Playlist extends PlaylistElement {
 	
 	private String name;
 	private int current;
-	public ArrayList<PlaylistElement> children = new ArrayList<PlaylistElement>();
 	
+	public ArrayList<MediaFile> children = new ArrayList<MediaFile>();
+	
+	
+	public void addItemsFromFilter(SQLiteDatabase db, String query) {
+		Cursor cursor = db.rawQuery(query, null);
+		boolean successful = cursor.moveToFirst();
+		if (successful)
+			while (! cursor.isAfterLast()) {
+				children.add(new MediaFile(cursor.getString(0)));
+				cursor.moveToNext();
+			}
+		cursor.close();
+	}
 	
 	public String getName() {
 		return name;
@@ -25,88 +40,49 @@ public class Playlist extends PlaylistElement {
 	}
 	
 	public void setPosition(int position) {
-		if (position < children.size() && position > -1)
-			current = position;
-	}
-
-	public PlaylistElement getCurrentChild() {
-		if (isFinished())
-			return null;
-		return children.get(current);
+		current = position;
 	}
 	
 	public void nextSource() {
-		current = current + 1;
+		setPosition(getPosition() + 1);
 	}
 	
 	public void previousSource() {
-		current = current - 1;
+		setPosition(getPosition() - 1);
 	}
 	
-	public boolean isFinished() {
-		return current >= children.size() || current < 0;
+	public boolean isAtEnd() {
+		return getPosition() >= children.size();
+	}
+	
+	public boolean isAtStart() {
+		return getPosition() < 0;
+	}
+	
+	public MediaFile getCurrentChild() {
+		if (getPosition() < 0 || getPosition() >= children.size())
+			return null;
+		return children.get(getPosition());
 	}
 
 	@Override
 	public String getCurrentFile() {
-		if (getCurrentChild() == null || isFinished())
+		if (getCurrentChild() == null) 
 			return null;
 		return getCurrentChild().getCurrentFile();
 	}
 	
-	@Override
 	public void next() {
-		if (getCurrentChild() != null && getCurrentChild().hasContent()) {
-			getCurrentChild().next();
-			if (getCurrentChild().getCurrentFile() == null)
-				nextSource();
-		} else {
-			nextSource();
-			if (getCurrentChild().getCurrentFile() == null)
-				getCurrentChild().next();
-		}
+		if (isRepeating()) return;
+		nextSource();
+		if (isAtEnd() && isRepeatingAll()) 
+			setPosition(0);
 	}
 	
-	@Override
 	public void previous() {
-		if (getCurrentChild() != null && getCurrentChild().hasContent()) {
-			getCurrentChild().previous();
-			if (getCurrentChild().getCurrentFile() == null)
-				previousSource();
-		} else {
-			previousSource();
-			if (getCurrentChild().getCurrentFile() == null)
-				getCurrentChild().previous();
-		}
+		if (isRepeating()) return;
+		previousSource();
+		if (isAtStart() && isRepeatingAll())
+			setPosition(children.size() - 1);
 	}
-
-	@Override
-	public void setRepeating(boolean repeating) {
-		super.setRepeating(repeating);
-		for (PlaylistElement child : children) {
-			child.setRepeating(repeating);
-		}
-	}
-	
-	@Override
-	public void setShuffled(boolean shuffled) {
-		super.setShuffled(shuffled);
-		for (PlaylistElement child : children) {
-			child.setShuffled(shuffled);
-		}
-	}
-
-	@Override
-	public boolean hasContent() {
-		return true;
-	}
-
-	@Override
-	public void reset() {
-		current = 0;
-		for (PlaylistElement child : children) {
-			child.reset();
-		}
-	}
-	
 }

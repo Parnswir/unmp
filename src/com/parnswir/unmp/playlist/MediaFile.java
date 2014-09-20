@@ -22,28 +22,4 @@ public class MediaFile extends PlaylistElement {
 	public boolean equals(MediaFile e) {
 		return e.getCurrentFile() == path;
 	}
-	
-	@Override
-	public void next() {
-		if (currentFile == null) {
-			reset();
-		} else if (! repeating)
-			currentFile = null;
-	}
-
-	@Override
-	public void previous() {
-		next();
-	}
-
-	@Override
-	public boolean hasContent() {
-		return false;
-	}
-
-	@Override
-	public void reset() {
-		currentFile = path;
-	}
-
 }
