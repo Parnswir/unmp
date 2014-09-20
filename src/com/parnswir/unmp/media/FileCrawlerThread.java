@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import com.parnswir.unmp.core.ProgressObservable;
 import com.parnswir.unmp.core.ProjectResources;
+import com.parnswir.unmp.core.Utils;
 
 public abstract class FileCrawlerThread extends Thread {
 	
@@ -40,7 +40,7 @@ public abstract class FileCrawlerThread extends Thread {
 	
 	public FileHandler getFileHandlerFor(File file) {
 		FileHandler result = new DefaultFileHandler();
-		String extension = getFileExt(file.getName());
+		String extension = Utils.getFileExt(file.getName());
 		if (FILE_HANDLERS.containsKey(extension)) {
 			try {
 				result = (FileHandler) FILE_HANDLERS.get(extension).newInstance();
@@ -95,12 +95,8 @@ public abstract class FileCrawlerThread extends Thread {
 	}
 	
 	private boolean isSuitable(File file) {
-		String extension = getFileExt(file.getName());
+		String extension = Utils.getFileExt(file.getName());
 		return (FILE_HANDLERS.containsKey(extension)) && !stop;
-	}
-	
-	private static String getFileExt(String fileName) {       
-	     return fileName.toLowerCase(Locale.ENGLISH).substring((fileName.lastIndexOf(".") + 1), fileName.length());
 	}
 	
 	private void setProgress(String text, float value, float count) {

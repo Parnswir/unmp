@@ -1,7 +1,5 @@
 package com.parnswir.unmp;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
@@ -17,8 +15,8 @@ import android.widget.TextView;
 
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.playlist.Playlist;
-import com.parnswir.unmp.playlist.parser.WPLParser;
-import com.parnswir.unmp.playlist.parser.WPLParser.WPLParserException;
+import com.parnswir.unmp.playlist.parser.PlaylistParser;
+import com.parnswir.unmp.playlist.parser.PlaylistParser.PlaylistParserException;
 
 public class PlaylistsFragment extends AbstractFragment {
 
@@ -52,7 +50,8 @@ public class PlaylistsFragment extends AbstractFragment {
 	
 	private void initLists() {
 		for (String playlistPath : playlists) { 
-			WPLParser parser = new WPLParser(new File(playlistPath), DB);
+			PlaylistParser parser = new PlaylistParser();
+			parser.init(playlistPath, DB);
 			playlistNames.add(parser.getName());
 		}
 		playlistNames.add(getString(R.string.addPlaylist));
@@ -122,12 +121,11 @@ public class PlaylistsFragment extends AbstractFragment {
 	    }
 	
 		protected Playlist doInBackground(String... args) {
-			WPLParser parser = new WPLParser(new File(args[0]), DB);
 			Playlist playlist = new Playlist();
 			try {
-				playlist = parser.buildPlaylist();
-			} catch (IOException e) {
-			} catch (WPLParserException e) {
+				playlist = PlaylistParser.parse(args[0], DB);
+			} catch (PlaylistParserException e) {
+				e.printStackTrace();
 			}
 			return playlist;
 		}

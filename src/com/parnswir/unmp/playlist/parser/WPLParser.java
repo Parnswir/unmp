@@ -1,7 +1,6 @@
 package com.parnswir.unmp.playlist.parser;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.util.Set;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Xml;
 
 import com.parnswir.unmp.core.C;
@@ -24,7 +22,7 @@ import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
 
-public class WPLParser {
+public class WPLParser extends PlaylistParser {
 	
 	public static final String MUSIC_IN_MY_LIBRARY = "{4202947A-A563-4B05-A754-A1B4B5989849}";
 	
@@ -78,31 +76,22 @@ public class WPLParser {
 		UNIT_MAPPING.put("0 stars", "0");
 	}
 	
-	private String fileName;
-	private String directory;
-	private Playlist playlist;
-	private SQLiteDatabase database;
-	
-	public WPLParser(File file, SQLiteDatabase db) {
-		database = db;
-		fileName = file.getAbsolutePath();
-		directory = file.getParentFile().getAbsolutePath() + "/";
-		playlist = new Playlist();
-		playlist.setName(file.getName().replace(".wpl", ""));
+	public WPLParser() {
+		
 	}
 	
-	public Playlist buildPlaylist() throws IOException, WPLParserException {
+	public Playlist buildPlaylist() throws WPLParserException {
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(new FileInputStream(fileName));
 			parse(in);
+			in.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (XmlPullParserException e) {
 			e.printStackTrace();
-		} finally {
-			if (in != null)
-				in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return playlist;
 	}
@@ -228,8 +217,7 @@ public class WPLParser {
 	        playlist.addItemsFromFilter(database, query);
         }
     }
-    
-    
+      
     private String getJoinNecessaryFor(String condition) {
     	ArrayList<String> tables = new ArrayList<String>();
     	for (String table : C.TABLENAMES)
@@ -238,15 +226,9 @@ public class WPLParser {
     	String[] array = new String[tables.size()];
     	array = tables.toArray(array);
     	return DatabaseUtils.getJoinForTables(array);
-    }
+    }    
     
-    
-    public String getName() {
-    	return playlist.getName();
-    }
-    
-    
-    public static final class WPLParserException extends Exception {
+    public static class WPLParserException extends PlaylistParserException {
     	
 		private static final long serialVersionUID = 1345253070867225300L;
 
