@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ProjectResources;
@@ -84,7 +83,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	          return true;
 	    }
 		switch (item.getItemId()) {
-			case R.id.action_search: startActivityNamed(DebugActivity.class); return true;
+			case R.id.action_search: return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
