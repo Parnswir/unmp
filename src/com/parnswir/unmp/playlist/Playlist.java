@@ -112,4 +112,11 @@ public class Playlist extends PlaylistElement {
 		if (isAtStart() && isRepeatingAll())
 			setPosition(children.size() - 1);
 	}
+	
+	@Override
+	public void setShuffled(boolean shuffled) {
+		while (chronology.size() > cronCurrent + 1)
+			chronology.remove(cronCurrent + 1);
+		super.setShuffled(shuffled);
+	}
 }
