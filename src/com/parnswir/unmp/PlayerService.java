@@ -205,7 +205,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		Playlist source = (Playlist) bundle.getSerializable(FROM_PLAYLIST);
 		if (source != null) {
 			if (status.playing) stop();
-			this.playlist = source;
+			playlist = source;
+			updatePlaylistModifiers();
 		}
 	}
 	
@@ -340,17 +341,22 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void toggleRepeat() {
 		status.repeatMode = (status.repeatMode + 1) % 3;
-		if (playlist != null) {
-			playlist.setRepeating(status.repeatMode == MediaPlayerStatus.REPEAT_ONE);
-			playlist.setRepeatingAll(status.repeatMode == MediaPlayerStatus.REPEAT_ALL);
-		}
+		updatePlaylistModifiers();
 		broadcastStatus();
 	}
 	
 	private void toggleShuffle() {
 		status.shuffled = ! status.shuffled;
-		if (playlist != null) playlist.setShuffled(status.shuffled);
+		updatePlaylistModifiers();
 		broadcastStatus();
+	}
+	
+	private void updatePlaylistModifiers() {
+		if (playlist != null) {
+			playlist.setRepeating(status.repeatMode == MediaPlayerStatus.REPEAT_ONE);
+			playlist.setRepeatingAll(status.repeatMode == MediaPlayerStatus.REPEAT_ALL);
+			playlist.setShuffled(status.shuffled);
+		}
 	}
 
 	@Override
