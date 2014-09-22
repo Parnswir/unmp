@@ -12,12 +12,12 @@ public class MediaPlayerStatus implements Serializable {
 		stopped = true,
 		playing = false,
 		paused = false, 
-		shuffled = false;
+		shuffled = true;
 	
 	public int
 		length = 0,
 		position = 0,
-		repeatMode = DO_NOT_REPEAT;
+		repeatMode = REPEAT_ALL;
 	
 	public String currentTitle = "";
 
