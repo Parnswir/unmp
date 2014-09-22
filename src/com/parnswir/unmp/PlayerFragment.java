@@ -111,6 +111,20 @@ public class PlayerFragment extends AbstractFragment {
 				PlayerService.setPlayerServiceState(activity, PlayerService.PREVIOUS, null);
 			}
 		});
+		
+		playerControls.get(BTN_REPEAT).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PlayerService.setPlayerServiceState(activity, PlayerService.TOGGLE_REPEAT, null);
+			}
+		});
+		
+		playerControls.get(BTN_SHUFFLE).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PlayerService.setPlayerServiceState(activity, PlayerService.TOGGLE_SHUFFLE, null);
+			}
+		});
 
 		playerLabels.clear();
 		int[] labels = { R.id.tvTime, R.id.tvTimeLeft, R.id.tvTitle, R.id.tvArtist, R.id.tvAlbum };
@@ -125,6 +139,8 @@ public class PlayerFragment extends AbstractFragment {
 
 	public void updatePlayerStatus() {
 		setPlayIconTo(playerStatus.paused || playerStatus.stopped);
+		setRepeatIconTo(playerStatus.repeatMode);
+		setShuffleIconTo(playerStatus.shuffled);
 		showTitleDuration();
 		showCurrentPosition();
 		updateTitleInfo();
@@ -139,6 +155,22 @@ public class PlayerFragment extends AbstractFragment {
 			icon = res.getDrawable(R.drawable.ic_action_pause);
 		}
 		playerControls.get(BTN_PLAY).setImageDrawable(icon);
+	}
+	
+	private void setRepeatIconTo(int repeatMode) {
+		int[] icons = new int[] {R.drawable.ic_action_repeat_nothing, R.drawable.ic_action_repeat, R.drawable.ic_action_repeat_one};
+		playerControls.get(BTN_REPEAT).setImageDrawable(getResources().getDrawable(icons[repeatMode]));
+	}
+	
+	private void setShuffleIconTo(boolean shuffled) {
+		Drawable icon;
+		Resources res = getResources();
+		if (shuffled) {
+			icon = res.getDrawable(R.drawable.ic_action_shuffle);
+		} else {
+			icon = res.getDrawable(R.drawable.ic_action_do_not_shuffle);
+		}
+		playerControls.get(BTN_SHUFFLE).setImageDrawable(icon);
 	}
 
 	private void showCurrentPosition() {

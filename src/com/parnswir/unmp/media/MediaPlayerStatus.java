@@ -6,16 +6,18 @@ public class MediaPlayerStatus implements Serializable {
 	
 	private static final long serialVersionUID = -3086458695042317582L;
 	
+	public static final int DO_NOT_REPEAT = 0, REPEAT_ALL = 1, REPEAT_ONE = 2;
+	
 	public boolean 
 		stopped = true,
 		playing = false,
 		paused = false, 
-		shuffled = false, 
-		repeated = false;
+		shuffled = false;
 	
 	public int
 		length = 0,
-		position = 0;
+		position = 0,
+		repeatMode = DO_NOT_REPEAT;
 	
 	public String currentTitle = "";
 

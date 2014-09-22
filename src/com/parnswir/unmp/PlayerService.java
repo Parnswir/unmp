@@ -56,6 +56,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		NEW_PLAYLIST = 10,
 		MODIFY_PLAYLIST = 11,
 		
+		TOGGLE_REPEAT = 20,
+		TOGGLE_SHUFFLE = 21,
+		
 		STATUS = 255;
 
 	private Looper mServiceLooper;
@@ -95,6 +98,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case PREVIOUS: previous(); break;
 				case STATUS: broadcastStatus(); break;
 				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
+				case TOGGLE_REPEAT: toggleRepeat(); break;
+				case TOGGLE_SHUFFLE: toggleShuffle(); break;
 			}	
 		}
 	}
@@ -331,6 +336,21 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		} else {
 			playlist.children.remove(new MediaFile(deletion));
 		}
+	}
+	
+	private void toggleRepeat() {
+		status.repeatMode = (status.repeatMode + 1) % 3;
+		if (playlist != null) {
+			playlist.setRepeating(status.repeatMode == MediaPlayerStatus.REPEAT_ONE);
+			playlist.setRepeatingAll(status.repeatMode == MediaPlayerStatus.REPEAT_ALL);
+		}
+		broadcastStatus();
+	}
+	
+	private void toggleShuffle() {
+		status.shuffled = ! status.shuffled;
+		if (playlist != null) playlist.setShuffled(status.shuffled);
+		broadcastStatus();
 	}
 
 	@Override
