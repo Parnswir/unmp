@@ -1,6 +1,7 @@
 package com.parnswir.unmp.playlist;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,9 @@ public class Playlist extends PlaylistElement {
 	
 	private String name;
 	private int current;
+	
+	private int cronCurrent;
+	private ArrayList<Integer> chronology = new ArrayList<Integer>();
 	
 	public ArrayList<MediaFile> children = new ArrayList<MediaFile>();
 	
@@ -44,11 +48,34 @@ public class Playlist extends PlaylistElement {
 	}
 	
 	public void nextSource() {
-		setPosition(getPosition() + 1);
+		cronCurrent += 1;
+		if (chronology.size() > cronCurrent) {
+			setPosition(chronology.get(cronCurrent));
+		} else {
+			if (isShuffled()) {
+				Random random = new Random();
+				setPosition(random.nextInt(children.size()));
+			} else {
+				setPosition(getPosition() + 1);
+			}
+			chronology.add(getPosition());
+		}
 	}
 	
 	public void previousSource() {
-		setPosition(getPosition() - 1);
+		cronCurrent -= 1;
+		if (cronCurrent >= 0 && !chronology.isEmpty()) {
+			setPosition(chronology.get(cronCurrent));
+		} else {
+			if (isShuffled()) {
+				Random random = new Random();
+				setPosition(random.nextInt(children.size()));
+			} else {
+				setPosition(getPosition() - 1);
+			}
+			chronology.add(0, getPosition());
+			cronCurrent = 0;
+		}
 	}
 	
 	public boolean isAtEnd() {
