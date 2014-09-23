@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.jaudiotagger.tag.FieldKey;
 
-import com.parnswir.unmp.AlbumFragment;
 import com.parnswir.unmp.LibraryFragment;
 import com.parnswir.unmp.ListFragment;
 import com.parnswir.unmp.PlaylistsFragment;
@@ -67,7 +66,7 @@ public class C {
 		new FragmentProperties("Now Playing"),
 		new FragmentProperties("Playlist"),
 		new FragmentProperties("Artists", ListFragment.class),
-		new FragmentProperties("Albums", AlbumFragment.class),
+		new FragmentProperties("Albums", ListFragment.class),
 		new FragmentProperties("Genres", ListFragment.class),
 		new FragmentProperties("Playlists", PlaylistsFragment.class),
 		new FragmentProperties("Manage Library...", LibraryFragment.class),
