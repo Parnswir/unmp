@@ -37,12 +37,9 @@ public class ListFragment extends AbstractFragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	rootView = super.onCreateView(inflater, container, savedInstanceState);
-    	
     	inflate(R.layout.list_fragment);
     	showActionBar();
-    	
     	init();
-    	
         return rootView; 
     }
 	
@@ -110,6 +107,7 @@ public class ListFragment extends AbstractFragment {
 				playFile(itemList.get(position));
 				activity.selectItem(0);
 			} else {
+				showTitle(currentContent.names.get(position));
 				displayContentFor(itemList.get(position));
 				isInDetailedState = true;
 			}
