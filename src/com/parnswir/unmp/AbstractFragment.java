@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,5 +65,9 @@ public abstract class AbstractFragment extends Fragment {
 		playlist.children.add(new MediaFile(fileName));
 		playPlaylist(playlist);
 	}
+    
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    	return false;
+    }
     
 }

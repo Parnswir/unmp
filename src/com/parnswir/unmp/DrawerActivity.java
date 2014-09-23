@@ -51,20 +51,27 @@ public abstract class DrawerActivity extends Activity implements Observer {
         state.mDrawerToggle.onConfigurationChanged(newConfig);
     }
 	
-	
+	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-	    switch (keyCode) {
-		    case KeyEvent.KEYCODE_MENU:
-		        if (state.mDrawerLayout.isDrawerOpen(state.mDrawer)) {
-		        	state.mDrawerLayout.closeDrawer(state.mDrawer);
-		        } else {
-		        	state.mDrawerLayout.openDrawer(state.mDrawer);
-		        }
-		        return true;
-	    }
-	    return super.onKeyUp(keyCode, event);
-	}
-	
+		if (!currentFragment.onKeyUp(keyCode, event)) {
+		    switch (keyCode) {
+			    case KeyEvent.KEYCODE_MENU:
+			        if (state.mDrawerLayout.isDrawerOpen(state.mDrawer)) {
+			        	state.mDrawerLayout.closeDrawer(state.mDrawer);
+			        } else {
+			        	state.mDrawerLayout.openDrawer(state.mDrawer);
+			        }
+			        return true;
+			    case KeyEvent.KEYCODE_BACK:
+			    	if (selectedItem != 0) {
+			    		selectItem(0);
+			    		return true;
+			    	}
+		    }
+		    return super.onKeyUp(keyCode, event);
+		}
+		return true;
+	}	
 	
 	protected void initializeDrawer() {		
 		state.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

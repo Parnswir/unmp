@@ -30,9 +30,7 @@ public class MainActivity extends DrawerActivity implements Observer {
 	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        
         DB = DatabaseUtils.getDB(this);
-		
 		TagOptionSingleton.getInstance().setAndroid(true);
     }
 	
@@ -49,18 +47,6 @@ public class MainActivity extends DrawerActivity implements Observer {
         boolean drawerOpen = state.mDrawerLayout.isDrawerOpen(state.mDrawer);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
-    }
-	
-	
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-	    switch (keyCode) {
-		    case KeyEvent.KEYCODE_BACK:
-		    	if (selectedItem != 0) {
-		    		showPlayerHome();
-		    		return true;
-		    	} 
-	    }
-	    return super.onKeyUp(keyCode, event);
 	}
 	
 	
