@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,18 @@ public class ListFragment extends AbstractFragment {
 		itemList.clear();
 	}
 
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (isInDetailedState) {
+				displayContentFor(null);
+				isInDetailedState = false;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public class ListItemClickListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> adapter, View item, int position, long id) {
@@ -112,6 +125,6 @@ public class ListFragment extends AbstractFragment {
 				isInDetailedState = true;
 			}
 		}
-    }  
+    } 
 	
 }
