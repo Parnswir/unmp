@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -19,6 +20,7 @@ import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.CoverList;
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.IconicAdapter;
+import com.parnswir.unmp.playlist.Playlist;
 
 public class ListFragment extends AbstractFragment {
 	
@@ -29,9 +31,7 @@ public class ListFragment extends AbstractFragment {
 	protected ArrayList<String> itemList = new ArrayList<String>();
 	protected Button playAllButton;
 	
-	private String suffix = "";
-	private String tableName;
-	private String nameColumn;
+	private String suffix = "", tableName, nameColumn, join, currentID;
 	private boolean isInDetailedState = false;
 
 
@@ -63,11 +63,14 @@ public class ListFragment extends AbstractFragment {
 		tableName = C.LIST_FRAGMENT_TABLENAMES[activity.selectedItem - 2];
 		nameColumn = C.getNameColumnFor(tableName);
 		suffix = tableName;
+		join = DatabaseUtils.getJoinForTables(new String[] {tableName});
 		 
         contentList = (ListView) rootView.findViewById(R.id.contentList);
         contentList.setOnItemClickListener(new ListItemClickListener());
 		
 		playAllButton = (Button) rootView.findViewById(R.id.playAllButton);
+		playAllButton.setOnClickListener(new PlayAllClickListener());
+		
 		displayContentFor(null);
 	}
 	
@@ -79,7 +82,6 @@ public class ListFragment extends AbstractFragment {
 			cursor = DB.query(tableName, new String[] {C.COL_ID, nameColumn}, null, null, null, null, nameColumn);
 		} else {
 			contentList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, currentContent.names));
-			String join = DatabaseUtils.getJoinForTables(new String[] {tableName});
 			cursor = DB.query(join, 
 					new String[] {C.COL_FILE, C.COL_TITLE}, 
 					tableName + "." + C.COL_ID + " = ?", 
@@ -94,6 +96,7 @@ public class ListFragment extends AbstractFragment {
 			cursor.moveToNext();
 		} 
 		cursor.close();
+		currentID = id;
 	}
 
 	private void clearLists() {
@@ -126,5 +129,18 @@ public class ListFragment extends AbstractFragment {
 			}
 		}
     } 
+	
+	public class PlayAllClickListener implements OnClickListener {
+		@Override
+		public void onClick(View view) {
+			Playlist playlist = new Playlist();
+			String query = String.format("SELECT %s FROM %s", C.COL_FILE, C.TAB_TITLES);
+			if (isInDetailedState) {
+				query = String.format("SELECT %s FROM %s WHERE %s = %s", C.COL_FILE, join, tableName + "." + C.COL_ID, currentID);
+			}
+			playlist.addItemsFromFilter(DB, query);
+			playPlaylist(playlist);
+		}
+	}
 	
 }
