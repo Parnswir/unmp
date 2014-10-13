@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -28,6 +29,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 
 import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
@@ -289,7 +291,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void onResume() {
 		registerBroadcastReceiver();
 		status.stopped = false;
-	    broadcastStatus();
+		getMediaInformation();
+		broadcastStatus();
 	    startTimer();
 	}
 	
@@ -306,7 +309,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void setPlayerDataSource(String filePath) {
-		status.currentTitle = filePath.replace("file://", "");
+		status.file = filePath.replace("file://", "");
 		try {
 			player.setDataSource(filePath);
 		} catch (IllegalArgumentException e1) {
@@ -357,6 +360,25 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			playlist.setRepeatingAll(status.repeatMode == MediaPlayerStatus.REPEAT_ALL);
 			playlist.setShuffled(status.shuffled);
 		}
+	}
+	
+	private void getMediaInformation() {
+		String title = DatabaseUtils.normalize(status.file);
+		Cursor cursor = DatabaseUtils.getDB(this).query(DatabaseUtils.getGiantJoin(), new String[] {
+				C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST,
+				C.COL_ALBUM, C.COL_YEAR, C.COL_RATING }, C.COL_FILE + " = \""
+				+ title + "\"", null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			status.title = cursor.getString(1);
+			status.artist = cursor.getString(2);
+			status.album = cursor.getString(3);
+			status.year = cursor.getString(4);
+			status.rating = cursor.getInt(5);
+			//getAlbumArt(cursor.getString(3));
+			cursor.moveToNext();
+		}
+		cursor.close();
 	}
 
 	@Override

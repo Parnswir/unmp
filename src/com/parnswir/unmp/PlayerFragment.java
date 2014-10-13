@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,8 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
@@ -189,27 +186,17 @@ public class PlayerFragment extends AbstractFragment {
 	}
 
 	private void updateTitleInfo() {
-		if (!playerStatus.currentTitle.equals(currentTitle))
+		if (!playerStatus.file.equals(currentTitle))
 			setTitleInfo();
 	}
 
 	private void setTitleInfo() {
-		String title = DatabaseUtils.normalize(playerStatus.currentTitle);
-		Cursor cursor = DB.query(DatabaseUtils.getGiantJoin(), new String[] {
-				C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST,
-				C.COL_ALBUM, C.COL_YEAR, C.COL_RATING }, C.COL_FILE + " = \""
-				+ title + "\"", null, null, null, null);
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			playerLabels.get(LAB_TITLE).setText(cursor.getString(1));
-			playerLabels.get(LAB_ARTIST).setText(cursor.getString(2));
-			playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), "%s [%s]", cursor.getString(3), cursor.getString(4)));
-			setRating(cursor.getInt(5));
-			setAlbumArt(cursor.getString(3));
-			cursor.moveToNext();
-		}
-		cursor.close();
-		currentTitle = playerStatus.currentTitle;
+		playerLabels.get(LAB_TITLE).setText(playerStatus.title);
+		playerLabels.get(LAB_ARTIST).setText(playerStatus.artist);
+		playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), 
+				"%s [%s]", playerStatus.album, playerStatus.year));
+		setRating(playerStatus.rating);
+		setAlbumArt(playerStatus.album);
 	}
 
 	private void setRating(int rating) {

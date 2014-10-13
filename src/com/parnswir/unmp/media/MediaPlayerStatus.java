@@ -17,9 +17,17 @@ public class MediaPlayerStatus implements Serializable {
 	public int
 		length = 0,
 		position = 0,
-		repeatMode = REPEAT_ALL;
+		repeatMode = REPEAT_ALL,
+		rating = 0;
 	
-	public String currentTitle = "";
+	public String 
+		file = "",
+		title = "",
+		album = "",
+		artist = "",
+		publisher = "",
+		composer = "",
+		year = "";
 
 	public MediaPlayerStatus() {
 		super();
