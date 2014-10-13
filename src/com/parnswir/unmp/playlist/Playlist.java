@@ -20,6 +20,11 @@ public class Playlist extends PlaylistElement {
 	public ArrayList<MediaFile> children = new ArrayList<MediaFile>();
 	
 	
+	public Playlist() {
+		chronology.add(0);
+		cronCurrent = 0;
+	}
+	
 	public void addItemsFromFilter(SQLiteDatabase db, String query) {
 		Cursor cursor = db.rawQuery(query, null);
 		boolean successful = cursor.moveToFirst();

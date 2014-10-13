@@ -20,6 +20,7 @@ import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.CoverList;
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.IconicAdapter;
+import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
 
 public class ListFragment extends AbstractFragment {
@@ -116,12 +117,23 @@ public class ListFragment extends AbstractFragment {
 		return false;
 	}
 	
+	private Playlist constructPlaylist() {
+		Playlist playlist = new Playlist();
+		String query = String.format("SELECT %s FROM %s", C.COL_FILE, C.TAB_TITLES);
+		if (isInDetailedState) {
+			query = String.format("SELECT %s FROM %s WHERE %s = %s", C.COL_FILE, join, tableName + "." + C.COL_ID, currentID);
+		}
+		playlist.addItemsFromFilter(DB, query);
+		return playlist;
+	}
+	
 	public class ListItemClickListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> adapter, View item, int position, long id) {
 			if (isInDetailedState) {
-				playFile(itemList.get(position));
-				activity.selectItem(0);
+				Playlist playlist = constructPlaylist();
+				playlist.children.add(0, new MediaFile(itemList.get(position)));
+				playPlaylist(playlist);
 			} else {
 				showTitle(currentContent.names.get(position));
 				displayContentFor(itemList.get(position));
@@ -133,12 +145,7 @@ public class ListFragment extends AbstractFragment {
 	public class PlayAllClickListener implements OnClickListener {
 		@Override
 		public void onClick(View view) {
-			Playlist playlist = new Playlist();
-			String query = String.format("SELECT %s FROM %s", C.COL_FILE, C.TAB_TITLES);
-			if (isInDetailedState) {
-				query = String.format("SELECT %s FROM %s WHERE %s = %s", C.COL_FILE, join, tableName + "." + C.COL_ID, currentID);
-			}
-			playlist.addItemsFromFilter(DB, query);
+			Playlist playlist = constructPlaylist();
 			playPlaylist(playlist);
 		}
 	}
