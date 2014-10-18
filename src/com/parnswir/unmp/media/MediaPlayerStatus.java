@@ -28,6 +28,8 @@ public class MediaPlayerStatus implements Serializable {
 		publisher = "",
 		composer = "",
 		year = "";
+	
+	public byte[] cover = null;
 
 	public MediaPlayerStatus() {
 		super();

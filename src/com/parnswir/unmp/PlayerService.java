@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -25,11 +26,11 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 
+import com.parnswir.unmp.core.AlbumCoverRetriever;
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
+import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
@@ -93,7 +94,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		public void handleMessage(Message msg) {
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
-				case START: setForeground(); break;
+				case START: showNotification(); break;
 				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); break;
 				case PAUSE: requestPause(); break;
 				case NEXT: next(); break;
@@ -140,16 +141,17 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		if (player != null) player.release();
 	}
 	
-	private void setForeground() {
+	private void showNotification() {
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		
-		Builder builder = new NotificationCompat.Builder(getApplicationContext())
+		Builder builder = new Notification.Builder(getApplicationContext())
 			.setSmallIcon(R.drawable.ic_action_play)
-			.setUsesChronometer(true)
+			.setLargeIcon(ImageLoader.decodeBitmap(status.cover, ImageLoader.DO_COMPRESS))
+			.setOngoing(true)
 			.setContentIntent(pendingIntent)
-			.setContentTitle("Apotheosis")
-			.setContentText("Greendjohn")
+			.setContentTitle(status.title)
+			.setContentText(status.artist)
 			.addAction(R.drawable.ic_action_play, "Play", pendingIntent)
 			.addAction(R.drawable.ic_action_next, "Next", pendingIntent);
 		Notification notification = builder.build();
@@ -292,6 +294,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		registerBroadcastReceiver();
 		status.stopped = false;
 		getMediaInformation();
+		showNotification();
 		broadcastStatus();
 	    startTimer();
 	}
@@ -375,10 +378,14 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			status.album = cursor.getString(3);
 			status.year = cursor.getString(4);
 			status.rating = cursor.getInt(5);
-			//getAlbumArt(cursor.getString(3));
+			status.cover = getAlbumArtFor(cursor.getString(3));
 			cursor.moveToNext();
 		}
 		cursor.close();
+	}
+	
+	private byte[] getAlbumArtFor(String name) {
+		return (new AlbumCoverRetriever()).getBitmap(name, DatabaseUtils.getDB(this));
 	}
 
 	@Override
