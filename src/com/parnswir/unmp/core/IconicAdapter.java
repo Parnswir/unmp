@@ -11,11 +11,13 @@ import com.parnswir.unmp.R;
 
 public class IconicAdapter extends ArrayAdapter<String> {
 	
-	ImageLoader loader;
+	private ImageLoader loader;
+	private AlbumCoverRetriever retriever;
 	
 	public IconicAdapter(Activity activity, CoverList items) {
 		super(activity, R.layout.image_row_layout, R.id.label, items.names);
 		loader = new ImageLoader(activity, DatabaseUtils.getDB(activity));
+		retriever = new AlbumCoverRetriever();
 	}
 	
 	@Override
@@ -25,7 +27,7 @@ public class IconicAdapter extends ArrayAdapter<String> {
 		ImageView icon = (ImageView)row.findViewById(R.id.icon);
 		
 		String name = (String) text.getText();
-		loader.displayAlbumImage(name, icon, ImageLoader.DO_COMPRESS);
+		loader.displayAlbumImage(name, icon, ImageLoader.DO_COMPRESS, retriever);
 		
 		return(row);
 	}

@@ -34,26 +34,26 @@ public class ImageLoader {
         DB = db;
     }
     
-    public void displayAlbumImage(String albumName, ImageView imageView, boolean compress)
+    public void displayAlbumImage(String name, ImageView imageView, boolean compress, ImageRetriever handler)
     {
-        imageViews.put(imageView, albumName);
-        Bitmap bitmap = memoryCache.get(albumName);
+        imageViews.put(imageView, name);
+        Bitmap bitmap = memoryCache.get(name);
         if(bitmap != null)
             imageView.setImageBitmap(bitmap);
         else
         {
-            queuePhoto(albumName, imageView, compress);
+            queuePhoto(name, imageView, compress, handler);
             imageView.setImageResource(STUB_ID);
         }
     }
         
-    private void queuePhoto(String albumName, ImageView imageView, boolean compress)
+    private void queuePhoto(String albumName, ImageView imageView, boolean compress, ImageRetriever handler)
     {
-        PhotoToLoad p = new PhotoToLoad(albumName, imageView, compress);
+        PhotoToLoad p = new PhotoToLoad(albumName, imageView, compress, handler);
         executorService.submit(new PhotosLoader(p));
     }
     
-    private Bitmap decode(byte[] b, boolean compress){
+    public static Bitmap decodeBitmap(byte[] b, boolean compress){
     	if (b == null)
     		return null;
     	
@@ -84,11 +84,13 @@ public class ImageLoader {
         public String albumName;
         public ImageView imageView;
         public boolean doCompress;
+        public ImageRetriever handler;
         
-        public PhotoToLoad(String albumName, ImageView imageView, boolean compress){
+        public PhotoToLoad(String albumName, ImageView imageView, boolean compress, ImageRetriever handler){
             this.albumName = albumName; 
             this.imageView = imageView;
-            doCompress = compress;
+            this.doCompress = compress;
+            this.handler = handler;
         }
     }
     
@@ -103,7 +105,7 @@ public class ImageLoader {
             try{
                 if(imageViewReused(photoToLoad))
                     return;
-                Bitmap bmp = decode(DatabaseUtils.getAlbumArtFor(photoToLoad.albumName, DB), photoToLoad.doCompress);
+                Bitmap bmp = decodeBitmap(photoToLoad.handler.getBitmap(photoToLoad.albumName, DB), photoToLoad.doCompress);
                 memoryCache.put(photoToLoad.albumName, bmp);
                 if(imageViewReused(photoToLoad))
                     return;

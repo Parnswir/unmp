@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.parnswir.unmp.core.AlbumCoverRetriever;
 import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
@@ -206,7 +207,7 @@ public class PlayerFragment extends AbstractFragment {
 	private void setAlbumArt(String albumName) {
 		ImageView view = (ImageView) rootView.findViewById(R.id.ivCover);
 		imageLoader.displayAlbumImage(albumName, view,
-				ImageLoader.DO_NOT_COMPRESS);
+				ImageLoader.DO_NOT_COMPRESS, new AlbumCoverRetriever());
 	}
 
 	private void play() {
