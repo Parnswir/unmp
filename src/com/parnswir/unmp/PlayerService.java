@@ -5,7 +5,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Notification;
-import android.app.Notification.Builder;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -31,6 +30,7 @@ import com.parnswir.unmp.core.AlbumCoverRetriever;
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ImageLoader;
+import com.parnswir.unmp.core.NotificationBuilder;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
@@ -145,7 +145,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		
-		Builder builder = new Notification.Builder(getApplicationContext())
+		NotificationBuilder builder = NotificationBuilder.getInstance(getApplicationContext());
+		builder
 			.setSmallIcon(R.drawable.ic_action_play)
 			.setLargeIcon(ImageLoader.decodeBitmap(status.cover, ImageLoader.DO_COMPRESS))
 			.setOngoing(true)
