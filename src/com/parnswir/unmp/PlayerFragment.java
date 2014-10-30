@@ -59,9 +59,8 @@ public class PlayerFragment extends AbstractFragment {
 
 		imageLoader = new ImageLoader(activity, DB);
 		setupPlayerControls();
-		
-		if (! preferences.getBoolean(C.PLAYING_STATE, false))
-			loadStatus();
+
+		loadStatus();
 		updatePlayerStatus();
 
 		return rootView;
@@ -76,11 +75,10 @@ public class PlayerFragment extends AbstractFragment {
 	@Override
 	public void onPause() {
 		stopReceiving();
-		savePlayingState();
+		saveStatus();
 		if (playerStatus.playing) {
 			PlayerService.setPlayerServiceState(activity, PlayerService.START, null);
 		} else {
-			saveStatus();
 			PlayerService.setPlayerServiceState(activity, PlayerService.STOP, null);
 		}
 		super.onPause();
@@ -114,12 +112,6 @@ public class PlayerFragment extends AbstractFragment {
 		}
 		if (status != null)
 			playerStatus = status;
-	}
-	
-	private void savePlayingState() {
-		Editor editor = preferences.edit();
-		editor.putBoolean(C.PLAYING_STATE, playerStatus.playing);
-		editor.apply();
 	}
 
 	public void setupPlayerControls() {
