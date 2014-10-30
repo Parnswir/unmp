@@ -60,7 +60,7 @@ public class PlayerFragment extends AbstractFragment {
 		imageLoader = new ImageLoader(activity, DB);
 		setupPlayerControls();
 		
-		if (! preferences.getBoolean("playing", false))
+		if (! preferences.getBoolean(C.PLAYING_STATE, false))
 			loadStatus();
 		updatePlayerStatus();
 
@@ -118,7 +118,7 @@ public class PlayerFragment extends AbstractFragment {
 	
 	private void savePlayingState() {
 		Editor editor = preferences.edit();
-		editor.putBoolean("playing", playerStatus.playing);
+		editor.putBoolean(C.PLAYING_STATE, playerStatus.playing);
 		editor.apply();
 	}
 

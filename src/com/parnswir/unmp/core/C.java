@@ -63,6 +63,7 @@ public class C {
 	public static final String PLAYLIST = "_p";
 	
 	public static final String STATUS_FILE_NAME = "current.status";
+	public static final String PLAYING_STATE = "is_playing";
 	
 	public static final FragmentProperties[] FRAGMENTS = {
 		new FragmentProperties("Now Playing"),
