@@ -45,7 +45,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		PLAYLIST_ADDITION = C.PREFIX + "addition",
 		PLAYLIST_DELETION = C.PREFIX + "deletion",
 		FILE_NAME = C.PREFIX + "file_name",
-		FROM_PLAYLIST = C.PREFIX + "from_playlist";
+		FROM_PLAYLIST = C.PREFIX + "from_playlist",
+		TIME = C.PREFIX + "time";
 	
 	public static final int 
 		STOP = 0,
@@ -55,8 +56,9 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		PAUSE = 4,
 		NEXT = 5,
 		PREVIOUS = 6,
+		SET_TIME = 7,
 		
-		NEW_PLAYLIST = 10,
+		LOAD_PLAYLIST = 10,
 		MODIFY_PLAYLIST = 11,
 		
 		TOGGLE_REPEAT = 20,
@@ -95,11 +97,12 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
 				case START: showNotification(); break;
-				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); break;
+				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); setTime(msg.getData()); break;
 				case PAUSE: requestPause(); break;
 				case NEXT: next(); break;
 				case PREVIOUS: previous(); break;
 				case STATUS: broadcastStatus(); break;
+				case SET_TIME: setTime(msg.getData()); break;
 				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
 				case TOGGLE_REPEAT: toggleRepeat(); break;
 				case TOGGLE_SHUFFLE: toggleShuffle(); break;
@@ -201,7 +204,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void startPlaylist() {
-		playlist.setPosition(0);
+		if (playlist == null) return;
 		playCurrentFile();
 	}
 	
@@ -329,10 +332,17 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private void preparePlayer() {
 		try {
-			player.prepareAsync();
+			player.prepare();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
+	
+	private void setTime(Bundle bundle) {
+		int time = bundle.getInt(TIME);
+		player.seekTo(time);
 	}
 	
 	private void modifyPlaylist(Bundle bundle) {
@@ -416,6 +426,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private MediaPlayerStatus getPlayerStatus() {
 		status.playing = player.isPlaying();
+		status.playlist = playlist;
 		if (status.playing || status.paused) {
 			status.length = player.getDuration();
 			status.position = player.getCurrentPosition();

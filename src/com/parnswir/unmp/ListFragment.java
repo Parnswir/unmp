@@ -133,7 +133,7 @@ public class ListFragment extends AbstractFragment {
 			if (isInDetailedState) {
 				Playlist playlist = constructPlaylist();
 				playlist.children.add(0, new MediaFile(itemList.get(position)));
-				playPlaylist(playlist);
+				playPlaylist(playlist, 0);
 			} else {
 				showTitle(currentContent.names.get(position));
 				displayContentFor(itemList.get(position));
@@ -146,7 +146,7 @@ public class ListFragment extends AbstractFragment {
 		@Override
 		public void onClick(View view) {
 			Playlist playlist = constructPlaylist();
-			playPlaylist(playlist);
+			playPlaylist(playlist, 0);
 		}
 	}
 	

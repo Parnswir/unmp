@@ -1,6 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.Hashtable;
 import java.util.Observer;
 
 import android.app.Activity;
@@ -21,8 +20,6 @@ import android.widget.RelativeLayout;
 import com.parnswir.unmp.core.C;
 
 public abstract class DrawerActivity extends Activity implements Observer {
-
-	public static Hashtable<Integer, Fragment> fragmentCache = new Hashtable<Integer, Fragment>();
 	
 	protected DrawerState state;
 	protected AbstractFragment currentFragment;
@@ -140,15 +137,8 @@ public abstract class DrawerActivity extends Activity implements Observer {
 	
 	
 	private Fragment getFragment(int position) {
-		Fragment fragment = null;
-		if (fragmentCache.contains(position)) {
-			fragment = fragmentCache.get(position);
-		} else {
-			Class<?> fragmentClass = C.FRAGMENTS[position].handler;
-			fragment = getFragmentInstance(fragmentClass);
-			fragmentCache.put(position, fragment);
-		}
-		return fragment;
+		Class<?> fragmentClass = C.FRAGMENTS[position].handler;
+		return getFragmentInstance(fragmentClass);
 	}
 	
 	
@@ -156,9 +146,7 @@ public abstract class DrawerActivity extends Activity implements Observer {
 		try {
 			return (Fragment) fragmentClass.newInstance();
 		} catch (InstantiationException e) {
-			
 		} catch (IllegalAccessException e) {
-			
 		}
 		return null;
 	}

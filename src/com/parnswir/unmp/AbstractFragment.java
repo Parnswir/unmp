@@ -55,19 +55,22 @@ public abstract class AbstractFragment extends Fragment {
     	actionBar.setTitle(title);
     }
     
-    protected void playPlaylist(Playlist playlist) {
-    	PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+    protected void playPlaylist(Playlist playlist, int position) {
+    	if (playlist == null) return;
+    	Bundle bundle = playlist.getBundled(PlayerService.FROM_PLAYLIST);
+    	bundle.putInt(PlayerService.TIME, position);
+    	PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, bundle);
     	activity.selectItem(0);
     }
     
     protected void playFile(String fileName) {
 		Playlist playlist = new Playlist();
 		playlist.children.add(new MediaFile(fileName));
-		playPlaylist(playlist);
+		playPlaylist(playlist, 0);
 	}
     
     public boolean onKeyUp(int keyCode, KeyEvent event) {
     	return false;
     }
-    
+   
 }

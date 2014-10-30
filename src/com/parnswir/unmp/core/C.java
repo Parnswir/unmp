@@ -62,6 +62,8 @@ public class C {
 	public static final String NUMBEROFPLAYLISTS = "_nop";
 	public static final String PLAYLIST = "_p";
 	
+	public static final String STATUS_FILE_NAME = "current.status";
+	
 	public static final FragmentProperties[] FRAGMENTS = {
 		new FragmentProperties("Now Playing"),
 		new FragmentProperties("Playlist"),

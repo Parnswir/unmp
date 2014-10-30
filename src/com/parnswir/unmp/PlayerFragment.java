@@ -1,5 +1,11 @@
 package com.parnswir.unmp;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -7,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,6 +28,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.parnswir.unmp.core.AlbumCoverRetriever;
+import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 
@@ -35,14 +43,12 @@ public class PlayerFragment extends AbstractFragment {
 	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
 	private ProgressBar currentTitleProgress;
 	private RatingBar ratingBar;
-
-	private String currentTitle = "";
 	private ImageLoader imageLoader;
 
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
 	private BroadcastReceiver statusBroadcastReceiver;
 	private boolean receiving = false;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -52,8 +58,10 @@ public class PlayerFragment extends AbstractFragment {
 		showActionBar();
 
 		imageLoader = new ImageLoader(activity, DB);
-
 		setupPlayerControls();
+		
+		if (! preferences.getBoolean("playing", false))
+			loadStatus();
 		updatePlayerStatus();
 
 		return rootView;
@@ -68,12 +76,50 @@ public class PlayerFragment extends AbstractFragment {
 	@Override
 	public void onPause() {
 		stopReceiving();
+		savePlayingState();
 		if (playerStatus.playing) {
 			PlayerService.setPlayerServiceState(activity, PlayerService.START, null);
 		} else {
+			saveStatus();
 			PlayerService.setPlayerServiceState(activity, PlayerService.STOP, null);
 		}
 		super.onPause();
+	}
+
+	private void saveStatus() {
+		FileOutputStream fos;
+		try {
+			fos = activity.openFileOutput(C.STATUS_FILE_NAME, Context.MODE_PRIVATE);
+			ObjectOutputStream os = new ObjectOutputStream(fos);
+			playerStatus.stopped = true;
+			playerStatus.paused = false;
+			os.writeObject(playerStatus);
+			os.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+	}
+	
+	private void loadStatus() {
+		MediaPlayerStatus status = new MediaPlayerStatus();
+		FileInputStream fis;
+		try {
+			fis = activity.openFileInput(C.STATUS_FILE_NAME);
+			ObjectInputStream is = new ObjectInputStream(fis);
+			status = (MediaPlayerStatus) is.readObject();
+			is.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		if (status != null)
+			playerStatus = status;
+	}
+	
+	private void savePlayingState() {
+		Editor editor = preferences.edit();
+		editor.putBoolean("playing", playerStatus.playing);
+		editor.apply();
 	}
 
 	public void setupPlayerControls() {
@@ -185,11 +231,6 @@ public class PlayerFragment extends AbstractFragment {
 	}
 
 	private void updateTitleInfo() {
-		if (!playerStatus.file.equals(currentTitle))
-			setTitleInfo();
-	}
-
-	private void setTitleInfo() {
 		playerLabels.get(LAB_TITLE).setText(playerStatus.title);
 		playerLabels.get(LAB_ARTIST).setText(playerStatus.artist);
 		playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), 
@@ -209,7 +250,11 @@ public class PlayerFragment extends AbstractFragment {
 	}
 
 	private void play() {
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, null);
+		if (playerStatus.paused) {
+			PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, null);
+		} else {
+			playPlaylist(playerStatus.playlist, playerStatus.position);
+		}
 	}
 
 	private void pause() {
@@ -223,8 +268,6 @@ public class PlayerFragment extends AbstractFragment {
 			IntentFilter statusFilter = new IntentFilter(PlayerService.STATUS_INTENT);
 			activity.registerReceiver(statusBroadcastReceiver, statusFilter);
 		}
-
-		PlayerService.setPlayerServiceState(activity, PlayerService.STATUS,	null);
 	}
 
 	private void stopReceiving() {

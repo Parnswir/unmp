@@ -131,7 +131,7 @@ public class PlaylistsFragment extends AbstractFragment {
 		}
 	
 		protected void onPostExecute(Playlist result) {
-			playPlaylist(result);
+			playPlaylist(result, 0);
 			if(dialog != null && dialog.isShowing()){
 				dialog.dismiss();
 			}

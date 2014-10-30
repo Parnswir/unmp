@@ -21,7 +21,7 @@ public class ImageLoader {
 	public static final boolean DO_NOT_COMPRESS = false;
 	
 	private static final int STUB_ID = R.drawable.default_image;
-	private static final int REQUIRED_SIZE = 128;
+	private static final int REQUIRED_SIZE = 64;
     
     private MemoryCache memoryCache = new MemoryCache();
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
@@ -38,12 +38,10 @@ public class ImageLoader {
     {
         imageViews.put(imageView, name);
         Bitmap bitmap = memoryCache.get(name);
-        if(bitmap != null)
+        if(bitmap != null) {
             imageView.setImageBitmap(bitmap);
-        else
-        {
+        } else {
             queuePhoto(name, imageView, compress, handler);
-            imageView.setImageResource(STUB_ID);
         }
     }
         
