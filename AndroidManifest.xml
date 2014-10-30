@@ -29,28 +29,6 @@
             android:theme="@style/PlayerTheme" >
         </activity>
         <activity
-            android:name="com.parnswir.unmp.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.parnswir.unmp.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.parnswir.unmp.DebugActivity"
-            android:label="@string/title_activity_debug"
-            android:theme="@style/PlayerTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.parnswir.unmp.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.parnswir.unmp.LibraryActivity"
-            android:label="@string/title_activity_library" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.parnswir.unmp.MainActivity" />
-        </activity>
-        <activity
             android:theme="@android:style/Theme.Black.NoTitleBar"
             android:name="com.parnswir.unmp.SplashActivity"
             android:label="@string/app_name" >

@@ -23,8 +23,6 @@ import android.widget.TextView;
 import com.parnswir.unmp.core.AlbumCoverRetriever;
 import com.parnswir.unmp.core.ImageLoader;
 import com.parnswir.unmp.media.MediaPlayerStatus;
-import com.parnswir.unmp.playlist.MediaFile;
-import com.parnswir.unmp.playlist.Playlist;
 
 public class PlayerFragment extends AbstractFragment {
 
@@ -211,10 +209,7 @@ public class PlayerFragment extends AbstractFragment {
 	}
 
 	private void play() {
-		Playlist playlist = new Playlist();
-		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/MIOIOIN/MOON EP/03 Hydrogen.mp3"));
-		playlist.children.add(new MediaFile("file:///storage/sdcard0/Music/Andreas Waldetoft/Europa Universalis III Soundtrack/04 Conquistador - Main Theme.mp3"));
-		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, playlist.getBundled(PlayerService.FROM_PLAYLIST));
+		PlayerService.setPlayerServiceState(activity, PlayerService.PLAY, null);
 	}
 
 	private void pause() {

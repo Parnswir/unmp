@@ -237,6 +237,7 @@ private List<String> getDirectories(String dir)
  return dirs;
 }
 
+@SuppressWarnings("deprecation")
 private AlertDialog.Builder createDirectoryChooserDialog(String title, List<String> listItems,
      DialogInterface.OnClickListener onClickListener)
 {
