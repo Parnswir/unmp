@@ -64,6 +64,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		TOGGLE_REPEAT = 20,
 		TOGGLE_SHUFFLE = 21,
 		
+		HIDE_NOTIFICATION = 31,
+		
 		STATUS = 255;
 
 	private Looper mServiceLooper;
@@ -74,6 +76,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	
 	private NoisyAudioStreamReceiver noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
 	private boolean broadcastIsRegistered = false;
+	private boolean showingNotification = false;
 	
 	private Timer secondsTimer = new Timer(true);
 	
@@ -96,7 +99,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		public void handleMessage(Message msg) {
 			switch (msg.arg2) {
 				case STOP: stop(); stopSelf(msg.arg1); stopForeground(true); break;
-				case START: showNotification(); break;
+				case START: showingNotification = true; showNotification(); break;
 				case PLAY: handlePlayBundle(msg.getData()); startPlaylist(); setTime(msg.getData()); break;
 				case PAUSE: requestPause(); break;
 				case NEXT: next(); break;
@@ -106,6 +109,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 				case MODIFY_PLAYLIST: modifyPlaylist(msg.getData()); break;
 				case TOGGLE_REPEAT: toggleRepeat(); break;
 				case TOGGLE_SHUFFLE: toggleShuffle(); break;
+				case HIDE_NOTIFICATION: showingNotification = false; stopForeground(true); break;
 			}	
 		}
 	}
@@ -145,6 +149,8 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	}
 	
 	private void showNotification() {
+		if (!showingNotification) return;
+		
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		

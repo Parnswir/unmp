@@ -70,6 +70,7 @@ public class PlayerFragment extends AbstractFragment {
 	public void onStart() {
 		super.onStart();
 		setupIntentReceiver();
+		PlayerService.setPlayerServiceState(activity, PlayerService.HIDE_NOTIFICATION, null);
 	}
 
 	@Override
