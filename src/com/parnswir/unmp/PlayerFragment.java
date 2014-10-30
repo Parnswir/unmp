@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,8 +22,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.parnswir.unmp.core.AlbumCoverRetriever;
@@ -41,7 +40,7 @@ public class PlayerFragment extends AbstractFragment {
 
 	private ArrayList<ImageButton> playerControls = new ArrayList<ImageButton>();
 	private ArrayList<TextView> playerLabels = new ArrayList<TextView>();
-	private ProgressBar currentTitleProgress;
+	private SeekBar currentTitleProgress;
 	private RatingBar ratingBar;
 	private ImageLoader imageLoader;
 
@@ -167,7 +166,7 @@ public class PlayerFragment extends AbstractFragment {
 			playerLabels.add((TextView) rootView.findViewById(label));
 		}
 
-		currentTitleProgress = (ProgressBar) rootView.findViewById(R.id.seekBar);
+		currentTitleProgress = (SeekBar) rootView.findViewById(R.id.seekBar);
 		ratingBar = (RatingBar) rootView.findViewById(R.id.ratingBar);
 		ratingBar.setMax(10);
 	}
