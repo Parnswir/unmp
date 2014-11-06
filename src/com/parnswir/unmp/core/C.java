@@ -67,16 +67,14 @@ public class C {
 	
 	public static final FragmentProperties[] FRAGMENTS = {
 		new FragmentProperties("Now Playing"),
-		new FragmentProperties("Playlist"),
-		new FragmentProperties("Artists", ListFragment.class),
-		new FragmentProperties("Albums", ListFragment.class),
-		new FragmentProperties("Genres", ListFragment.class),
+		new FragmentProperties("Current Playlist"),
+		new FragmentProperties("Artists", ListFragment.class, TAB_ARTISTS),
+		new FragmentProperties("Albums", ListFragment.class, TAB_ALBUMS),
+		new FragmentProperties("Genres", ListFragment.class, TAB_GENRES),
 		new FragmentProperties("Playlists", PlaylistsFragment.class),
 		new FragmentProperties("Manage Library...", LibraryFragment.class),
 		new FragmentProperties("Settings")
 	};
-	
-	public static final String[] LIST_FRAGMENT_TABLENAMES = {TAB_ARTISTS, TAB_ALBUMS, TAB_GENRES};
 	
 	public static final Map<String, String[]> COLUMNS = new HashMap<String, String[]>();
 	static{

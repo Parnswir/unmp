@@ -41,14 +41,27 @@ public class ProjectResources {
 	public static class FragmentProperties {
 		public String title;
 		public Class<?> handler = PlayerFragment.class;
+		public String tableName;
 		
-		public FragmentProperties(String aTitle, Class<?> aHandler) {
-			title = aTitle;
-			handler = aHandler;
+		public FragmentProperties(String title, Class<?> handler, String tableName) {
+			super();
+			init(title, handler, tableName);
 		}
 		
-		public FragmentProperties(String aTitle) {
+		public FragmentProperties(String title, Class<?> handler) {
+			super();
+			init(title, handler, "");
+		}
+		
+		public FragmentProperties(String title) {
+			super();
+			init(title, PlayerFragment.class, "");
+		}
+		
+		private void init(String aTitle, Class<?> aHandler, String aTableName) {
 			title = aTitle;
+			handler = aHandler;
+			tableName = aTableName;
 		}
 	}
 

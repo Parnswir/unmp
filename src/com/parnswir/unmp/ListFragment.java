@@ -61,7 +61,7 @@ public class ListFragment extends AbstractFragment {
 	}
 	
 	public void init() {
-		tableName = C.LIST_FRAGMENT_TABLENAMES[activity.selectedItem - 2];
+		tableName = C.FRAGMENTS[activity.selectedItem].tableName;
 		nameColumn = C.getNameColumnFor(tableName);
 		suffix = tableName;
 		join = DatabaseUtils.getJoinForTables(new String[] {tableName});
