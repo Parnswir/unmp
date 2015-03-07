@@ -1,5 +1,6 @@
 package com.parnswir.unmp;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -94,8 +95,11 @@ public abstract class DrawerActivity extends Activity implements Observer {
 
         state.mDrawerLayout.setDrawerListener(state.mDrawerToggle);
         state.isInitialized = true;
-	        
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         state.mDrawerToggle.syncState();
 	}
 	
