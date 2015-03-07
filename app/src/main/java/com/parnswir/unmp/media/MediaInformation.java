@@ -10,6 +10,11 @@ import com.parnswir.unmp.core.DatabaseUtils;
 
 import android.content.ContentValues;
 
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.images.Artwork;
+
 public class MediaInformation {
 	
 	private HashMap<String, Object> extractedTags;

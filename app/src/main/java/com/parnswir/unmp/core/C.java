@@ -1,13 +1,15 @@
 package com.parnswir.unmp.core;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import com.parnswir.unmp.LibraryFragment;
 import com.parnswir.unmp.ListFragment;
 import com.parnswir.unmp.PlaylistsFragment;
 import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
+
+import org.jaudiotagger.tag.FieldKey;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class C {
 	
@@ -48,7 +50,7 @@ public class C {
 	public static final String COL_TITLE_ID = COL_TITLE + COL__ID; 
 	
 	public static final String[] FIELDNAMES = {COL_TITLE, COL_RATING, COL_YEAR, COL_TRACK_NUMBER, COL_ALBUM, COL_ARTIST, COL_COMPOSER, COL_PUBLISHER, COL_GENRE, COL_LENGTH, COL_FILE, COL_BIT_RATE};
-	public static final FieldKey[] FIELDS = {FieldKey.TITLE, FieldKey.RATING, FieldKey.YEAR, FieldKey.TRACK, FieldKey.ALBUM, FieldKey.ARTIST, FieldKey.COMPOSER, FieldKey.RECORD_LABEL, FieldKey.GENRE}; 
+	public static final FieldKey[] FIELDS = {FieldKey.TITLE, FieldKey.RATING, FieldKey.YEAR, FieldKey.TRACK, FieldKey.ALBUM, FieldKey.ARTIST, FieldKey.COMPOSER, FieldKey.RECORD_LABEL, FieldKey.GENRE};
 	
 	public static final String ALBUM_ART_NONE = "NONE";
 	public static final String ALBUM_ART_BLOB = "BLOB";
