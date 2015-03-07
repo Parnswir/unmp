@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -150,7 +151,9 @@ public abstract class DrawerActivity extends Activity implements Observer {
 		try {
 			return (Fragment) fragmentClass.newInstance();
 		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
+            Log.w(getPackageName(), e.getMessage());
+        } catch (IllegalAccessException e) {
+            Log.w(getPackageName(), e.getMessage());
 		}
 		return null;
 	}
