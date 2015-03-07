@@ -386,23 +386,23 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 		String title = DatabaseUtils.normalize(status.file);
 		Cursor cursor = DatabaseUtils.getDB(this).query(DatabaseUtils.getGiantJoin(), new String[] {
 				C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST,
-				C.COL_ALBUM, C.COL_YEAR, C.COL_RATING }, C.COL_FILE + " = \""
+				C.COL_ALBUM, C.TAB_ALBUMS + "." + C.COL_ID, C.COL_YEAR, C.COL_RATING }, C.COL_FILE + " = \""
 				+ title + "\"", null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			status.title = cursor.getString(1);
 			status.artist = cursor.getString(2);
 			status.album = cursor.getString(3);
-			status.year = cursor.getString(4);
-			status.rating = cursor.getInt(5);
-			status.cover = getAlbumArtFor(cursor.getString(3));
+            status.cover = getAlbumArtFor(cursor.getInt(4));
+            status.year = cursor.getString(5);
+            status.rating = cursor.getInt(6);
 			cursor.moveToNext();
 		}
 		cursor.close();
 	}
 	
-	private byte[] getAlbumArtFor(String name) {
-		return (new AlbumCoverRetriever()).getBitmap(name, DatabaseUtils.getDB(this));
+	private byte[] getAlbumArtFor(int albumID) {
+		return (new AlbumCoverRetriever()).getBitmap(albumID, DatabaseUtils.getDB(this));
 	}
 
 	@Override

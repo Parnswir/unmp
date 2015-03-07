@@ -5,6 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 public interface ImageRetriever {
 
-	public byte[] getBitmap(String name, SQLiteDatabase DB);
+	public byte[] getBitmap(int ID, SQLiteDatabase DB);
 	
 }

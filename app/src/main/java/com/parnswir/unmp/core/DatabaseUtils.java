@@ -94,9 +94,8 @@ public class DatabaseUtils {
 		}		
 	}
 	
-	public static byte[] getAlbumArtFor(String albumName, SQLiteDatabase db) {
-		String id = getIDForTableEntryByName(C.TAB_ALBUMS, albumName, db);
-		String innerSelection = String.format("SELECT %s.%s FROM %s, %s%s AS ta WHERE %s.%s=ta.%s AND ta.%s = %s LIMIT 1", C.TAB_TITLES, C.COL_ID, C.TAB_TITLES, C.TAB_TITLES, C.TAB_ALBUMS, C.TAB_TITLES, C.COL_ID, C.COL_TITLE_ID, C.COL_ALBUM + C.COL__ID, id);
+	public static byte[] getAlbumArtFor(int albumID, SQLiteDatabase db) {
+		String innerSelection = String.format("SELECT %s.%s FROM %s, %s%s AS ta WHERE %s.%s=ta.%s AND ta.%s = %s LIMIT 1", C.TAB_TITLES, C.COL_ID, C.TAB_TITLES, C.TAB_TITLES, C.TAB_ALBUMS, C.TAB_TITLES, C.COL_ID, C.COL_TITLE_ID, C.COL_ALBUM + C.COL__ID, albumID);
 		String selection = String.format("SELECT %s FROM %s JOIN %s ON %s.%s = %s.%s WHERE %s.%s = (%s)", C.COL_IMAGE_BLOB, C.TAB_IMAGE_DATA, C.TAB_IMAGES, C.TAB_IMAGE_DATA, C.COL_IMAGE_HASH, C.TAB_IMAGES, C.COL_IMAGE_HASH, C.TAB_IMAGES, C.COL_TITLE_ID, innerSelection);
 		Cursor c = db.rawQuery(selection, null);
 		boolean successful = c.moveToFirst();					

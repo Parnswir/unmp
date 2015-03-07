@@ -24,7 +24,7 @@ public class ImageLoader {
 	private static final int REQUIRED_SIZE = 64;
     
     private MemoryCache memoryCache = new MemoryCache();
-    private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
+    private Map<ImageView, Integer> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, Integer>());
     private ExecutorService executorService;
     private Handler handler = new Handler();
     private SQLiteDatabase DB;
@@ -34,20 +34,20 @@ public class ImageLoader {
         DB = db;
     }
     
-    public void displayAlbumImage(String name, ImageView imageView, boolean compress, ImageRetriever handler)
+    public void displayAlbumImage(int ID, ImageView imageView, boolean compress, ImageRetriever handler)
     {
-        imageViews.put(imageView, name);
-        Bitmap bitmap = memoryCache.get(name);
+        imageViews.put(imageView, ID);
+        Bitmap bitmap = memoryCache.get(Integer.toString(ID));
         if(bitmap != null) {
             imageView.setImageBitmap(bitmap);
         } else {
-            queuePhoto(name, imageView, compress, handler);
+            queuePhoto(ID, imageView, compress, handler);
         }
     }
         
-    private void queuePhoto(String albumName, ImageView imageView, boolean compress, ImageRetriever handler)
+    private void queuePhoto(int ID, ImageView imageView, boolean compress, ImageRetriever handler)
     {
-        PhotoToLoad p = new PhotoToLoad(albumName, imageView, compress, handler);
+        PhotoToLoad p = new PhotoToLoad(ID, imageView, compress, handler);
         executorService.submit(new PhotosLoader(p));
     }
     
@@ -79,13 +79,13 @@ public class ImageLoader {
     
     private class PhotoToLoad
     {
-        public String albumName;
+        public int albumID;
         public ImageView imageView;
         public boolean doCompress;
         public ImageRetriever handler;
         
-        public PhotoToLoad(String albumName, ImageView imageView, boolean compress, ImageRetriever handler){
-            this.albumName = albumName; 
+        public PhotoToLoad(int albumID, ImageView imageView, boolean compress, ImageRetriever handler){
+            this.albumID = albumID;
             this.imageView = imageView;
             this.doCompress = compress;
             this.handler = handler;
@@ -103,8 +103,8 @@ public class ImageLoader {
             try{
                 if(imageViewReused(photoToLoad))
                     return;
-                Bitmap bmp = decodeBitmap(photoToLoad.handler.getBitmap(photoToLoad.albumName, DB), photoToLoad.doCompress);
-                memoryCache.put(photoToLoad.albumName, bmp);
+                Bitmap bmp = decodeBitmap(photoToLoad.handler.getBitmap(photoToLoad.albumID, DB), photoToLoad.doCompress);
+                memoryCache.put(Integer.toString(photoToLoad.albumID), bmp);
                 if(imageViewReused(photoToLoad))
                     return;
                 BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
@@ -116,8 +116,8 @@ public class ImageLoader {
     }
     
     boolean imageViewReused(PhotoToLoad photoToLoad){
-        String tag = imageViews.get(photoToLoad.imageView);
-        if(tag==null || !tag.equals(photoToLoad.albumName))
+        int tag = imageViews.get(photoToLoad.imageView);
+        if(tag != photoToLoad.albumID)
             return true;
         return false;
     }

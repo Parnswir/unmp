@@ -228,21 +228,22 @@ public class PlayerFragment extends AbstractFragment {
 		    playerLabels.get(LAB_TITLE).setText(playerStatus.title);
         if (! oldStatus.artist.equals(playerStatus.artist))
 		    playerLabels.get(LAB_ARTIST).setText(playerStatus.artist);
-        if (! oldStatus.album.equals(playerStatus.album) && ! oldStatus.year.equals(playerStatus.year))
-		    playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(),
-				    "%s [%s]", playerStatus.album, playerStatus.year));
-		setRating(playerStatus.rating);
-		setAlbumArt(playerStatus.album);
+        if (! oldStatus.album.equals(playerStatus.album) && ! oldStatus.year.equals(playerStatus.year)) {
+            playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(),
+                    "%s [%s]", playerStatus.album, playerStatus.year));
+            setAlbumArt();
+        }
+        if (oldStatus.rating != playerStatus.rating)
+            setRating(playerStatus.rating);
 	}
 
 	private void setRating(int rating) {
 		ratingBar.setProgress(rating);
 	}
 
-	private void setAlbumArt(String albumName) {
+	private void setAlbumArt() {
 		ImageView view = (ImageView) rootView.findViewById(R.id.ivCover);
-		imageLoader.displayAlbumImage(albumName, view,
-				ImageLoader.DO_NOT_COMPRESS, new AlbumCoverRetriever());
+		view.setImageBitmap(ImageLoader.decodeBitmap(playerStatus.cover, false));
 	}
 
 	private void play() {
