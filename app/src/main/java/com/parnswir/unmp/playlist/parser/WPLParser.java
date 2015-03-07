@@ -1,5 +1,15 @@
 package com.parnswir.unmp.playlist.parser;
 
+import android.util.Xml;
+
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
+import com.parnswir.unmp.playlist.MediaFile;
+import com.parnswir.unmp.playlist.Playlist;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,16 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import android.util.Xml;
-
-import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.DatabaseUtils;
-import com.parnswir.unmp.playlist.MediaFile;
-import com.parnswir.unmp.playlist.Playlist;
 
 public class WPLParser extends PlaylistParser {
 	

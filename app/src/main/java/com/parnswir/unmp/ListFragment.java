@@ -1,7 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.ArrayList;
-
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,6 +20,8 @@ import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.IconicAdapter;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
+
+import java.util.ArrayList;
 
 public class ListFragment extends AbstractFragment {
 	

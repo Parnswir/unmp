@@ -1,8 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -19,6 +16,9 @@ import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.media.FileAdditionThread;
 import com.parnswir.unmp.media.FileCrawlerThread;
 import com.parnswir.unmp.media.FileRemovalThread;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LibraryFragment extends AbstractFragment {
    

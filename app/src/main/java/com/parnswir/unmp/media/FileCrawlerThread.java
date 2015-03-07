@@ -1,16 +1,16 @@
 package com.parnswir.unmp.media;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.database.sqlite.SQLiteDatabase;
 
 import com.parnswir.unmp.core.ProgressObservable;
 import com.parnswir.unmp.core.ProjectResources;
 import com.parnswir.unmp.core.Utils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class FileCrawlerThread extends Thread {
 	

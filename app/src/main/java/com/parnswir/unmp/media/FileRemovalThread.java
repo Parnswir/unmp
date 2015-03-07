@@ -1,11 +1,11 @@
 package com.parnswir.unmp.media;
 
-import java.io.File;
-import java.util.List;
-
 import android.database.sqlite.SQLiteDatabase;
 
 import com.parnswir.unmp.core.DatabaseUtils;
+
+import java.io.File;
+import java.util.List;
 
 public class FileRemovalThread extends FileCrawlerThread {
 

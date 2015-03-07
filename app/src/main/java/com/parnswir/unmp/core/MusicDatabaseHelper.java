@@ -1,11 +1,10 @@
 package com.parnswir.unmp.core;
 
-import java.util.Locale;
-
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.Locale;
 
 public class MusicDatabaseHelper extends SQLiteOpenHelper {
 	

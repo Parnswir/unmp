@@ -1,10 +1,10 @@
 package com.parnswir.unmp.playlist;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Playlist extends PlaylistElement {

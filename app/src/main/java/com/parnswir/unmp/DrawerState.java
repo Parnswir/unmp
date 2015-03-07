@@ -1,7 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.ArrayList;
-
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
@@ -9,6 +7,8 @@ import android.widget.RelativeLayout;
 
 import com.parnswir.unmp.core.C;
 import com.parnswir.unmp.core.ProjectResources.FragmentProperties;
+
+import java.util.ArrayList;
 
 public class DrawerState {
 	

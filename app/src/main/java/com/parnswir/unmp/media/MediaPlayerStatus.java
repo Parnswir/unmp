@@ -1,8 +1,8 @@
 package com.parnswir.unmp.media;
 
-import java.io.Serializable;
-
 import com.parnswir.unmp.playlist.Playlist;
+
+import java.io.Serializable;
 
 public class MediaPlayerStatus implements Serializable {
 	

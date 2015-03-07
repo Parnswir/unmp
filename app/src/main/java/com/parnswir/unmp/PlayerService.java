@@ -1,9 +1,5 @@
 package com.parnswir.unmp;
 
-import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -34,6 +30,10 @@ import com.parnswir.unmp.core.NotificationBuilder;
 import com.parnswir.unmp.media.MediaPlayerStatus;
 import com.parnswir.unmp.playlist.MediaFile;
 import com.parnswir.unmp.playlist.Playlist;
+
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PlayerService extends Service implements OnAudioFocusChangeListener {
 	

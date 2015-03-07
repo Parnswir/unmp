@@ -1,10 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.Observable;
-import java.util.Observer;
-
-import org.jaudiotagger.tag.TagOptionSingleton;
-
 import android.app.ActionBar;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +15,11 @@ import android.widget.TextView;
 
 import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.core.ProjectResources;
+
+import org.jaudiotagger.tag.TagOptionSingleton;
+
+import java.util.Observable;
+import java.util.Observer;
 
 public class MainActivity extends DrawerActivity implements Observer {
 	

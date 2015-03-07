@@ -1,7 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.Observer;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -18,6 +16,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.parnswir.unmp.core.C;
+
+import java.util.Observer;
 
 public abstract class DrawerActivity extends Activity implements Observer {
 	

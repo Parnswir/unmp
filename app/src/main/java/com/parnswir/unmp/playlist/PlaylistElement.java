@@ -1,8 +1,8 @@
 package com.parnswir.unmp.playlist;
 
-import java.io.Serializable;
-
 import android.os.Bundle;
+
+import java.io.Serializable;
 
 public abstract class PlaylistElement implements Serializable {
 

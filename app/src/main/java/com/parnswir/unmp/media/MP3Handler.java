@@ -1,7 +1,9 @@
 package com.parnswir.unmp.media;
 
-import java.io.File;
-import java.io.IOException;
+import android.content.ContentValues;
+
+import com.parnswir.unmp.core.C;
+import com.parnswir.unmp.core.DatabaseUtils;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -10,10 +12,8 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.TagException;
 
-import android.content.ContentValues;
-
-import com.parnswir.unmp.core.C;
-import com.parnswir.unmp.core.DatabaseUtils;
+import java.io.File;
+import java.io.IOException;
 
 public class MP3Handler extends FileHandler {
 	

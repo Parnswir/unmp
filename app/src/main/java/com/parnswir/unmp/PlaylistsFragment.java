@@ -1,7 +1,5 @@
 package com.parnswir.unmp;
 
-import java.util.ArrayList;
-
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +15,8 @@ import com.parnswir.unmp.core.DatabaseUtils;
 import com.parnswir.unmp.playlist.Playlist;
 import com.parnswir.unmp.playlist.parser.PlaylistParser;
 import com.parnswir.unmp.playlist.parser.PlaylistParser.PlaylistParserException;
+
+import java.util.ArrayList;
 
 public class PlaylistsFragment extends AbstractFragment {
 
