@@ -45,6 +45,7 @@ public class PlayerFragment extends AbstractFragment {
 	private ImageLoader imageLoader;
 
 	private MediaPlayerStatus playerStatus = new MediaPlayerStatus();
+    private MediaPlayerStatus oldStatus = new MediaPlayerStatus();
 	private BroadcastReceiver statusBroadcastReceiver;
 	private boolean receiving = false;
 	
@@ -223,10 +224,13 @@ public class PlayerFragment extends AbstractFragment {
 	}
 
 	private void updateTitleInfo() {
-		playerLabels.get(LAB_TITLE).setText(playerStatus.title);
-		playerLabels.get(LAB_ARTIST).setText(playerStatus.artist);
-		playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(), 
-				"%s [%s]", playerStatus.album, playerStatus.year));
+        if (! oldStatus.title.equals(playerStatus.title))
+		    playerLabels.get(LAB_TITLE).setText(playerStatus.title);
+        if (! oldStatus.artist.equals(playerStatus.artist))
+		    playerLabels.get(LAB_ARTIST).setText(playerStatus.artist);
+        if (! oldStatus.album.equals(playerStatus.album) && ! oldStatus.year.equals(playerStatus.year))
+		    playerLabels.get(LAB_ALBUM).setText(String.format(Locale.getDefault(),
+				    "%s [%s]", playerStatus.album, playerStatus.year));
 		setRating(playerStatus.rating);
 		setAlbumArt(playerStatus.album);
 	}
@@ -275,6 +279,7 @@ public class PlayerFragment extends AbstractFragment {
 			if (PlayerService.STATUS_INTENT.equals(intent.getAction())) {
 				playerStatus = (MediaPlayerStatus) intent.getSerializableExtra(PlayerService.EXTRA_STATUS);
 				updatePlayerStatus();
+                oldStatus = playerStatus;
 			}
 		}
 

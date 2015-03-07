@@ -84,10 +84,16 @@
                 android:paddingLeft="@dimen/activity_vertical_margin"
                 android:text="@string/tv_title"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:maxLines="1"
-                android:minLines="1"
                 android:paddingRight="@dimen/activity_vertical_margin"
-                android:singleLine="true" />
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:freezesText="true"
+                android:scrollHorizontally="true"
+                android:clickable="true"
+                android:singleLine="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:enabled="true" />
 
             <TextView
                 android:id="@+id/tvArtist"
@@ -97,9 +103,15 @@
                 android:text="@string/tv_artist"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingRight="@dimen/activity_vertical_margin"
-                android:maxLines="1"
-                android:minLines="1"
-                android:singleLine="true" />
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:freezesText="true"
+                android:scrollHorizontally="true"
+                android:clickable="true"
+                android:singleLine="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:enabled="true" />
 
             <TextView
                 android:id="@+id/tvAlbum"
@@ -110,9 +122,15 @@
                 android:text="@string/tv_album"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingRight="@dimen/activity_vertical_margin"
-                android:minLines="1"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:freezesText="true"
+                android:scrollHorizontally="true"
+                android:clickable="true"
+                android:singleLine="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:enabled="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
