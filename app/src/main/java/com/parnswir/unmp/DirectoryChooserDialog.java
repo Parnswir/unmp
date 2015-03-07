@@ -120,7 +120,7 @@ public class DirectoryChooserDialog
      m_dir = dir;
      m_subdirs = new ArrayList<String>();
      if (hasParent(m_dir)) {
-    	 m_subdirs.add("..");
+    	 m_subdirs.add("build/generated/source/rs/androidTest");
      }
      m_subdirs.addAll(getDirectories(dir));
 
@@ -315,7 +315,7 @@ private void updateDirectory()
 {
  m_subdirs.clear();
  if (hasParent(m_dir)) {
-	 m_subdirs.add("..");
+	 m_subdirs.add("build/generated/source/rs/androidTest");
  }
  m_subdirs.addAll( getDirectories(m_dir) );
  m_titleView.setText(m_dir);

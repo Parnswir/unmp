@@ -18,19 +18,19 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <service
-            android:name="com.parnswir.unmp.PlayerService"
+            android:name=".PlayerService"
             android:label="Player Service" >
         </service>
 
         <activity
-            android:name="com.parnswir.unmp.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/PlayerTheme" >
         </activity>
         <activity
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:name="com.parnswir.unmp.SplashActivity"
+            android:name=".SplashActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

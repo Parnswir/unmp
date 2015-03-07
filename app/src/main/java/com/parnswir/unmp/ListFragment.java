@@ -85,7 +85,7 @@ public class ListFragment extends AbstractFragment {
 			contentList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, currentContent.names));
 			cursor = DB.query(join, 
 					new String[] {C.COL_FILE, C.COL_TITLE}, 
-					tableName + "." + C.COL_ID + " = ?", 
+					tableName + "" + C.COL_ID + " = ?",
 					new String[] {id}, 
 					null, null, 
 					C.COL_TRACK_NUMBER);
@@ -121,7 +121,7 @@ public class ListFragment extends AbstractFragment {
 		Playlist playlist = new Playlist();
 		String query = String.format("SELECT %s FROM %s", C.COL_FILE, C.TAB_TITLES);
 		if (isInDetailedState) {
-			query = String.format("SELECT %s FROM %s WHERE %s = %s", C.COL_FILE, join, tableName + "." + C.COL_ID, currentID);
+			query = String.format("SELECT %s FROM %s WHERE %s = %s", C.COL_FILE, join, tableName + "" + C.COL_ID, currentID);
 		}
 		playlist.addItemsFromFilter(DB, query);
 		return playlist;

@@ -385,7 +385,7 @@ public class PlayerService extends Service implements OnAudioFocusChangeListener
 	private void getMediaInformation() {
 		String title = DatabaseUtils.normalize(status.file);
 		Cursor cursor = DatabaseUtils.getDB(this).query(DatabaseUtils.getGiantJoin(), new String[] {
-				C.TAB_TITLES + "." + C.COL_ID, C.COL_TITLE, C.COL_ARTIST,
+				C.TAB_TITLES + "" + C.COL_ID, C.COL_TITLE, C.COL_ARTIST,
 				C.COL_ALBUM, C.COL_YEAR, C.COL_RATING }, C.COL_FILE + " = \""
 				+ title + "\"", null, null, null, null);
 		cursor.moveToFirst();

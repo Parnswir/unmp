@@ -35,9 +35,9 @@ public class WPLParser extends PlaylistParser {
 	
 	private static final Map<String, String> TYPE_MAPPING = new HashMap<String, String>();
 	static{
-		TYPE_MAPPING.put("User Rating", C.TAB_TITLES + "." + C.COL_RATING);
-		TYPE_MAPPING.put("Genre", C.TAB_GENRES + "." + C.COL_GENRE);
-		TYPE_MAPPING.put("Album Title", C.TAB_ALBUMS + "." + C.COL_ALBUM);
+		TYPE_MAPPING.put("User Rating", C.TAB_TITLES + "" + C.COL_RATING);
+		TYPE_MAPPING.put("Genre", C.TAB_GENRES + "" + C.COL_GENRE);
+		TYPE_MAPPING.put("Album Title", C.TAB_ALBUMS + "" + C.COL_ALBUM);
 	}
 	
 	private static final Map<String, String> CONDITION_MAPPING = new HashMap<String, String>();

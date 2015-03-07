@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jaudiotagger.tag.FieldKey;
-
 import com.parnswir.unmp.LibraryFragment;
 import com.parnswir.unmp.ListFragment;
 import com.parnswir.unmp.PlaylistsFragment;

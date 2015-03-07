@@ -48,7 +48,7 @@ public class PlaylistParser {
 		fileName = file.getAbsolutePath();
 		directory = file.getParentFile().getAbsolutePath() + "/";
 		playlist = new Playlist();
-		playlist.setName(file.getName().replace("." + Utils.getFileExt(fileName), ""));
+		playlist.setName(file.getName().replace("" + Utils.getFileExt(fileName), ""));
 	}
 	
 	public Playlist buildPlaylist() throws PlaylistParserException {
