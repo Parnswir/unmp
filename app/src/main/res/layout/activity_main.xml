@@ -87,7 +87,11 @@
 	        android:layout_height="wrap_content"
 	        android:paddingLeft="@dimen/activity_vertical_margin"
 	        android:text="@string/tv_title"
-	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+            android:maxLines="1"
+            android:minLines="1"
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:singleLine="true" />
 
 	    <TextView
 	        android:id="@+id/tvArtist"
@@ -95,7 +99,11 @@
 	        android:layout_height="wrap_content"
 	        android:paddingLeft="@dimen/activity_vertical_margin"
 	        android:text="@string/tv_artist"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true" />
 
 	    <TextView
 	        android:id="@+id/tvAlbum"
@@ -104,7 +112,11 @@
 	        android:background="@drawable/ab_solid_background"
 	        android:paddingLeft="@dimen/activity_vertical_margin"
 	        android:text="@string/tv_album"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:minLines="1"
+            android:maxLines="1"
+            android:singleLine="true" />
 
 	    <LinearLayout
 	        android:layout_width="match_parent"
